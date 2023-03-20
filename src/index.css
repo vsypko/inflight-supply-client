@@ -1,0 +1,28 @@
+@import url("./assets/fontawesome/css/all.min.css");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.plane {
+  animation: spin 3s linear infinite;
+}
+.earth {
+  animation: spin-up 20s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes spin-up {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
