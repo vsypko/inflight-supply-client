@@ -26,15 +26,22 @@ export const authSlice = createSlice({
       state.token = null
     },
 
-    updateAuth(
+    updateUserData(
       state,
       {
-        payload: { firstname, lastname },
-      }: PayloadAction<{ firstname: string | undefined; lastname: string | undefined }>,
+        payload: { firstname, lastname, phone },
+      }: PayloadAction<{ firstname: string | undefined; lastname: string | undefined; phone: string | undefined }>,
     ): void {
       if (state.user) {
         state.user.usr_firstname = firstname
         state.user.usr_lastname = lastname
+        state.user.usr_phone = phone
+      }
+    },
+
+    updateUserUrl(state, { payload: url }) {
+      if (state.user) {
+        state.user.usr_url = url
       }
     },
   },
@@ -42,4 +49,4 @@ export const authSlice = createSlice({
 
 export const authActions = authSlice.actions
 export const authReducer = authSlice.reducer
-export const { setCredentials, updateAuth, logOut } = authSlice.actions
+export const { setCredentials, logOut, updateUserData, updateUserUrl } = authSlice.actions

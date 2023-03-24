@@ -10,11 +10,18 @@ export const authApi = api.injectEndpoints({
       }),
     }),
 
-    photoUpdate: builder.mutation({
+    urlUpdate: builder.mutation({
       query: (data) => ({
-        url: "user/photoupdate",
+        url: "user/urlupdate",
         method: "POST",
         body: data,
+      }),
+    }),
+
+    urlDelete: builder.mutation({
+      query: (data: string | undefined) => ({
+        url: `user/urldelete/${data}`,
+        method: "DELETE",
       }),
     }),
 
@@ -27,4 +34,4 @@ export const authApi = api.injectEndpoints({
   overrideExisting: false,
 })
 
-export const { useLoginMutation, usePhotoUpdateMutation, useLazyLogoutQuery } = authApi
+export const { useLoginMutation, useUrlUpdateMutation, useUrlDeleteMutation, useLazyLogoutQuery } = authApi

@@ -1,10 +1,6 @@
 import { Dispatch, RefObject, SetStateAction } from "react"
 
-export function imageLoader(
-  canvasRef: RefObject<HTMLCanvasElement>,
-  maxView: number,
-  callback: Dispatch<SetStateAction<boolean>>,
-) {
+export async function imageLoader(canvasRef: RefObject<HTMLCanvasElement>, maxView: number) {
   const image = new Image()
   image.crossOrigin = "use-credentials"
   image.onload = () => {
@@ -76,7 +72,6 @@ export function imageLoader(
       posY = 0
       isMoving = false
     }
-    callback(true)
   }
   return image
 }

@@ -14,9 +14,10 @@ export function handleFileInput(
 
   reader.readAsDataURL(photo)
 
-  reader.onloadend = (e) => {
-    const image = imageLoader(canvasRef, maxView, setLoaded)
+  reader.onloadend = async (e) => {
+    const image = await imageLoader(canvasRef, maxView)
     image.src = e.target?.result as string
+    if (image) setLoaded(true)
   }
 }
 

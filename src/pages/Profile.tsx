@@ -5,21 +5,22 @@ import ImageEditor from "../components/ImageEditor"
 
 export default function Profile() {
   const { user, company, country } = useAuth()
-  const [photoEdit, setPhotoEdit] = useState(false)
+  const { updateUserData } = useActions()
 
+  const [photoEdit, setPhotoEdit] = useState(false)
+  const [imgDataUrl, setImgDataUrl] = useState<string | undefined>(undefined)
   const [firstnameIsEntering, setFirstnameIsEntering] = useState(false)
   const [lastnameIsEntering, setLastnameIsEntering] = useState(false)
   const [value, setValue] = useState({
     firstname: user?.usr_firstname,
     lastname: user?.usr_lastname,
+    phone: user?.usr_phone,
   })
-
-  const { updateAuth } = useActions()
 
   function handleSave() {
     setFirstnameIsEntering(false)
     setLastnameIsEntering(false)
-    updateAuth(value)
+    updateUserData(value)
   }
 
   return (
@@ -27,25 +28,26 @@ export default function Profile() {
       <h1 className="w-full py-4 text-center text-3xl font-bold">PROFILE</h1>
       <div className="w-full md:w-1/2 px-4 md:px-0">
         <div className="flex p-2 h-[218px] border border-spacing-1 rounded-xl border-slate-600 dark:border-slate-100 justify-center relative">
-          {!photoEdit ? (
+          {user && user.usr_url && !photoEdit ? (
             <>
               <img
                 width="200px"
                 height="200px"
                 alt=""
-                src={import.meta.env.VITE_USER_URL + user!.usr_url}
+                src={imgDataUrl ? imgDataUrl : import.meta.env.VITE_USER_URL + user!.usr_url}
                 className="absolute"
               />
+
               <button
                 onClick={() => setPhotoEdit(true)}
-                className="absolute bottom-2 right-2 rounded-full px-2 text-lg active:text-base active:bottom-3 active:right-5 hover:bg-slate-300 dark:hover:bg-slate-800 opacity-70 hover:opacity-100"
+                className="absolute bottom-0 right-0 rounded-full px-2 text-lg active:scale-90 hover:bg-slate-300 dark:hover:bg-slate-800 opacity-70 hover:opacity-100"
               >
                 <i className="fas fa-pencil mr-2" />
                 <span>Edit</span>
               </button>
             </>
           ) : (
-            <ImageEditor setPhotoEdit={setPhotoEdit} />
+            <ImageEditor setPhotoEdit={setPhotoEdit} setImgDataUrl={setImgDataUrl} />
           )}
         </div>
         <form onSubmit={handleSave}>
