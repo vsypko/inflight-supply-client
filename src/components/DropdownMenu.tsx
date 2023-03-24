@@ -32,7 +32,7 @@ export default function DropdownMenu({ open, setOpen, close }: UserDropownProps)
     >
       <ul>
         <li onClick={selectionHandler} className={itemStyle}>
-          <NavLink to={`/profile/${user!.role_name}`}>
+          <NavLink to={`/profile/${user!.usr_role_name}`}>
             <i className="fas fa-user-pen mr-4" />
             PROFILE
           </NavLink>

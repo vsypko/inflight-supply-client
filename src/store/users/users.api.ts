@@ -5,7 +5,7 @@ export const usersApi = api.injectEndpoints({
   endpoints: (build) => ({
     getUsers: build.query<IUsersResponse, string>({
       query: (search: string) => ({
-        url: "/search/users",
+        url: "search/users",
       }),
     }),
   }),

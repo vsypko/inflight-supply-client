@@ -5,7 +5,7 @@ export const airportApi = api.injectEndpoints({
   endpoints: (build) => ({
     searchAirport: build.query<IAirportResponse, string>({
       query: (search: string) => ({
-        url: "/search/airport",
+        url: "search/airport",
         params: {
           q: search,
         },

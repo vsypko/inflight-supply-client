@@ -28,8 +28,8 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
       try {
         const updateResult = await baseQuery("user/auth/update", api, extraOptions)
         if (updateResult.data) {
-          const user = (api.getState() as RootState).auth.user
-          api.dispatch(setCredentials({ user, token: updateResult.data as string }))
+          const { user, company, country } = (api.getState() as RootState).auth
+          api.dispatch(setCredentials({ user, company, country, token: updateResult.data as string }))
           result = await baseQuery(args, api, extraOptions)
         } else {
           api.dispatch(logOut())

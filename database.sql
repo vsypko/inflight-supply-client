@@ -53,18 +53,18 @@ br_manager_surname varchar
 
 create TABLE users(
   usr_id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  usr_name varchar,
-  usr_surname varchar,
+  usr_firstname varchar,
+  usr_lastname varchar,
   usr_email varchar UNIQUE NOT NULL,
   usr_password varchar,
-  usr_photoUrl varchar,
-  usr_phone varchar(15),
+  usr_photourl varchar,
   usr_activated boolean DEFAULT false,
   usr_activationlink varchar,
-  usr_co integer REFERENCES company (co_id) DEFAULT 0,
-  usr_br integer REFERENCES co_branch (br_id) DEFAULT 0,
   usr_role integer REFERENCES roles (role_id),
   usr_created_time DATE NOT NULL DEFAULT CURRENT_DATE
+  usr_co integer REFERENCES company (co_id) DEFAULT 0,
+  usr_phone varchar(15),
+  usr_cn varchar(2)
 );
 
 create TABLE roles(

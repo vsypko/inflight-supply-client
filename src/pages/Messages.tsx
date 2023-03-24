@@ -26,7 +26,7 @@ export default function Messages() {
             <li key={user.usr_id}>
               <p>id: {user.usr_id}</p>
               <p>email: {user.usr_email}</p>
-              <p>role: {user.role_name}</p>
+              <p>role: {user.usr_role_name}</p>
             </li>
           ))}
         </ul>

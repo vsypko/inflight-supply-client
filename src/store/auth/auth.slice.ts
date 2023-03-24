@@ -1,8 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { IAuthState } from "../../types/user.types"
+import { IUserState } from "../../types/user.types"
 
-const initialState: IAuthState = {
+const initialState: IUserState = {
   user: null,
+  company: null,
+  country: null,
   token: null,
 }
 
@@ -10,24 +12,29 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setCredentials(state, { payload: { user, token } }: PayloadAction<IAuthState>): void {
+    setCredentials(state, { payload: { user, company, country, token } }: PayloadAction<IUserState>): void {
       state.user = user
+      state.company = company
+      state.country = country
       state.token = token
     },
+
     logOut(state): void {
       state.user = null
+      state.company = null
+      state.country = null
       state.token = null
     },
-    update(
+
+    updateAuth(
       state,
       {
-        payload: { firstname, lastname, photourl },
-      }: PayloadAction<{ firstname: string | undefined; lastname: string | undefined; photourl: string | undefined }>,
+        payload: { firstname, lastname },
+      }: PayloadAction<{ firstname: string | undefined; lastname: string | undefined }>,
     ): void {
       if (state.user) {
         state.user.usr_firstname = firstname
         state.user.usr_lastname = lastname
-        state.user.usr_photourl = photourl
       }
     },
   },
@@ -35,4 +42,4 @@ export const authSlice = createSlice({
 
 export const authActions = authSlice.actions
 export const authReducer = authSlice.reducer
-export const { setCredentials, update, logOut } = authSlice.actions
+export const { setCredentials, updateAuth, logOut } = authSlice.actions

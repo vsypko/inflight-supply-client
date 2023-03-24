@@ -12,7 +12,7 @@ export default function Airlines() {
       <div>{selected?.ap_name}</div>
       <div>{selected?.ap_iata_code}</div>
       <div>{user?.usr_email}</div>
-      <div>role: {user?.usr_role}</div>
+      <div>role: {user?.usr_role_name}</div>
       <div>token: {token}</div>
     </div>
   )

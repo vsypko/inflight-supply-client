@@ -107,15 +107,15 @@ export default function MainNavigation() {
                     <i className="fas fa-envelope-open-text"></i>
                     <span className="ml-2">
                       MESSAGES
-                      <span className="text-xs relative bottom-2 rounded-full bg-slate-500">20</span>
+                      <span className="text-xs relative bottom-2 rounded-full bg-slate-300 dark:bg-slate-500">20</span>
                     </span>
                   </NavLink>
                 </li>
-                {user != null && user.role_name != "admin" && (
+                {user != null && user.usr_role_name != "admin" && (
                   <li className="nav-item">
                     <NavLink
                       className={({ isActive }) => (isActive ? activeLink : regularLink)}
-                      to={`/admin/${user.role_name}`}
+                      to={`/admin/${user.usr_role_name}`}
                       onClick={() => setNavDropdownOpen(false)}
                     >
                       <i className="fas fa-screwdriver-wrench"></i>

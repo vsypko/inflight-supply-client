@@ -54,14 +54,14 @@ export default function Auth() {
             <label htmlFor="email" className="block mb-2 text-sm font-medium">
               Email
             </label>
-            <div className="flex bg-gray-300 dark:bg-gray-700 rounded-full mb-6">
+            <div className="flex bg-slate-300 dark:bg-slate-700 rounded-full mb-6">
               <i className="fas fa-envelope p-3 rounded-l-full bg-slate-400 dark:bg-slate-800" />
               <input
                 autoFocus
                 type="email"
                 name="email"
                 id="email"
-                className="w-full bg-transparent p-2 outline-none invalid:text-slate-500"
+                className="w-full bg-none bg-transparent p-2 outline-none invalid:text-slate-500"
                 placeholder="name@domain.ext"
                 required
                 onChange={onChange}
@@ -73,7 +73,7 @@ export default function Auth() {
             <label htmlFor="password" className="block mb-2 text-sm font-medium">
               Password
             </label>
-            <div className="flex bg-gray-300 dark:bg-gray-700 rounded-full mb-6">
+            <div className="flex bg-slate-300 dark:bg-slate-700 rounded-full mb-6">
               <i className="fas fa-key p-3 rounded-l-full bg-slate-400 dark:bg-slate-800" />
               <input
                 type={passwordVisible ? "text" : "password"}
@@ -82,15 +82,12 @@ export default function Auth() {
                 minLength={6}
                 maxLength={12}
                 placeholder="••••••"
-                className="w-full bg-transparent p-2 outline-none invalid:text-slate-500"
+                className="w-full bg-none bg-transparent p-2 outline-none invalid:text-slate-500"
                 required
                 onChange={onChange}
               />
               <i
-                className={
-                  "fas mt-3 mr-3 rounded-r-full active:text-sm cursor-pointer " +
-                  (passwordVisible ? "fa-eye-slash" : "fa-eye")
-                }
+                className={"fas p-3 active:text-xs cursor-pointer " + (passwordVisible ? "fa-eye-slash" : "fa-eye")}
                 onClick={() => setPasswordVisible((prev) => !prev)}
               />
             </div>
