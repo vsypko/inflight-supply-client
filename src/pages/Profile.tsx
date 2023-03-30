@@ -1,26 +1,36 @@
 import { useAuth } from "../hooks/useAuth"
-import { useState } from "react"
+import { ChangeEvent, FormEvent, useState } from "react"
 import { useActions } from "../hooks/actions"
 import ImageEditor from "../components/ImageEditor"
+import { useUserProfileUpdateMutation } from "../store/auth/auth.api"
+import DropdownCountries from "../components/DropdownCountries"
+import { IUserUpdateRequest } from "../types/user.types"
 
 export default function Profile() {
   const { user, company, country } = useAuth()
   const { updateUserData } = useActions()
+  const [userProfileUpdateQuery] = useUserProfileUpdateMutation()
 
   const [photoEdit, setPhotoEdit] = useState(false)
-  const [imgDataUrl, setImgDataUrl] = useState<string | undefined>(undefined)
-  const [firstnameIsEntering, setFirstnameIsEntering] = useState(false)
-  const [lastnameIsEntering, setLastnameIsEntering] = useState(false)
-  const [value, setValue] = useState({
-    firstname: user?.usr_firstname,
-    lastname: user?.usr_lastname,
-    phone: user?.usr_phone,
+  const [openCountryDropdown, setOpenCountryDropdown] = useState(false)
+
+  const [value, setValue] = useState<IUserUpdateRequest>({
+    id: user!.usr_id,
+    firstname: user!.usr_firstname || "",
+    lastname: user!.usr_lastname || "",
+    phone: user!.usr_phone || "",
+    cn: user!.usr_cn === "ZZ" ? country!.cn_iso : user!.usr_cn || "ZZ",
   })
 
-  function handleSave() {
-    setFirstnameIsEntering(false)
-    setLastnameIsEntering(false)
-    updateUserData(value)
+  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setValue((value) => ({ ...value, [event.target.name]: event.target.value }))
+  }
+
+  async function handleSave(e: FormEvent) {
+    e.preventDefault()
+    console.log(value.phone, value.cn, country!.cn_iso)
+    const profile = await userProfileUpdateQuery(value).unwrap()
+    updateUserData(profile)
   }
 
   return (
@@ -33,8 +43,11 @@ export default function Profile() {
               <img
                 width="200px"
                 height="200px"
+                use-credentials="true"
                 alt=""
-                src={imgDataUrl ? imgDataUrl : import.meta.env.VITE_USER_URL + user!.usr_url}
+                src={
+                  user.usr_url_data ? user.usr_url_data : import.meta.env.VITE_API_URL + "user/geturl/" + user.usr_url
+                }
                 className="absolute"
               />
 
@@ -47,19 +60,21 @@ export default function Profile() {
               </button>
             </>
           ) : (
-            <ImageEditor setPhotoEdit={setPhotoEdit} setImgDataUrl={setImgDataUrl} />
+            <ImageEditor setPhotoEdit={setPhotoEdit} />
           )}
         </div>
         <form onSubmit={handleSave}>
           <div className="grid md:grid-cols-2 md:gap-6">
             <div className="relative z-0 mt-6 w-full group">
               <input
+                autoFocus
                 type="text"
-                name="first_name"
+                name="firstname"
+                value={value.firstname}
                 id="first_name"
+                onChange={onChange}
                 className="block mt-6 w-full text-slate-800 dark:text-slate-100 bg-transparent appearance-none border-0 border-b-2 border-slate-400 dark:border-slate-600 focus:border-slate-700 dark:focus:border-slate-400 focus:outline-none focus:ring-0 peer"
                 placeholder=" "
-                required
               />
               <label
                 htmlFor="first_name"
@@ -72,11 +87,12 @@ export default function Profile() {
             <div className="relative z-0 mt-6 w-full group">
               <input
                 type="text"
-                name="last_name"
+                name="lastname"
+                value={value.lastname}
                 id="last_name"
+                onChange={onChange}
                 className="block mt-6 w-full text-slate-800 dark:text-slate-100 bg-transparent appearance-none border-0 border-b-2 border-slate-400 dark:border-slate-600 focus:border-slate-700 dark:focus:border-slate-400 focus:outline-none focus:ring-0 peer"
                 placeholder=" "
-                required
               />
               <label
                 htmlFor="last_name"
@@ -93,18 +109,44 @@ export default function Profile() {
               </div>
               <span className="text-slate-800 dark:text-slate-200">{user?.usr_email}</span>
             </div>
-            <div className="block mt-4 items-center border-0 border-b-2 border-slate-400 dark:border-slate-600">
-              <div className="w-full scale-90 text-slate-600 dark:text-slate-400 origin-[0]">
+
+            {/*-Phone Input--------------------------------------------------------------------------------*/}
+
+            <div className="relative mt-6 w-full group">
+              <input
+                type="text"
+                name="phone"
+                id="phone"
+                value={value.phone}
+                onChange={onChange}
+                className="block mt-6 pl-28 w-full text-slate-800 dark:text-slate-100 bg-transparent appearance-none border-0 border-b-2 border-slate-400 dark:border-slate-600 focus:border-slate-700 dark:focus:border-slate-400 focus:outline-none focus:ring-0 peer"
+                placeholder="000000000"
+              />
+              <label
+                htmlFor="phone"
+                className="absolute text-slate-600 dark:text-slate-400 duration-300 transform -translate-y-9 scale-100 top-8 origin-[0] peer-focus:left-0 peer-focus:text-slate-500 dark:peer-focus:text-slate-400 peer-focus:scale-75 peer-focus:-translate-y-12"
+              >
                 <i className="fas fa-mobile-screen-button mr-2"></i>
                 <span>Phone</span>
-              </div>
-              {country?.cn_phonecode && (
-                <div className="flex">
-                  <img src={`data:image/png;base64, ${country?.cn_flag}`} alt="" className="py-1" />
-                  <span className="text-slate-800 dark:text-slate-200 ml-2">+{country?.cn_phonecode}</span>
-                </div>
+              </label>
+              <button
+                type="button"
+                className="absolute top-6 flex items-center text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 dark:group-hover:text-slate-200 dark:peer-focus:text-slate-200"
+                onClick={() => setOpenCountryDropdown((prev) => !prev)}
+              >
+                <img src={`data:image/png;base64, ${country?.cn_flag}`} alt="" className="py-1 mr-1" />
+                <span className="mr-1">+{country!.cn_phonecode}</span>
+                <i
+                  className={`fa-solid fa-chevron-down transition-all ${
+                    openCountryDropdown ? "rotate-180" : "rotate-0"
+                  }`}
+                />
+              </button>
+              {openCountryDropdown && (
+                <DropdownCountries value={value} setValue={setValue} setOpen={setOpenCountryDropdown} />
               )}
             </div>
+
             <div className="block mt-4 items-center border-0 border-b-2 border-slate-400 dark:border-slate-600">
               <div className="w-full scale-90 text-slate-600 dark:text-slate-400 origin-[0]">
                 <i className="fas fa-building-user mr-2" />
@@ -118,15 +160,25 @@ export default function Profile() {
                 </div>
               </div>
             </div>
-            <div className="block mt-4 border-0 border-b-2 border-slate-400 dark:border-slate-600">
+            <div className="flex flex-col mt-4 border-0 border-b-2 border-slate-400 dark:border-slate-600 justify-between">
               <div className="w-full scale-90 text-slate-600 dark:text-slate-400 origin-[0]">
                 <i className="fas fa-user-shield mr-2"></i>
                 <span>Role</span>
               </div>
-              <span className="text-slate-800 dark:text-slate-200 flex justify-center items-center">
-                {user?.usr_role_name}
-              </span>
+
+              <span className="text-slate-800 dark:text-slate-200">{user?.usr_role_name}</span>
             </div>
+          </div>
+          <div className="w-full flex justify-end mt-4">
+            {/* submit button----------------------------------------- */}
+
+            <button
+              type="submit"
+              className="px-4 py-1 text-xl flex justify-between items-center rounded-full active:scale-90 bg-teal-400 hover:bg-teal-500 dark:bg-teal-900 dark:hover:bg-teal-800"
+            >
+              <i className="fas fa-download mr-12" />
+              <span>SAVE</span>
+            </button>
           </div>
         </form>
       </div>

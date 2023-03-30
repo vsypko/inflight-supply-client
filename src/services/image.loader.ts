@@ -1,4 +1,4 @@
-import { Dispatch, RefObject, SetStateAction } from "react"
+import { RefObject } from "react"
 
 export async function imageLoader(canvasRef: RefObject<HTMLCanvasElement>, maxView: number) {
   const image = new Image()

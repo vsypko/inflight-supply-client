@@ -9,7 +9,8 @@ export interface IUser {
   usr_role_name: string
   usr_co: number | undefined
   usr_phone: string | undefined
-  usr_cn: number | undefined
+  usr_cn: string | undefined
+  usr_url_data: string | undefined
 }
 
 export interface ICompany {
@@ -38,40 +39,26 @@ export interface ITokens {
   refreshToken: string
 }
 
-// export interface IAuthState {
-//   user_data: IUserResponse | null
-//   token: string | null
-// }
-
-// export interface IUser {
-//   usr_id: number
-//   usr_firstname: string | undefined
-//   usr_lastname: string | undefined
-//   usr_email: string
-//   role_name: string
-//   usr_photourl: string | undefined
-//   usr_phone: string | undefined
-//   usr_cn_phonecode: number | undefined
-//   usr_cn_flag: string | undefined
-//   co_name: string | undefined
-//   co_cn_name: string | undefined
-//   co_cn_flag: string | undefined
-// }
-
 export interface IUsersResponse {
   total_count: number
   users: IUser[]
 }
-// export interface IUserUpdate {
-//   name: string
-//   surname: string
-//   photoUrl: string
-// }
 
-// export interface IAuthState {
-//   user: IUser | null
-//   token: string | null
-// }
+export interface IUserUpdateRequest {
+  id: number
+  firstname: string
+  lastname: string
+  phone: string
+  cn: string
+}
+
+export interface IUserUpdateResponse {
+  firstname: string
+  lastname: string
+  phone: string
+  cn: string
+  country: ICountry
+}
 
 export type Props = {
   children: ReactNode

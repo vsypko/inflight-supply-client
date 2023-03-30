@@ -79,13 +79,6 @@ create TABLE tokens(
   tkn_usr INTEGER REFERENCES users (usr_id) UNIQUE NOT NULL
 );
 
-CREATE DOMAIN phone AS text CHECK(
-    octet_length(VALUE)
-        BETWEEN 1/*+*/ + 8
-            AND 1/*+*/ + 15
-                       + 3
-    AND VALUE ~ '^\+\d+$'
-);
 
 CREATE TABLE ipv4(
   ip_from inet,

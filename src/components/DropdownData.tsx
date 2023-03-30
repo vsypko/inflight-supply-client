@@ -1,6 +1,6 @@
 import { IAirport } from "../types/airport.types"
 import { useActions } from "../hooks/actions"
-import { Dispatch, SetStateAction } from "react"
+import { Dispatch, FC, SetStateAction } from "react"
 
 interface DropdownProps<T> {
   items: T[] | undefined
@@ -8,7 +8,7 @@ interface DropdownProps<T> {
   setOpen: Dispatch<SetStateAction<boolean>>
 }
 
-export default function Dropdown({ items, setSelected, setOpen }: DropdownProps<IAirport>): JSX.Element {
+export default function Dropdown({ items, setSelected, setOpen }: DropdownProps<IAirport>) {
   const { selectAirport } = useActions()
   const selectionHandler = (item: IAirport) => {
     setSelected(item.ap_name)
@@ -25,8 +25,8 @@ export default function Dropdown({ items, setSelected, setOpen }: DropdownProps<
             className="flex justify-between px-3 py-2 text-lg hover:bg-slate-600 hover:text-slate-300 cursor-pointer transition-colors"
             onClick={() => selectionHandler(item)}
           >
-            <p>{item.ap_name}</p>
-            <p>{item.ap_iata_code}</p>
+            <span>{item.ap_name}</span>
+            <span>{item.ap_iata_code}</span>
           </li>
         ))}
       </ul>

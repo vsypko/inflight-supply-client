@@ -1,3 +1,4 @@
+import { ICountry, IUserUpdateRequest, IUserUpdateResponse } from "../../types/user.types"
 import { api } from "../api"
 
 export const authApi = api.injectEndpoints({
@@ -10,17 +11,31 @@ export const authApi = api.injectEndpoints({
       }),
     }),
 
-    urlUpdate: builder.mutation({
+    userUrlUpdate: builder.mutation({
       query: (data) => ({
-        url: "user/urlupdate",
+        url: "user/updateurl",
         method: "POST",
         body: data,
       }),
     }),
 
-    urlDelete: builder.mutation({
+    getCountries: builder.query<ICountry[], string>({
+      query: () => ({
+        url: "search/countries",
+      }),
+    }),
+
+    userProfileUpdate: builder.mutation<IUserUpdateResponse, IUserUpdateRequest>({
+      query: (data) => ({
+        url: "user/updateprofile",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    userUrlRemove: builder.mutation({
       query: (data: string | undefined) => ({
-        url: `user/urldelete/${data}`,
+        url: `user/deleteurl/${data}`,
         method: "DELETE",
       }),
     }),
@@ -31,7 +46,14 @@ export const authApi = api.injectEndpoints({
       }),
     }),
   }),
-  overrideExisting: false,
+  overrideExisting: true,
 })
 
-export const { useLoginMutation, useUrlUpdateMutation, useUrlDeleteMutation, useLazyLogoutQuery } = authApi
+export const {
+  useLoginMutation,
+  useUserUrlUpdateMutation,
+  useGetCountriesQuery,
+  useUserProfileUpdateMutation,
+  useUserUrlRemoveMutation,
+  useLazyLogoutQuery,
+} = authApi

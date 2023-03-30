@@ -22,11 +22,11 @@ export function handleFileInput(
 }
 
 export function dataUrlToBlob(data: string): Blob {
-  data = data.replace(/^data:image\/jpeg;base64,/, "")
+  data = data.replace(/^data:image\/png;base64,/, "")
   const binaryString = window.atob(data)
   const uint8Array = new Uint8Array(binaryString.length)
   for (let i = 0; i < binaryString.length; i++) {
     uint8Array[i] = binaryString.charCodeAt(i)
   }
-  return new Blob([uint8Array], { type: "image/jpeg" })
+  return new Blob([uint8Array], { type: "image/png" })
 }

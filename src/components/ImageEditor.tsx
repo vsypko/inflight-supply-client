@@ -3,19 +3,18 @@ import { useActions } from "../hooks/actions"
 import { useAuth } from "../hooks/useAuth"
 import { imageLoader } from "../services/image.loader"
 import { dataUrlToBlob, handleFileInput } from "../services/profile.service"
-import { useUrlDeleteMutation, useUrlUpdateMutation } from "../store/auth/auth.api"
+import { useUserUrlRemoveMutation, useUserUrlUpdateMutation } from "../store/auth/auth.api"
 
-interface ImageEditorProps {
+export default function ImageEditor({
+  setPhotoEdit,
+}: {
   setPhotoEdit: Dispatch<SetStateAction<boolean>>
-  setImgDataUrl: Dispatch<SetStateAction<string | undefined>>
-}
-
-export default function ImageEditor({ setPhotoEdit, setImgDataUrl }: ImageEditorProps): JSX.Element {
+}): JSX.Element {
   const [imageLoaded, setImageLoaded] = useState(false)
   const { user } = useAuth()
   const { updateUserUrl } = useActions()
-  const [setUserUrl, { isLoading, error }] = useUrlUpdateMutation()
-  const [deleteUserUrl, response] = useUrlDeleteMutation()
+  const [userUrlUpdateQuery] = useUserUrlUpdateMutation()
+  const [userUrlRemoveQuery] = useUserUrlRemoveMutation()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const maxView = 200
 
@@ -23,7 +22,7 @@ export default function ImageEditor({ setPhotoEdit, setImgDataUrl }: ImageEditor
     const loadImageToCanvas = async () => {
       if (user && user.usr_url) {
         const image = await imageLoader(canvasRef, maxView)
-        image.src = import.meta.env.VITE_USER_URL + user.usr_url
+        image.src = import.meta.env.VITE_API_URL + "user/geturl/" + user!.usr_url
         setImageLoaded(true)
       }
     }
@@ -40,8 +39,8 @@ export default function ImageEditor({ setPhotoEdit, setImgDataUrl }: ImageEditor
     canvasRef.current.onpointerdown = null
     const ctx = canvasRef.current.getContext("2d")
     ctx?.clearRect(0, 0, maxView, maxView)
-    updateUserUrl("")
-    deleteUserUrl(user!.usr_url)
+    updateUserUrl({ url: undefined, url_data: undefined })
+    userUrlRemoveQuery(user!.usr_url)
     setImageLoaded(false)
   }
 
@@ -51,28 +50,27 @@ export default function ImageEditor({ setPhotoEdit, setImgDataUrl }: ImageEditor
   }
 
   async function handlePhotoSave() {
-    let data = canvasRef.current?.toDataURL("image/jpeg", 1)
-    if (!data) return
-    setImgDataUrl(data)
+    let dataUrl = canvasRef.current?.toDataURL()
+    if (!dataUrl) return
     let userUrl: string
     let newUrl: boolean
     if (!user?.usr_url) {
       userUrl = crypto.randomUUID()
-      updateUserUrl(userUrl)
       newUrl = true
     } else {
       userUrl = user.usr_url
       newUrl = false
     }
     try {
-      const photoInBlob = dataUrlToBlob(data)
+      const photoInBlob = dataUrlToBlob(dataUrl)
       const photo = new FormData()
       photo.append("photo", photoInBlob, `${userUrl}`)
       photo.append("id", `${user!.usr_id}`)
       photo.append("newUrl", `${newUrl}`)
       const ctx = canvasRef.current?.getContext("2d")
       ctx?.clearRect(0, 0, maxView, maxView)
-      await setUserUrl(photo).unwrap()
+      await userUrlUpdateQuery(photo).unwrap()
+      updateUserUrl({ url: userUrl, url_data: dataUrl })
       setImageLoaded(false)
       setPhotoEdit(false)
     } catch (e) {
@@ -82,12 +80,17 @@ export default function ImageEditor({ setPhotoEdit, setImgDataUrl }: ImageEditor
 
   return (
     <>
-      <canvas ref={canvasRef} width="200px" height="200px" className="absolute" />
-      <div className="w-[200px] h-[200px] bg-slate-400 dark:bg-slate-600 flex justify-center items-center">
-        <i className="fas fa-cloud-arrow-up text-4xl" />
-      </div>
+      <canvas
+        ref={canvasRef}
+        width="200px"
+        height="200px"
+        className="absolute border border-slate-500 border-spacing-1"
+      />
       {!imageLoaded && (
         <>
+          <div className="w-[200px] h-[200px] bg-slate-400 dark:bg-slate-600 flex justify-center items-center">
+            <i className="fas fa-cloud-arrow-up text-4xl" />
+          </div>
           <label
             htmlFor="photo"
             className="absolute right-0 bottom-1 active:scale-90 cursor-pointer px-1 hover:bg-slate-300 hover:rounded-full dark:hover:bg-slate-800 opacity-70 hover:opacity-100"

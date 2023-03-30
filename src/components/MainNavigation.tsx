@@ -32,8 +32,8 @@ export default function MainNavigation() {
     setNavDropdownOpen(false)
   }
 
-  const activeLink = "lg:mr-10 flex uppercase mt-5 lg:mt-3 pb-1 lg:border-b-2 "
-  const regularLink = "lg:mr-10 flex uppercase mt-5 lg:mt-3 pb-1 opacity-60 hover:opacity-100"
+  const activeLink = "lg:mr-10 flex uppercase mt-5 lg:mt-3 lg:border-b-2 border-slate-700 dark:border-slate-100 "
+  const regularLink = "lg:mr-10 flex uppercase mt-5 lg:mt-3 opacity-60 hover:opacity-100"
 
   return (
     <header
@@ -42,8 +42,8 @@ export default function MainNavigation() {
       className="w-full sticky top-0 z-50 rounded-full bg-slate-200 dark:bg-slate-900 shadow shadow-slate-900 dark:shadow-slate-600"
     >
       <nav>
-        <div className="px-10 flex flex-wrap items-center justify-between text-slate-700 dark:text-slate-100 text:base lg:text-sm">
-          <div className="w-full pt-1 flex items-center justify-between lg:w-auto text-lg">
+        <div className="mt-0.5 py-1 px-10 flex items-center justify-between text-slate-700 dark:text-slate-100 text:base lg:text-sm">
+          <div className="w-full flex items-center justify-between lg:w-auto text-lg">
             <NavLink
               onClick={() => setNavDropdownOpen(false)}
               className="text-md capitalize font-bold hover:opacity-75"
@@ -62,7 +62,7 @@ export default function MainNavigation() {
           <div
             className={`lg:flex ${
               navDropdownOpen
-                ? "absolute top-10 rounded-md right-1 w-1/2 bg-slate-200 dark:bg-slate-800 pl-6 shadow shadow-slate-600 dark:shadow-slate-600"
+                ? "absolute top-11 rounded-md right-2 w-1/2 bg-slate-200 dark:bg-slate-800 pl-6 shadow shadow-slate-600 dark:shadow-slate-600"
                 : "hidden"
             }`}
           >
@@ -74,8 +74,8 @@ export default function MainNavigation() {
                     to="/"
                     onClick={() => setNavDropdownOpen(false)}
                   >
-                    <i className="fas fa-home"></i>
-                    <span className="ml-2">AIRPORTS</span>
+                    <i className="fas fa-home mr-2"></i>
+                    <span className="mb-2">AIRPORTS</span>
                   </NavLink>
                 </li>
                 <li className="nav-item">
@@ -84,8 +84,8 @@ export default function MainNavigation() {
                     to="/airlines"
                     onClick={() => setNavDropdownOpen(false)}
                   >
-                    <i className="fas fa-plane"></i>
-                    <span className="ml-2">AIRLINES</span>
+                    <i className="fas fa-plane mr-2"></i>
+                    <span className="mb-2">AIRLINES</span>
                   </NavLink>
                 </li>
                 <li className="nav-item">
@@ -94,8 +94,8 @@ export default function MainNavigation() {
                     to="/catering"
                     onClick={() => setNavDropdownOpen(false)}
                   >
-                    <i className="fas fa-utensils"></i>
-                    <span className="ml-2">PROVIDERS</span>
+                    <i className="fas fa-utensils mr-2"></i>
+                    <span className="mb-2">PROVIDERS</span>
                   </NavLink>
                 </li>
                 <li className="nav-item">
@@ -104,35 +104,39 @@ export default function MainNavigation() {
                     to="/messages"
                     onClick={() => setNavDropdownOpen(false)}
                   >
-                    <i className="fas fa-envelope-open-text"></i>
-                    <span className="ml-2">
+                    <i className="fas fa-envelope-open-text mr-2"></i>
+                    <span className="mb-2">
                       MESSAGES
                       <span className="text-xs relative bottom-2 rounded-full bg-slate-300 dark:bg-slate-500">20</span>
                     </span>
                   </NavLink>
                 </li>
-                {user != null && user.usr_role_name != "admin" && (
+                {user != null && user.usr_role_name != "user" && (
                   <li className="nav-item">
                     <NavLink
                       className={({ isActive }) => (isActive ? activeLink : regularLink)}
                       to={`/admin/${user.usr_role_name}`}
                       onClick={() => setNavDropdownOpen(false)}
                     >
-                      <i className="fas fa-screwdriver-wrench"></i>
-                      <span className="ml-2">ADMIN</span>
+                      <i className="fas fa-screwdriver-wrench mr-2"></i>
+                      <span className="mb-2">ADMIN</span>
                     </NavLink>
                   </li>
                 )}
+
                 <button
                   title="Switch between light and dark mode"
                   type="button"
                   onClick={toogleThemeHandler}
-                  className="pt-5 lg:pt-1 flex items-center text-lg lg:text-sm border-transparent bg-transparent opacity-50 hover:opacity-100"
+                  className="flex mt-5 lg:mt-0 items-center border-transparent bg-transparent opacity-50 hover:opacity-100"
                 >
                   <i className={"fas " + (darkMode ? "fa-sun" : "fa-moon")}></i>
-                  <span className="ml-2 pt-1">MODE</span>
+                  <span className="ml-2 mt-1">MODE</span>
                 </button>
               </div>
+
+              {/* user auth ------------------------------------------------------*/}
+
               <div className="flex flex-col lg:flex-row">
                 {!user && (
                   <li className="nav-item">
@@ -142,29 +146,49 @@ export default function MainNavigation() {
                       onClick={() => setNavDropdownOpen(false)}
                     >
                       <i className="fas fa-user"></i>
-                      <span className="ml-2">AUTH</span>
+                      <span className="ml-2 mb-2">AUTH</span>
                     </NavLink>
                   </li>
                 )}
+
+                {/* user avatar and menu ------------------------------------------------------*/}
+
                 {user && (
                   <div
                     onMouseEnter={() => setUserDropdownOpen(true)}
                     onMouseLeave={() => {
                       if (onHeader) setUserDropdownOpen(false)
                     }}
-                    className="pt-5 pb-2 lg:pb-0 lg:pt-1 flex items-center text-lg lg:text-base border-transparent bg-transparent relative"
+                    className="flex pb-2 lg:pb-0 pt-6 lg:pt-0 items-center text-lg lg:text-base border-transparent bg-transparent relative"
                   >
                     <button
                       onClick={() => setUserDropdownOpen((prev) => !prev)}
-                      className={`opacity-50 hover:opacity-100 ${userDropdownOpen ? "opacity-100" : "opacity-50"}`}
+                      className={`flex items-center opacity-75 hover:opacity-100 ${
+                        userDropdownOpen ? "opacity-100" : "opacity-75"
+                      }`}
                     >
-                      <i className="fa-solid fa-user-gear mr-3"></i>
+                      {user && user.usr_url ? (
+                        <img
+                          use-credentials="true"
+                          alt=""
+                          src={
+                            user.usr_url_data
+                              ? user.usr_url_data
+                              : import.meta.env.VITE_API_URL + "user/geturl/" + user!.usr_url
+                          }
+                          className="w-9 h-9 rounded-full mr-3"
+                        />
+                      ) : (
+                        <i className="fa-solid fa-user-gear mr-3" />
+                      )}
                       <i
                         className={`fa-solid fa-chevron-down transition-all 
                         ${userDropdownOpen ? "rotate-180" : "rotate-0"}`}
-                      ></i>
+                      />
                     </button>
-                    <DropdownMenu open={userDropdownOpen} setOpen={setUserDropdownOpen} close={setNavDropdownOpen} />
+                    {userDropdownOpen && (
+                      <DropdownMenu open={userDropdownOpen} setOpen={setUserDropdownOpen} close={setNavDropdownOpen} />
+                    )}
                   </div>
                 )}
               </div>

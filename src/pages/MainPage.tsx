@@ -44,7 +44,7 @@ export default function MainPage() {
   }, [selected])
 
   return (
-    <div className="w-full mt-6 px-3 lg:px-0 lg:ml-6 md:w-1/3 flex flex-col justify-between">
+    <div className="w-full mt-6 px-3 lg:px-0 md:ml-6 md:w-1/3 flex flex-col justify-between">
       <button
         className={
           "absolute p-3 fas fa-magnifying-glass rounded-full bg-slate-300 dark:bg-slate-700 opacity-70" +

@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { Mutex } from "async-mutex"
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query"
-import { logOut, setCredentials } from "./auth/auth.slice"
+import { signOut, setCredentials } from "./auth/auth.slice"
 import { RootState } from "./store"
 
 const baseQuery = fetchBaseQuery({
@@ -32,7 +32,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
           api.dispatch(setCredentials({ user, company, country, token: updateResult.data as string }))
           result = await baseQuery(args, api, extraOptions)
         } else {
-          api.dispatch(logOut())
+          api.dispatch(signOut())
         }
       } finally {
         release()

@@ -15,9 +15,15 @@ export default function DropdownMenu({ open, setOpen, close }: UserDropownProps)
     setOpen(false)
     close(false)
   }
-  const [logout] = useLazyLogoutQuery()
-  const { logOut } = useActions()
+  const [logout, { error }] = useLazyLogoutQuery()
+  const { signOut } = useActions()
   const { user } = useAuth()
+
+  async function logOutHandler() {
+    signOut()
+    logout("")
+    selectionHandler()
+  }
 
   const itemStyle =
     "flex items-center my-2 lg:my-1 lg:px-3 dark:text-slate-400 text-slate-600 rounded-full hover:bg-slate-700 hover:text-slate-300 dark:hover:text-slate-200 cursor-pointer transition-colors"
@@ -37,18 +43,13 @@ export default function DropdownMenu({ open, setOpen, close }: UserDropownProps)
             PROFILE
           </NavLink>
         </li>
+
         <li onClick={selectionHandler} className={itemStyle}>
           <i className="fas fa-address-card mr-4" />
           ACCOUNT
         </li>
-        <li
-          onClick={async () => {
-            logOut()
-            await logout("")
-            setOpen(false)
-          }}
-          className={itemStyle}
-        >
+
+        <li onClick={logOutHandler} className={itemStyle}>
           <i className="fas fa-right-from-bracket mr-4" />
           LOGOUT
         </li>

@@ -1,6 +1,4 @@
-import { SerializedError } from "@reduxjs/toolkit"
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query"
-import { SetStateAction, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Outlet } from "react-router-dom"
 import MainNavigation from "../components/MainNavigation"
 import { useActions } from "../hooks/actions"

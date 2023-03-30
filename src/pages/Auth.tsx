@@ -96,7 +96,7 @@ export default function Auth() {
             <div className="flex items-center justify-between mb-6">
               <a
                 href="#"
-                className="text-sm py-1 px-2 hover:bg-slate-300 hover:rounded-full dark:hover:bg-slate-800 active:text-xs active:py-1.5"
+                className="text-sm py-1 px-2 hover:bg-slate-300 hover:rounded-full dark:hover:bg-slate-800 active:scale-90"
               >
                 Forgot password?
               </a>
@@ -104,7 +104,7 @@ export default function Auth() {
           )}
           <button
             type="submit"
-            className="w-full cursor-pointer p-1 px-5 active:px-6 flex justify-between text-xl items-center ring-2 active:ring-0 rounded-full bg-teal-400 hover:bg-teal-500 ring-teal-400 hover:ring-teal-500 dark:bg-teal-900 dark:hover:bg-teal-800 dark:ring-teal-900 dark:hover:ring-teal-800"
+            className="w-full cursor-pointer py-2 px-5 flex justify-between text-xl items-center rounded-full active:scale-90 bg-teal-400 hover:bg-teal-500 dark:bg-teal-900 dark:hover:bg-teal-800"
           >
             <i className={"fas " + (value.isLogin ? "fa-right-to-bracket" : "fa-user-plus")} />
             {value.isLogin ? "Sign In" : "Sign Up"}
@@ -117,7 +117,7 @@ export default function Auth() {
               setValue((value) => ({ ...value, isLogin: !value.isLogin }))
               setErrorMsg("")
             }}
-            className="px-2 hover:bg-slate-300 hover:rounded-full dark:hover:bg-slate-800 active:text-base text-teal-500"
+            className="px-2 hover:bg-slate-300 hover:rounded-full dark:hover:bg-slate-800 active:scale-90 text-teal-500"
           >
             {value.isLogin ? "Sign Up" : "Sign In"}
           </button>
