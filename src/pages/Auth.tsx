@@ -23,7 +23,7 @@ export default function Auth() {
   const [passwordVisible, setPasswordVisible] = useState(false)
   const [value, setValue] = useState(initialValue)
   const [errorMsg, setErrorMsg] = useState("")
-  const [login, { isLoading, error }] = useLoginMutation()
+  const [login, { isLoading, isError }] = useLoginMutation()
   const { setCredentials } = useActions()
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +48,7 @@ export default function Auth() {
         <h1 className="text-xl font-bold md:text-2xl mb-6">
           {value.isLogin ? "Sign in to your account" : "Create an account"}
         </h1>
-        {error && <h5 className="text-red-500 mb-2 text-center whitespace-pre-line">{errorMsg}</h5>}
+        {isError && <h5 className="text-red-500 mb-2 text-center whitespace-pre-line">{errorMsg}</h5>}
         <form onSubmit={onSubmit} className="w-full">
           <div className="w-full">
             <label htmlFor="email" className="block mb-2 text-sm font-medium">
@@ -104,7 +104,7 @@ export default function Auth() {
           )}
           <button
             type="submit"
-            className="w-full cursor-pointer py-2 px-5 flex justify-between text-xl items-center rounded-full active:scale-90 bg-teal-400 hover:bg-teal-500 dark:bg-teal-900 dark:hover:bg-teal-800"
+            className="w-full cursor-pointer py-2 px-5 flex justify-between text-xl items-center rounded-full active:scale-90 bg-teal-500 dark:bg-teal-800 opacity-75 hover:opacity-100"
           >
             <i className={"fas " + (value.isLogin ? "fa-right-to-bracket" : "fa-user-plus")} />
             {value.isLogin ? "Sign In" : "Sign Up"}

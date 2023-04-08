@@ -26,32 +26,34 @@ export default function DropdownMenu({ open, setOpen, close }: UserDropownProps)
   }
 
   const itemStyle =
-    "flex items-center my-2 lg:my-1 lg:px-3 dark:text-slate-400 text-slate-600 rounded-full hover:bg-slate-700 hover:text-slate-300 dark:hover:text-slate-200 cursor-pointer transition-colors"
+    "flex items-center my-4 px-3 cursor-pointer active:scale-90 rounded-full hover:bg-slate-300  dark:hover:bg-slate-800 opacity-75 hover:opacity-100 transition-all"
 
   return (
     <div
       onMouseLeave={() => setOpen(false)}
       className={
-        "absolute top-16 px-2 lg:p-2 lg:mt-0 lg:top-9 lg:-right-4 bg-slate-200 dark:bg-slate-900 shadow shadow-slate-400 dark:shadow-slate-600 rounded-md" +
+        "absolute top-20 -left-6 lg:top-10 px-1 bg-slate-200 dark:bg-slate-900 shadow shadow-slate-400 dark:shadow-slate-600 rounded-md" +
         (open ? " flex" : " hidden")
       }
     >
       <ul>
-        <li onClick={selectionHandler} className={itemStyle}>
-          <NavLink to={`/profile/${user!.usr_role_name}`}>
+        <li onClick={selectionHandler}>
+          <NavLink to={`/profile/${user!.usr_role_name}`} className={itemStyle}>
             <i className="fas fa-user-pen mr-4" />
-            PROFILE
+            <span>PROFILE</span>
           </NavLink>
         </li>
 
-        <li onClick={selectionHandler} className={itemStyle}>
-          <i className="fas fa-address-card mr-4" />
-          ACCOUNT
+        <li onClick={selectionHandler}>
+          <NavLink to={`/account/${user!.usr_role_name}`} className={itemStyle}>
+            <i className="fas fa-address-card mr-4" />
+            <span>ACCOUNT</span>
+          </NavLink>
         </li>
 
         <li onClick={logOutHandler} className={itemStyle}>
           <i className="fas fa-right-from-bracket mr-4" />
-          LOGOUT
+          <span>LOGOUT</span>
         </li>
       </ul>
     </div>

@@ -33,7 +33,7 @@ export default function MainNavigation() {
   }
 
   const activeLink = "lg:mr-10 flex uppercase mt-5 lg:mt-3 lg:border-b-2 border-slate-700 dark:border-slate-100 "
-  const regularLink = "lg:mr-10 flex uppercase mt-5 lg:mt-3 opacity-60 hover:opacity-100"
+  const regularLink = "lg:mr-10 flex uppercase mt-5 lg:mt-3 opacity-75 hover:opacity-100"
 
   return (
     <header
@@ -128,7 +128,7 @@ export default function MainNavigation() {
                   title="Switch between light and dark mode"
                   type="button"
                   onClick={toogleThemeHandler}
-                  className="flex mt-5 lg:mt-0 items-center border-transparent bg-transparent opacity-50 hover:opacity-100"
+                  className="flex mt-5 lg:mt-0 items-center border-transparent bg-transparent opacity-75 hover:opacity-100"
                 >
                   <i className={"fas " + (darkMode ? "fa-sun" : "fa-moon")}></i>
                   <span className="ml-2 mt-1">MODE</span>
@@ -159,7 +159,7 @@ export default function MainNavigation() {
                     onMouseLeave={() => {
                       if (onHeader) setUserDropdownOpen(false)
                     }}
-                    className="flex pb-2 lg:pb-0 pt-6 lg:pt-0 items-center text-lg lg:text-base border-transparent bg-transparent relative"
+                    className="flex pb-2 lg:pb-0 pt-6 lg:pt-0 lg:px-4 items-center text-lg lg:text-base border-transparent bg-transparent relative"
                   >
                     <button
                       onClick={() => setUserDropdownOpen((prev) => !prev)}

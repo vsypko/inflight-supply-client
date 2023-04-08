@@ -15,9 +15,11 @@ export interface IUser {
 
 export interface ICompany {
   co_name: string
-  co_country_iso: string
-  co_country_name: string
-  co_country_flag: string
+  co_category: string
+  co_iata_code: string
+  co_cn: string
+  co_cn_name: string
+  co_cn_flag: string
 }
 
 export interface ICountry {

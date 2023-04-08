@@ -28,7 +28,6 @@ export default function Profile() {
 
   async function handleSave(e: FormEvent) {
     e.preventDefault()
-    console.log(value.phone, value.cn, country!.cn_iso)
     const profile = await userProfileUpdateQuery(value).unwrap()
     updateUserData(profile)
   }
@@ -53,7 +52,7 @@ export default function Profile() {
 
               <button
                 onClick={() => setPhotoEdit(true)}
-                className="absolute bottom-0 right-0 rounded-full px-2 text-lg active:scale-90 hover:bg-slate-300 dark:hover:bg-slate-800 opacity-70 hover:opacity-100"
+                className="absolute bottom-1 right-1 px-2 py-1 text-lg lg:text-xl lg:px-3 lg:right-6 rounded-full  active:scale-90 hover:bg-slate-300 dark:hover:bg-slate-800 opacity-70 hover:opacity-100"
               >
                 <i className="fas fa-pencil mr-2" />
                 <span>Edit</span>
@@ -155,8 +154,8 @@ export default function Profile() {
               <div className="flex justify-between">
                 <span className="text-slate-800 dark:text-slate-200">{company?.co_name}</span>
                 <div className="flex justify-end items-center">
-                  <img src={`data:image/png;base64, ${company?.co_country_flag}`} alt="" className="py-1" />
-                  <span className="text-slate-800 dark:text-slate-200 ml-2">{company?.co_country_name}</span>
+                  <img src={`data:image/png;base64, ${company?.co_cn_flag}`} alt="" className="py-1" />
+                  <span className="text-slate-800 dark:text-slate-200 ml-2">{company?.co_cn_name}</span>
                 </div>
               </div>
             </div>

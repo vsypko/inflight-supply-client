@@ -77,7 +77,8 @@ export default function ImageEditor({
       console.log(e)
     }
   }
-
+  const buttonClasses =
+    "flex px-2 lg:px-4 py-1 mt-4 mb-1 text-base lg:text-lg items-center rounded-full active:scale-90 hover:bg-slate-300 dark:hover:bg-slate-800 opacity-70 hover:opacity-100"
   return (
     <>
       <canvas
@@ -93,7 +94,7 @@ export default function ImageEditor({
           </div>
           <label
             htmlFor="photo"
-            className="absolute right-0 bottom-1 active:scale-90 cursor-pointer px-1 hover:bg-slate-300 hover:rounded-full dark:hover:bg-slate-800 opacity-70 hover:opacity-100"
+            className="absolute right-0 bottom-1 lg:text-xl lg:px-3 lg:right-2 active:scale-90 cursor-pointer px-1 hover:bg-slate-300 hover:rounded-full dark:hover:bg-slate-800 opacity-70 hover:opacity-100"
           >
             <i className="fas fa-camera mr-2" />
             <span>Upload photo</span>
@@ -102,31 +103,22 @@ export default function ImageEditor({
         </>
       )}
       {imageLoaded && (
-        <>
-          <button
-            onClick={handlePhotoRemove}
-            className="absolute text-left text-sm bottom-24 right-0 px-1 rounded-full active:scale-90 hover:bg-slate-300 dark:hover:bg-slate-800 opacity-70 hover:opacity-100"
-          >
-            <i className="far fa-trash-can mr-2" />
+        <div className="flex flex-col absolute right-0 bottom-0 lg:right-4">
+          <button onClick={handlePhotoRemove} className={buttonClasses}>
+            <i className="fas fa-trash-can mr-2" />
             <span>Remove</span>
           </button>
 
-          <button
-            onClick={handlePhotoCancel}
-            className="absolute text-left text-sm bottom-12 right-2 px-1 rounded-full active:scale-90 hover:bg-slate-300 dark:hover:bg-slate-800 opacity-70 hover:opacity-100"
-          >
+          <button onClick={handlePhotoCancel} className={buttonClasses}>
             <i className="fas fa-arrow-turn-up mr-2" />
             <span>Return</span>
           </button>
 
-          <button
-            onClick={handlePhotoSave}
-            className="absolute text-left text-sm bottom-1 right-4 px-1 rounded-full active:scale-90 hover:bg-slate-300 dark:hover:bg-slate-800 opacity-70 hover:opacity-100"
-          >
+          <button onClick={handlePhotoSave} className={buttonClasses}>
             <i className="fas fa-download mr-2" />
             <span>Save</span>
           </button>
-        </>
+        </div>
       )}
     </>
   )

@@ -8,6 +8,7 @@ import Auth from "../pages/Auth"
 
 import Admin from "../pages/Admin"
 import Profile from "../pages/Profile"
+import Account from "../pages/Account"
 import { useAuth } from "../hooks/useAuth"
 import { IUser } from "../types/user.types"
 
@@ -22,6 +23,7 @@ const TSXRouter = (user: IUser | null) => {
         <Route path="/admin/:id" element={<Admin />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/profile/:id" element={user ? <Profile /> : <Navigate replace to="/auth" />} />
+        <Route path="/account/:id" element={user ? <Account /> : <Navigate replace to="/auth" />} />
       </Route>,
     ),
   )
