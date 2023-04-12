@@ -9,6 +9,10 @@
 .earth {
   animation: spin-up 20s linear infinite;
 }
+.result {
+  animation: disapp 5s linear;
+  visibility: collapse;
+}
 
 @keyframes spin {
   from {
@@ -24,5 +28,16 @@
   }
   to {
     transform: rotate(-360deg);
+  }
+}
+
+@keyframes disapp {
+  from {
+    opacity: 1;
+    visibility: visible;
+  }
+  to {
+    opacity: 0;
+    visibility: collapse;
   }
 }

@@ -1,9 +1,10 @@
 import { ChangeEvent, Dispatch, SetStateAction } from "react"
 import { read, utils } from "xlsx"
+import { IFlight } from "../types/airline.types"
 
-export default async function handleXLSXFileInput(
+export async function handleXLSXFileInput(
   e: ChangeEvent<HTMLInputElement>,
-  setData: Dispatch<SetStateAction<any[]>>,
+  setData: Dispatch<SetStateAction<IFlight[]>>,
 ): Promise<void> {
   e.preventDefault()
   const file = e.target.files?.[0]
@@ -13,15 +14,15 @@ export default async function handleXLSXFileInput(
   reader.onloadend = () => {
     const data = reader.result
     const wb = read(data, { type: "array" })
-    const wbjson: any[] = utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {
+    const sheet: any[] = utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {
       range: 8,
       header: ["date", "flight", "acType", "acReg", "from", "to", "std", "sta", "seats"],
     })
-    wbjson.forEach((row) => {
+    sheet.forEach((row) => {
       row.std = timeConverter(row.std)
       row.sta = timeConverter(row.sta)
     })
-    setData(wbjson)
+    setData(sheet as IFlight[])
   }
   reader.readAsArrayBuffer(file)
 }

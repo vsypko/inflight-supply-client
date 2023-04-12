@@ -39,7 +39,7 @@ export default function MainNavigation() {
     <header
       onMouseEnter={() => setOnHeader(true)}
       onMouseLeave={() => setOnHeader(false)}
-      className="w-full sticky top-0 z-50 rounded-full bg-slate-200 dark:bg-slate-900 shadow shadow-slate-900 dark:shadow-slate-600"
+      className="w-full sticky top-0 z-20 rounded-full bg-slate-200 dark:bg-slate-900 shadow shadow-slate-900 dark:shadow-slate-600"
     >
       <nav>
         <div className="mt-0.5 py-1 px-10 flex items-center justify-between text-slate-700 dark:text-slate-100 text:base lg:text-sm">

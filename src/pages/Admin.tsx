@@ -1,5 +1,5 @@
-import AdminAirline from "../components/AdminAirline"
-import AdminSupplier from "../components/AdminSupplier"
+import AdminAirline from "./AdminAirline"
+import AdminSupplier from "./AdminSupplier"
 import SuperAdmin from "../components/SuperAdmin"
 import { useAppSelector } from "../hooks/redux"
 import { useAuth } from "../hooks/useAuth"

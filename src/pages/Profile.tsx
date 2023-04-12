@@ -168,9 +168,10 @@ export default function Profile() {
               <span className="text-slate-800 dark:text-slate-200">{user?.usr_role_name}</span>
             </div>
           </div>
-          <div className="w-full flex justify-end mt-4">
-            {/* submit button----------------------------------------- */}
 
+          {/* submit button----------------------------------------- */}
+
+          <div className="w-full flex justify-end mt-4">
             <button
               type="submit"
               className="px-4 py-1 text-xl flex justify-between items-center rounded-full active:scale-90 bg-teal-400 hover:bg-teal-500 dark:bg-teal-900 dark:hover:bg-teal-800"
