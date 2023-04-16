@@ -49,5 +49,6 @@ export const api = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithReauth,
   refetchOnFocus: true,
+  tagTypes: ["Flight"],
   endpoints: () => ({}),
 })

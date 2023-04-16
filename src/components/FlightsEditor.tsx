@@ -1,12 +1,12 @@
-import { ChangeEvent, useEffect, useRef, useState } from "react"
+import { ChangeEvent, MutableRefObject, useEffect, useRef, useState } from "react"
 import { useAppSelector } from "../hooks/redux"
 import { useAuth } from "../hooks/useAuth"
 import { handleXLSXFileInput } from "../services/flightdata.service"
-import { useGetFlightsQuery, useLoadFlightsMutation } from "../store/airline/airline.api"
+import { useDeleteFlightMutation, useGetFlightsQuery, useLoadFlightsMutation } from "../store/airline/airline.api"
 import { LoadingSpinner } from "./LoadingSpinner"
 import { IFlight } from "../types/airline.types"
 import TableFlights from "./TableFlights"
-import EditFlightDialog from "./EditFlightDialog"
+import EditableFlight from "./EditableFlight"
 
 const initialFlights = {
   id: 0,
@@ -20,7 +20,7 @@ const initialFlights = {
   sta: "",
   seats: 0,
 }
-export default function editFlights() {
+export default function FlightsEditor() {
   const { selected } = useAppSelector((state) => state.airport)
   const { user, country, company } = useAuth()
 
@@ -30,8 +30,9 @@ export default function editFlights() {
 
   const [errorMsg, setErrorMsg] = useState("")
 
-  const [loadFlights, { data: result, reset, isError, isSuccess, isLoading }] = useLoadFlightsMutation()
-  const { data, error, refetch } = useGetFlightsQuery({ id: company!.co_id, date })
+  const [loadFlights, { data: result, isError, isSuccess, isLoading }] = useLoadFlightsMutation()
+  const { data, error } = useGetFlightsQuery({ id: company!.co_id, date })
+  // const {data:resultOfDelete} = useDeleteFlightMutation()
 
   useEffect(() => {
     setFlights([initialFlights])
@@ -58,12 +59,12 @@ export default function editFlights() {
   }
 
   const [editRow, setEditRow] = useState<IFlight>(initialFlights)
-  const ref = useRef<HTMLDialogElement>(null)
+  const [dialogRef, setDialogRef] = useState<HTMLDialogElement | null>(null)
 
   const handleEditFlight = (row: IFlight) => {
     setEditRow(row)
     if (row.date === "") setEditRow((prev) => ({ ...prev, date }))
-    ref.current?.showModal()
+    dialogRef?.showModal()
   }
 
   function handleFileUpload(e: ChangeEvent<HTMLInputElement>) {
@@ -80,7 +81,6 @@ export default function editFlights() {
         )
         .join(",")
       const response = await loadFlights({ id: company!.co_id, values }).unwrap()
-      refetch()
       setNewFlights([])
     } catch (err) {
       setNewFlights([])
@@ -91,7 +91,7 @@ export default function editFlights() {
 
   return (
     <>
-      <EditFlightDialog ref={ref} row={editRow} setRow={setEditRow} />
+      <EditableFlight row={editRow} setRow={setEditRow} setDialogRef={setDialogRef} />
       <div className="max-w-max">
         {error && <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>}
         {isError && <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>}

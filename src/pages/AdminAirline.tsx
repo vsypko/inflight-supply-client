@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react"
 import { useAppSelector } from "../hooks/redux"
 import { useAuth } from "../hooks/useAuth"
-import EditFlights from "../components/EditFlights"
+import FlightsEditor from "../components/FlightsEditor"
 
 export default function AdminAirline() {
   const { selected } = useAppSelector((state) => state.airport)
@@ -13,7 +13,7 @@ export default function AdminAirline() {
         <h1>{company?.co_name}</h1>
         <div>IATA Code: {company?.co_iata_code}</div>
       </div>
-      <EditFlights />
+      <FlightsEditor />
     </div>
   )
 }
