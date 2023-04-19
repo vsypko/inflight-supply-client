@@ -6,14 +6,66 @@ import FlightsEditor from "../components/FlightsEditor"
 export default function AdminAirline() {
   const { selected } = useAppSelector((state) => state.airport)
   const { user, country, company } = useAuth()
+  const [action, setAction] = useState("fleet")
 
   return (
-    <div className="max-w-max">
-      <div className="flex justify-between p-2">
-        <h1>{company?.co_name}</h1>
-        <div>IATA Code: {company?.co_iata_code}</div>
+    <div className="w-full">
+      <div className="block md:flex p-2 m-1 max-h-max">
+        <div className="w-full md:w-1/4 md:text-2xl">
+          <div className="flex justify-between m-3">
+            <h1>Company:</h1>
+            <span className="font-bold">{company?.co_name}</span>
+          </div>
+          <div className="flex justify-between m-3">
+            <h1>Country:</h1>
+            <div className="flex">
+              <span className="font-bold mr-2">{company?.co_cn_name}</span>
+              <img src={`data:image/png;base64, ${company?.co_cn_flag}`} alt="" className="py-1" />
+            </div>
+          </div>
+          <div className="flex justify-between m-3">
+            <h1>IATA code:</h1>
+            <span className="font-bold">{company?.co_iata_code}</span>
+          </div>
+
+          <div className="flex md:flex-col mt-4 justify-around md:space-y-10">
+            <div className={`transition-all ${action === "fleet" ? "ml-4" : ""}`}>
+              <button
+                onClick={() => setAction("fleet")}
+                className={`block md:flex items-center hover:opacity-100 active:scale-90 ${
+                  action === "fleet" ? "opacity-100" : "opacity-50"
+                }`}
+              >
+                <i className="fa-solid fa-plane-circle-check text-2xl py-2.5 px-3 rounded-full bg-orange-500 mr-2" />
+                <h1 className="p-1 font-semibold">Fleet</h1>
+              </button>
+            </div>
+            <div className={`transition-all ${action === "flights" ? "ml-4" : ""}`}>
+              <button
+                onClick={() => setAction("flights")}
+                className={`block md:flex items-center hover:opacity-100 active:scale-90 ${
+                  action === "flights" ? "opacity-100" : "opacity-50"
+                }`}
+              >
+                <i className="fa-solid fa-calendar-plus text-2xl py-2.5 px-4 rounded-full bg-lime-600 mr-2" />
+                <h1 className="p-1 font-semibold">Schedule</h1>
+              </button>
+            </div>
+            <div className={`transition-all ${action === "staff" ? "ml-4" : ""}`}>
+              <button
+                onClick={() => setAction("staff")}
+                className={`block md:flex items-center hover:opacity-100 active:scale-90 ${
+                  action === "staff" ? "opacity-100" : "opacity-50"
+                }`}
+              >
+                <i className="fa-solid fa-user-group text-2xl py-2.5 px-3  rounded-full bg-sky-700 mr-2" />
+                <h1 className="p-1 font-semibold">Users</h1>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="w-full md:flex justify-center">{action === "flights" && <FlightsEditor />}</div>
       </div>
-      <FlightsEditor />
     </div>
   )
 }

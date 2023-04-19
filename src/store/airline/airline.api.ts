@@ -15,28 +15,22 @@ export const airlineApi = api.injectEndpoints({
     }),
 
     loadFlights: builder.mutation<{ data: string }, { id: number; values: string }>({
-      query: (data) => ({
+      query: ({ id, values }) => ({
         url: "company/flights/",
         method: "POST",
-        body: { data },
+        body: { id, values },
       }),
       invalidatesTags: ["Flight"],
     }),
 
-    // addFlight: builder.mutation<{ data: string }, { id: number; values: string }>({
-    //   query: (data) => ({
-    //     url: "company/flight/",
-    //     method: "POST",
-    //     body: { data },
-    //   }),
-    // }),
-    // updateFlight: builder.mutation<{ data: string }, { id: number; values: string }>({
-    //   query: (data) => ({
-    //     url: "company/flights/",
-    //     method: "POST",
-    //     body: { data },
-    //   }),
-    // }),
+    updateFlight: builder.mutation<{ data: string }, { id: number; flight: IFlight }>({
+      query: ({ id, flight }) => ({
+        url: `company/flight/${flight.id}`,
+        method: "PATCH",
+        body: { co: id, flight },
+      }),
+      invalidatesTags: ["Flight"],
+    }),
 
     deleteFlight: builder.mutation<{ data: string }, { company_id: number; flight_id: number }>({
       query: ({ company_id, flight_id }) => ({
@@ -50,5 +44,10 @@ export const airlineApi = api.injectEndpoints({
   overrideExisting: true,
 })
 
-export const { useLazyGetFlightsQuery, useGetFlightsQuery, useLoadFlightsMutation, useDeleteFlightMutation } =
-  airlineApi
+export const {
+  useLazyGetFlightsQuery,
+  useGetFlightsQuery,
+  useLoadFlightsMutation,
+  useUpdateFlightMutation,
+  useDeleteFlightMutation,
+} = airlineApi

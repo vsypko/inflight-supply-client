@@ -1,6 +1,16 @@
-import { ChangeEvent, Dispatch, ReactNode, SetStateAction, useEffect, useRef, useState } from "react"
+import {
+  ChangeEvent,
+  Dispatch,
+  FormEvent,
+  ReactNode,
+  SetStateAction,
+  SyntheticEvent,
+  useEffect,
+  useRef,
+  MouseEvent,
+} from "react"
 import { IFlight } from "../types/airline.types"
-import { useDeleteFlightMutation, useLoadFlightsMutation } from "../store/airline/airline.api"
+import { useDeleteFlightMutation, useLoadFlightsMutation, useUpdateFlightMutation } from "../store/airline/airline.api"
 import { useAuth } from "../hooks/useAuth"
 
 interface Props {
@@ -8,7 +18,10 @@ interface Props {
   row: IFlight
   setRow: Dispatch<SetStateAction<IFlight>>
   setDialogRef: Dispatch<SetStateAction<HTMLDialogElement | null>>
+  setErrorMsg: Dispatch<SetStateAction<string>>
+  setResult: Dispatch<SetStateAction<string>>
 }
+
 const initialFlights = {
   id: 0,
   date: "",
@@ -23,11 +36,11 @@ const initialFlights = {
 }
 
 export default function EditableFlight(props: Props) {
-  const { row, setRow, setDialogRef } = props
-  const [errorMsg, setErrorMsg] = useState("")
+  const { row, setRow, setDialogRef, setErrorMsg, setResult } = props
   const { company } = useAuth()
   const [flightDeleteQuery] = useDeleteFlightMutation()
-  const [loadFlights, { data: result, isError, isSuccess, isLoading }] = useLoadFlightsMutation()
+  const [loadFlights] = useLoadFlightsMutation()
+  const [updateFlight] = useUpdateFlightMutation()
 
   const types = ["date", "number", "text", "text", "text", "text", "time", "time", "number"]
   const icons = [
@@ -42,7 +55,14 @@ export default function EditableFlight(props: Props) {
     "fa-users-gear",
   ]
   const ref = useRef<HTMLDialogElement | null>(null)
-  const closeEditFlight = () => {
+
+  const closeEditFlight = (
+    e:
+      | SyntheticEvent<HTMLDialogElement, Event>
+      | FormEvent<HTMLFormElement>
+      | MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
+  ) => {
+    e.preventDefault()
     ref.current?.classList.add("close")
     ref.current?.addEventListener(
       "animationend",
@@ -66,27 +86,67 @@ export default function EditableFlight(props: Props) {
     setRow((row) => ({ ...row, [event.target.name]: event.target.value }))
   }
 
-  const handleAddFlight = async () => {
+  const handleUpdateFlight = async (
+    e:
+      | SyntheticEvent<HTMLDialogElement, Event>
+      | FormEvent<HTMLFormElement>
+      | MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
+  ) => {
+    e.preventDefault()
+    try {
+      const response = await updateFlight({ id: company!.co_id, flight: row }).unwrap()
+      setResult(response.data)
+      closeEditFlight(e)
+    } catch (err) {
+      if (err != null && typeof err === "object" && "data" in err) setErrorMsg(err.data as string)
+      if (err != null && typeof err === "object" && "error" in err) setErrorMsg(err.error as string)
+      closeEditFlight(e)
+    }
+  }
+
+  const handleAddFlight = async (
+    e:
+      | SyntheticEvent<HTMLDialogElement, Event>
+      | FormEvent<HTMLFormElement>
+      | MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
+  ) => {
+    e.preventDefault()
     try {
       const flight = `('${row.date}'::date, ${row.flight}, '${row.acType}','${row.acReg}','${row.from}','${row.to}', '${row.std}'::time, '${row.sta}'::time, ${row.seats})`
       const response = await loadFlights({ id: company!.co_id, values: flight }).unwrap()
+      setResult(response.data)
+      closeEditFlight(e)
+    } catch (err) {
+      if (err != null && typeof err === "object" && "data" in err) setErrorMsg(err.data as string)
+      if (err != null && typeof err === "object" && "error" in err) setErrorMsg(err.error as string)
+      closeEditFlight(e)
+    }
+  }
+
+  const handleDeleteFlight = async (
+    e:
+      | SyntheticEvent<HTMLDialogElement, Event>
+      | FormEvent<HTMLFormElement>
+      | MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
+  ) => {
+    e.preventDefault()
+    const answer = confirm("This flight will be deleted from flights!")
+    try {
+      if (answer) {
+        const response = await flightDeleteQuery({ company_id: company!.co_id, flight_id: row.id }).unwrap()
+        setResult(response.data)
+        closeEditFlight(e)
+      }
     } catch (err) {
       if (err != null && typeof err === "object" && "data" in err) setErrorMsg(err.data as string)
       if (err != null && typeof err === "object" && "error" in err) setErrorMsg(err.error as string)
     }
   }
 
-  const handleDeleteFlight = () => {
-    const answer = confirm("This flight will be deleted from flights!")
-    if (answer) {
-      flightDeleteQuery({ company_id: company!.co_id, flight_id: row.id })
-      closeEditFlight()
-    }
-  }
-
   const renderedInput = (key: keyof IFlight, index: number) => {
     return (
       <input
+        autoFocus={index === 0}
         type={types[index]}
         name={key}
         value={row[key]}
@@ -100,15 +160,24 @@ export default function EditableFlight(props: Props) {
 
   return (
     <dialog
+      onCancel={(e) => closeEditFlight(e)}
       ref={ref}
-      className="edit p-2 mt-40 md:ml-32 md:w-1/3 rounded-lg bg-slate-200 dark:bg-slate-700 shadow-md shadow-slate-700 dark:shadow-slate-600 text-slate-800 dark:text-slate-200 backdrop:backdrop-blur-sm"
+      className="edit rounded-lg p-0 bg-slate-200 dark:bg-slate-700 shadow-md shadow-slate-700 dark:shadow-slate-600 text-slate-800 dark:text-slate-200"
     >
-      <p className="text-center font-medium mb-4">FLIGHT</p>
+      <div className="flex justify-between rounded-t p-2 items-center text-lg dark:bg-slate-800 bg-slate-300">
+        <p className="font-medium pl-4">FLIGHT</p>
+        <button
+          onClick={(e) => closeEditFlight(e)}
+          className="active:scale-90 hover:bg-slate-700 py-1 px-3 rounded-full"
+        >
+          <i className="fas fa-xmark text-2xl" />
+        </button>
+      </div>
 
       {/* Flight's data add, change and delete form --------------------------------------------------*/}
 
-      <form method="dialog">
-        <div className="grid md:grid-cols-2 gap-8 md:gap-8 w-full">
+      <form method="dialog" onSubmit={(e) => handleAddFlight(e)}>
+        <div className="grid md:grid-cols-2 gap-8 md:gap-8 w-full p-3 mt-6">
           {(Object.keys(row) as Array<keyof IFlight>).slice(1).map((key, index) => (
             <div key={key} className="relative w-full">
               {/* For inputs with keys For and To need to be airports dataset ----------------------------------------------- */}
@@ -123,22 +192,34 @@ export default function EditableFlight(props: Props) {
               </label>
             </div>
           ))}
-          <div className="flex text-sm justify-between text-slate-200">
-            <button className="py-1 px-2 rounded-full bg-slate-600 opacity-70 hover:opacity-100 active:scale-90">
-              <i className="fas fa-plane-circle-exclamation mr-2" />
-              <span>CANCEL</span>
-            </button>
+          <div className={`flex text-sm ${row.id != 0 ? "justify-between" : "justify-end"} text-slate-200`}>
+            {row.id != 0 && (
+              <button
+                onClick={(e) => handleUpdateFlight(e)}
+                type="button"
+                className="py-1 px-2 rounded-full bg-slate-600 opacity-75 hover:opacity-100 active:scale-90"
+              >
+                <i className="fas fa-rotate mr-2" />
+                <span>UPDATE</span>
+              </button>
+            )}
+            {row.id != 0 && (
+              <button
+                disabled={!row.id}
+                type="button"
+                onClick={(e) => handleDeleteFlight(e)}
+                className="py-1 px-2 mx-1 rounded-full bg-red-600 opacity-75 hover:opacity-100 active:scale-90"
+              >
+                <i className="fas fa-trash-can mr-2" />
+                <span>DELETE</span>
+              </button>
+            )}
             <button
-              type="button"
-              onClick={handleDeleteFlight}
-              className="py-1 px-2 rounded-full bg-red-600 opacity-70 hover:opacity-100 active:scale-90"
+              type="submit"
+              className="py-1 px-2 rounded-full bg-teal-700 opacity-70 hover:opacity-100 active:scale-90"
             >
-              <i className="fas fa-plane-circle-xmark mr-2" />
-              <span>DELETE</span>
-            </button>
-            <button className="py-1 px-2 rounded-full bg-teal-700 opacity-70 hover:opacity-100 active:scale-90">
-              <i className="fas fa-plane-circle-check mr-2" />
-              <span>SAVE</span>
+              <i className="fas fa-plus mr-2" />
+              <span>NEW</span>
             </button>
           </div>
         </div>

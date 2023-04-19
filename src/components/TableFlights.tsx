@@ -13,7 +13,7 @@ export default function TableFlights({
   const headers = Object.keys(flights[0]).slice(!setFlights ? 0 : 1) as Array<keyof IFlight>
 
   return (
-    <div className="rounded-md mx-3 max-h-[600px] max-w-max overflow-auto shadow-md dark:shadow-slate-600">
+    <div className="rounded-md max-h-[500px] md:max-h-[700px] max-w-max overflow-auto shadow-md dark:shadow-slate-600">
       <table className="text-left">
         <thead className="sticky top-0 text-lg dark:bg-slate-600 bg-slate-300 z-10">
           <tr>

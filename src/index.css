@@ -14,12 +14,16 @@
   visibility: collapse;
 }
 
-.edit {
-  animation: flight 200ms ease-out;
+.edit,
+.edit::backdrop {
+  animation: flight 200ms ease;
+  backdrop-filter: blur(4px) brightness(90%);
 }
 
-.close {
+.close,
+.close::backdrop {
   animation: flight-close 200ms ease-in;
+  backdrop-filter: blur(2px) brightness(90%);
 }
 
 @keyframes spin {
@@ -57,12 +61,12 @@
     transform: scale(0);
   }
   50% {
-    backdrop-filter: blur(2px) brightness(70%);
+    backdrop-filter: blur(1px) brightness(90%);
     opacity: 0.5;
     transform: scale(0.5);
   }
   to {
-    backdrop-filter: blur(4px) brightness(40%);
+    backdrop-filter: blur(4px) brightness(80%);
     opacity: 1;
     transform: scale(1);
   }
@@ -70,12 +74,12 @@
 
 @keyframes flight-close {
   from {
-    backdrop-filter: blur(4px) brightness(40%);
+    backdrop-filter: blur(4px) brightness(80%);
     opacity: 1;
     transform: scale(1);
   }
   50% {
-    backdrop-filter: blur(2px) brightness(70%);
+    backdrop-filter: blur(1px) brightness(90%);
     opacity: 0.5;
     transform: scale(0.5);
   }

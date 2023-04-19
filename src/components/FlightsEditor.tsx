@@ -2,7 +2,7 @@ import { ChangeEvent, MutableRefObject, useEffect, useRef, useState } from "reac
 import { useAppSelector } from "../hooks/redux"
 import { useAuth } from "../hooks/useAuth"
 import { handleXLSXFileInput } from "../services/flightdata.service"
-import { useDeleteFlightMutation, useGetFlightsQuery, useLoadFlightsMutation } from "../store/airline/airline.api"
+import { useGetFlightsQuery, useLoadFlightsMutation } from "../store/airline/airline.api"
 import { LoadingSpinner } from "./LoadingSpinner"
 import { IFlight } from "../types/airline.types"
 import TableFlights from "./TableFlights"
@@ -29,10 +29,10 @@ export default function FlightsEditor() {
   const [newFlights, setNewFlights] = useState<IFlight[]>([])
 
   const [errorMsg, setErrorMsg] = useState("")
+  const [result, setResult] = useState("")
 
-  const [loadFlights, { data: result, isError, isSuccess, isLoading }] = useLoadFlightsMutation()
+  const [loadFlights, { data: response, isError, isSuccess, isLoading }] = useLoadFlightsMutation()
   const { data, error } = useGetFlightsQuery({ id: company!.co_id, date })
-  // const {data:resultOfDelete} = useDeleteFlightMutation()
 
   useEffect(() => {
     setFlights([initialFlights])
@@ -40,7 +40,8 @@ export default function FlightsEditor() {
     if (data && data.length != 0) setFlights(data)
     if (error != null && typeof error === "object" && "data" in error) setErrorMsg(error.data as string)
     if (error != null && typeof error === "object" && "error" in error) setErrorMsg(error.error as string)
-  }, [data, error, isSuccess])
+    if (response) setResult(response.data)
+  }, [data, error, isSuccess, response])
 
   function handleDecreaseDate() {
     setDate(
@@ -64,6 +65,8 @@ export default function FlightsEditor() {
   const handleEditFlight = (row: IFlight) => {
     setEditRow(row)
     if (row.date === "") setEditRow((prev) => ({ ...prev, date }))
+    setErrorMsg("")
+    setResult("")
     dialogRef?.showModal()
   }
 
@@ -80,7 +83,7 @@ export default function FlightsEditor() {
             `('${row.date}'::date, ${row.flight}, '${row.acType}','${row.acReg}','${row.from}','${row.to}', '${row.std}'::time, '${row.sta}'::time, ${row.seats})`,
         )
         .join(",")
-      const response = await loadFlights({ id: company!.co_id, values }).unwrap()
+      await loadFlights({ id: company!.co_id, values }).unwrap()
       setNewFlights([])
     } catch (err) {
       setNewFlights([])
@@ -91,11 +94,15 @@ export default function FlightsEditor() {
 
   return (
     <>
-      <EditableFlight row={editRow} setRow={setEditRow} setDialogRef={setDialogRef} />
-      <div className="max-w-max">
-        {error && <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>}
-        {isError && <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>}
-
+      <EditableFlight
+        row={editRow}
+        setRow={setEditRow}
+        setDialogRef={setDialogRef}
+        setErrorMsg={setErrorMsg}
+        setResult={setResult}
+      />
+      <div className="max-w-max justify-center max-h-max">
+        <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>
         {isLoading && (
           <div className="ml-48 mt-12">
             <LoadingSpinner />
@@ -107,7 +114,7 @@ export default function FlightsEditor() {
         <div className="w-full">
           {!newFlights.length && !isLoading && (
             <div className="flex flex-col lg:flex-row text-lg justify-between items-center">
-              <div className="mb-3 lg:mb-1">
+              <div className="mb-2 lg:mb-1">
                 <button
                   type="button"
                   className="px-2.5 py-1 opacity-75 hover:opacity-100 hover:bg-slate-700 rounded-full active:scale-90"
@@ -135,7 +142,7 @@ export default function FlightsEditor() {
 
               {/* Add new flight button ----------------------------------------------------------------- */}
 
-              <div className="mb-3 lg:mb-1">
+              <div className="mb-2 lg:mb-1">
                 <button
                   onClick={() => handleEditFlight(initialFlights)}
                   type="button"
@@ -148,7 +155,7 @@ export default function FlightsEditor() {
 
               {/* Upload file from .xlsx worksheet button ----------------------------------------------- */}
 
-              <div className="mb-3 lg:mb-1">
+              <div className="mb-2 lg:mb-1">
                 <label
                   htmlFor="xlsxFileInput"
                   className="px-2.5 py-1.5 rounded-full active:scale-90 cursor-pointer hover:bg-slate-300  dark:hover:bg-slate-800 opacity-75 hover:opacity-100"
@@ -199,8 +206,9 @@ export default function FlightsEditor() {
           )}
 
           {/* xlsx file loading result -------------------------------------------------------*/}
-
-          {result && <h5 className="text-teal-500 py-1 whitespace-pre-line result">{result?.data}</h5>}
+          <div className="flex w-full m-1 h-6">
+            {result && <h5 className="text-teal-500 py-1 whitespace-pre-line result">{result}</h5>}
+          </div>
         </div>
       </div>
     </>
