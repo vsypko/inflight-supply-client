@@ -35,6 +35,11 @@ const initialFlights = {
   seats: 0,
 }
 
+type EventFlightEdit =
+  | SyntheticEvent<HTMLDialogElement, Event>
+  | FormEvent<HTMLFormElement>
+  | MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
+
 export default function EditableFlight(props: Props) {
   const { row, setRow, setDialogRef, setErrorMsg, setResult } = props
   const { company } = useAuth()
@@ -56,12 +61,7 @@ export default function EditableFlight(props: Props) {
   ]
   const ref = useRef<HTMLDialogElement | null>(null)
 
-  const closeEditFlight = (
-    e:
-      | SyntheticEvent<HTMLDialogElement, Event>
-      | FormEvent<HTMLFormElement>
-      | MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
-  ) => {
+  const closeEditFlight = (e: EventFlightEdit) => {
     e.preventDefault()
     ref.current?.classList.add("close")
     ref.current?.addEventListener(
@@ -86,12 +86,7 @@ export default function EditableFlight(props: Props) {
     setRow((row) => ({ ...row, [event.target.name]: event.target.value }))
   }
 
-  const handleUpdateFlight = async (
-    e:
-      | SyntheticEvent<HTMLDialogElement, Event>
-      | FormEvent<HTMLFormElement>
-      | MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
-  ) => {
+  const handleUpdateFlight = async (e: EventFlightEdit) => {
     e.preventDefault()
     try {
       const response = await updateFlight({ id: company!.co_id, flight: row }).unwrap()
@@ -104,12 +99,7 @@ export default function EditableFlight(props: Props) {
     }
   }
 
-  const handleAddFlight = async (
-    e:
-      | SyntheticEvent<HTMLDialogElement, Event>
-      | FormEvent<HTMLFormElement>
-      | MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
-  ) => {
+  const handleAddFlight = async (e: EventFlightEdit) => {
     e.preventDefault()
     try {
       const flight = `('${row.date}'::date, ${row.flight}, '${row.acType}','${row.acReg}','${row.from}','${row.to}', '${row.std}'::time, '${row.sta}'::time, ${row.seats})`

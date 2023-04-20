@@ -36,7 +36,7 @@ export default function AdminAirline() {
                   action === "fleet" ? "opacity-100" : "opacity-50"
                 }`}
               >
-                <i className="fa-solid fa-plane-circle-check text-2xl py-2.5 px-3 rounded-full bg-orange-500 mr-2" />
+                <i className="fas fa-plane-circle-check text-2xl py-2.5 px-3 rounded-full bg-orange-500 mr-2" />
                 <h1 className="p-1 font-semibold">Fleet</h1>
               </button>
             </div>
@@ -47,7 +47,7 @@ export default function AdminAirline() {
                   action === "flights" ? "opacity-100" : "opacity-50"
                 }`}
               >
-                <i className="fa-solid fa-calendar-plus text-2xl py-2.5 px-4 rounded-full bg-lime-600 mr-2" />
+                <i className="far fa-calendar-days text-2xl py-2.5 px-4 rounded-full bg-lime-600 mr-2" />
                 <h1 className="p-1 font-semibold">Schedule</h1>
               </button>
             </div>
@@ -58,7 +58,7 @@ export default function AdminAirline() {
                   action === "staff" ? "opacity-100" : "opacity-50"
                 }`}
               >
-                <i className="fa-solid fa-user-group text-2xl py-2.5 px-3  rounded-full bg-sky-700 mr-2" />
+                <i className="fas fa-user-group text-2xl py-2.5 px-3  rounded-full bg-sky-700 mr-2" />
                 <h1 className="p-1 font-semibold">Users</h1>
               </button>
             </div>
