@@ -158,7 +158,7 @@ export default function EditableFlight(props: Props) {
         <p className="font-medium pl-4">FLIGHT</p>
         <button
           onClick={(e) => closeEditFlight(e)}
-          className="active:scale-90 hover:bg-slate-700 py-1 px-3 rounded-full"
+          className="py-1 px-3.5 rounded-full hover:bg-slate-400 dark:hover:bg-slate-700 opacity-70 hover:opacity-100 active:scale-90"
         >
           <i className="fas fa-xmark text-2xl" />
         </button>
