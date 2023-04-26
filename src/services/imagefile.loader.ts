@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, RefObject, SetStateAction } from "react"
-import { imageLoader } from "./image.loader"
+import { imageUtils } from "./image.utils"
 
-export function handleFileInput(
+export function handleImgFileInput(
   e: ChangeEvent<HTMLInputElement>,
   maxView: number,
   setLoaded: Dispatch<SetStateAction<boolean>>,
@@ -15,7 +15,7 @@ export function handleFileInput(
   reader.readAsDataURL(photo)
 
   reader.onloadend = async (e) => {
-    const image = await imageLoader(canvasRef, maxView)
+    const image = await imageUtils(canvasRef, maxView)
     image.src = e.target?.result as string
     if (image) setLoaded(true)
   }

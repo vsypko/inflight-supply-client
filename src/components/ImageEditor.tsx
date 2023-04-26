@@ -1,8 +1,8 @@
 import { ChangeEvent, Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
 import { useActions } from "../hooks/actions"
 import { useAuth } from "../hooks/useAuth"
-import { imageLoader } from "../services/image.loader"
-import { dataUrlToBlob, handleFileInput } from "../services/profile.service"
+import { imageUtils } from "../services/image.utils"
+import { dataUrlToBlob, handleImgFileInput } from "../services/imagefile.loader"
 import { useUserUrlRemoveMutation, useUserUrlUpdateMutation } from "../store/auth/auth.api"
 
 export default function ImageEditor({
@@ -21,7 +21,7 @@ export default function ImageEditor({
   useEffect(() => {
     const loadImageToCanvas = async () => {
       if (user && user.usr_url) {
-        const image = await imageLoader(canvasRef, maxView)
+        const image = await imageUtils(canvasRef, maxView)
         image.src = import.meta.env.VITE_API_URL + "user/geturl/" + user!.usr_url
         setImageLoaded(true)
       }
@@ -30,7 +30,7 @@ export default function ImageEditor({
   }, [canvasRef])
 
   function handlePhotoInput(e: ChangeEvent<HTMLInputElement>) {
-    handleFileInput(e, maxView, setImageLoaded, canvasRef)
+    handleImgFileInput(e, maxView, setImageLoaded, canvasRef)
   }
 
   function handlePhotoRemove() {

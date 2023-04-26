@@ -2,6 +2,7 @@ import { ChangeEvent, useEffect, useState } from "react"
 import { useAppSelector } from "../hooks/redux"
 import { useAuth } from "../hooks/useAuth"
 import FlightsEditor from "../components/FlightsEditor"
+import FleetEditor from "../components/FleetEditor"
 
 export default function AdminAirline() {
   const { selected } = useAppSelector((state) => state.airport)
@@ -29,7 +30,7 @@ export default function AdminAirline() {
           </div>
 
           <div className="flex md:flex-col mt-4 justify-around md:space-y-10">
-            <div className={`transition-all ${action === "fleet" ? "ml-4" : ""}`}>
+            <div className={`transition-all ${action === "fleet" ? "md:ml-4" : ""}`}>
               <button
                 onClick={() => setAction("fleet")}
                 className={`block md:flex items-center hover:opacity-100 active:scale-90 ${
@@ -40,7 +41,7 @@ export default function AdminAirline() {
                 <h1 className="p-1 font-semibold">Fleet</h1>
               </button>
             </div>
-            <div className={`transition-all ${action === "flights" ? "ml-4" : ""}`}>
+            <div className={`transition-all ${action === "flights" ? "md:ml-4" : ""}`}>
               <button
                 onClick={() => setAction("flights")}
                 className={`block md:flex items-center hover:opacity-100 active:scale-90 ${
@@ -51,7 +52,7 @@ export default function AdminAirline() {
                 <h1 className="p-1 font-semibold">Schedule</h1>
               </button>
             </div>
-            <div className={`transition-all ${action === "staff" ? "ml-4" : ""}`}>
+            <div className={`transition-all ${action === "staff" ? "md:ml-4" : ""}`}>
               <button
                 onClick={() => setAction("staff")}
                 className={`block md:flex items-center hover:opacity-100 active:scale-90 ${
@@ -64,7 +65,11 @@ export default function AdminAirline() {
             </div>
           </div>
         </div>
-        <div className="w-full md:flex justify-center">{action === "flights" && <FlightsEditor />}</div>
+
+        <div className="w-full md:flex justify-center">
+          {action === "fleet" && <FleetEditor />}
+          {action === "flights" && <FlightsEditor />}
+        </div>
       </div>
     </div>
   )

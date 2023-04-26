@@ -10,3 +10,11 @@ export interface IFlight {
   sta: string
   seats: number
 }
+
+export interface IFleet {
+  id: number
+  name: string
+  acType: string
+  acReg: string
+  seats: number
+}

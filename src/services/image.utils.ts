@@ -1,6 +1,6 @@
 import { RefObject } from "react"
 
-export async function imageLoader(canvasRef: RefObject<HTMLCanvasElement>, maxView: number) {
+export async function imageUtils(canvasRef: RefObject<HTMLCanvasElement>, maxView: number) {
   const image = new Image()
   image.crossOrigin = "use-credentials"
   image.onload = () => {

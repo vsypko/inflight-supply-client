@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from "react"
 import { useAppSelector } from "../hooks/redux"
 import { useAuth } from "../hooks/useAuth"
-import { handleXLSXFileInput } from "../services/flightdata.service"
+import { handleXLSXFileInput } from "../services/datafile.loader"
 
 export default function Airlines() {
   const { selected } = useAppSelector((state) => state.airport)

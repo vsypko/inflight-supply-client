@@ -1,11 +1,11 @@
 import { ChangeEvent, MutableRefObject, useEffect, useRef, useState } from "react"
 import { useAppSelector } from "../hooks/redux"
 import { useAuth } from "../hooks/useAuth"
-import { handleXLSXFileInput } from "../services/flightdata.service"
+import { handleDataFileInput } from "../services/datafile.loader"
 import { useGetFlightsQuery, useLoadFlightsMutation } from "../store/airline/airline.api"
 import { LoadingSpinner } from "./LoadingSpinner"
 import { IFlight } from "../types/airline.types"
-import TableFlights from "./TableFlights"
+import Table from "./Table"
 import EditableFlight from "./EditableFlight"
 
 const initialFlights = {
@@ -20,6 +20,9 @@ const initialFlights = {
   sta: "",
   seats: 0,
 }
+
+const headers = Object.keys(initialFlights).slice(1) as Array<keyof IFlight>
+
 export default function FlightsEditor() {
   const { selected } = useAppSelector((state) => state.airport)
   const { user, country, company } = useAuth()
@@ -72,7 +75,7 @@ export default function FlightsEditor() {
 
   function handleFileUpload(e: ChangeEvent<HTMLInputElement>) {
     setErrorMsg("")
-    handleXLSXFileInput(e, setNewFlights)
+    handleDataFileInput(e, headers, setNewFlights)
   }
 
   async function handleFlightsInsert() {
@@ -101,7 +104,7 @@ export default function FlightsEditor() {
         setErrorMsg={setErrorMsg}
         setResult={setResult}
       />
-      <div className="max-w-max justify-center max-h-max">
+      <div className="max-w-max max-h-max">
         <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>
         {isLoading && (
           <div className="ml-48 mt-12">
@@ -161,13 +164,13 @@ export default function FlightsEditor() {
                   className="px-2.5 py-1.5 rounded-full active:scale-90 cursor-pointer hover:bg-slate-300  dark:hover:bg-slate-800 opacity-75 hover:opacity-100"
                 >
                   <i className="fas fa-upload mr-2" />
-                  <span>Upload from .xlsx file</span>
+                  <span>Upload from file</span>
                 </label>
                 <input
                   id="xlsxFileInput"
                   name="xlsxFileInput"
                   type="file"
-                  accept=".xlsx"
+                  accept=".xlsx, .ods"
                   className="hidden"
                   onChange={handleFileUpload}
                 />
@@ -200,12 +203,12 @@ export default function FlightsEditor() {
 
           {/* Table with flights from xlsx or from DB --------------------------------------------------------------*/}
 
-          {newFlights.length != 0 && !isLoading && <TableFlights flights={newFlights} />}
+          {newFlights.length != 0 && !isLoading && <Table headers={headers} data={newFlights} />}
           {flights && !newFlights.length && !isLoading && (
-            <TableFlights flights={flights} setFlights={setFlights} handleEditFlight={handleEditFlight} />
+            <Table headers={headers} data={flights} setData={setFlights} handleEdit={handleEditFlight} />
           )}
 
-          {/* xlsx file loading result -------------------------------------------------------*/}
+          {/* Queries result info -------------------------------------------------------*/}
           <div className="flex w-full m-1 h-6">
             {result && <h5 className="text-teal-500 py-1 whitespace-pre-line result">{result}</h5>}
           </div>

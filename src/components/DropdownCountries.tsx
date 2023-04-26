@@ -30,7 +30,7 @@ export default function DropdownCountries({ value, setValue, setOpen }: Dropdown
 
   //function for search countries by begin entered string matches to name or phone code---------------------
 
-  function search(searchStr: string) {
+  const search = (searchStr: string) => {
     searchStr = searchStr.toLowerCase()
     newData = data!.filter((item) => {
       return (

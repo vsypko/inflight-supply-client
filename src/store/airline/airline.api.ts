@@ -1,10 +1,17 @@
 import { api } from "../api"
-import { IFlight } from "../../types/airline.types"
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query"
-import { SerializedError } from "@reduxjs/toolkit"
+import { IFleet, IFlight } from "../../types/airline.types"
 
 export const airlineApi = api.injectEndpoints({
   endpoints: (builder) => ({
+    getFleet: builder.query<IFleet[], { id: number }>({
+      query: ({ id }) => ({
+        url: "company/fleet/",
+        method: "GET",
+        params: { id },
+      }),
+      providesTags: ["Fleet"],
+    }),
+
     getFlights: builder.query<IFlight[], { id: number; date: string }>({
       query: ({ id, date }) => ({
         url: `company/flights/`,
@@ -45,6 +52,7 @@ export const airlineApi = api.injectEndpoints({
 })
 
 export const {
+  useGetFleetQuery,
   useLazyGetFlightsQuery,
   useGetFlightsQuery,
   useLoadFlightsMutation,

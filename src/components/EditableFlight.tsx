@@ -22,19 +22,6 @@ interface Props {
   setResult: Dispatch<SetStateAction<string>>
 }
 
-const initialFlights = {
-  id: 0,
-  date: "",
-  flight: 0,
-  acType: "",
-  acReg: "",
-  from: "",
-  to: "",
-  std: "",
-  sta: "",
-  seats: 0,
-}
-
 type EventFlightEdit =
   | SyntheticEvent<HTMLDialogElement, Event>
   | FormEvent<HTMLFormElement>

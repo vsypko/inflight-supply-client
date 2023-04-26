@@ -40,7 +40,8 @@ co_cn varchar(2) REFERENCES country (cn_iso) NOT NULL DEFAULT 'ZZ',
 co_addr_city varchar(35),
 co_addr_line varchar(128),
 co_home_link varchar(128),
-co_tb varchar(36)
+co_tb varchar(36),
+co_tb2 varchar(36)
 );
 
 create TABLE co_branch(
@@ -106,4 +107,21 @@ CREATE TABLE airline(
   fl_sta time,
   fl_ac_sts integer,
   CONSTRAINT unique_row UNIQUE (fl_date,fl_num,fl_from)
+);
+
+CREATE TABLE aircraft_types(
+  act_id SERIAL PRIMARY KEY,
+  act_name varchar(70),
+  act_iata varchar(3),
+  act_icao varchar(4)
+);
+
+//The table should create programmatically
+
+CREATE TABLE fleet(
+  ac_id SERIAL PRIMARY KEY,
+  ac_name varchar(70),
+  ac_type varchar(3),
+  ac_reg varchar(8),
+  ac_seats integer,
 );

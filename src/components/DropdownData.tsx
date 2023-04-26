@@ -1,6 +1,6 @@
 import { IAirport } from "../types/airport.types"
 import { useActions } from "../hooks/actions"
-import { Dispatch, FC, SetStateAction } from "react"
+import { Dispatch, SetStateAction } from "react"
 
 interface DropdownProps<T> {
   items: T[] | undefined
@@ -10,6 +10,7 @@ interface DropdownProps<T> {
 
 export default function Dropdown({ items, setSelected, setOpen }: DropdownProps<IAirport>) {
   const { selectAirport } = useActions()
+
   const selectionHandler = (item: IAirport) => {
     setSelected(item.ap_name)
     selectAirport(item)
