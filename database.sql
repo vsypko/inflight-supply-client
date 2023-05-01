@@ -95,8 +95,8 @@ CREATE TABLE ipv6(
 
 //The table should create programmatically
 
-CREATE TABLE airline(
-  fl_id SERIAL PRIMARY KEY,
+CREATE TABLE flights(
+  id SERIAL PRIMARY KEY,
   fl_date DATE NOT NULL DEFAULT CURRENT_DATE,
   fl_num integer,
   fl_ac_iata varchar(3),
@@ -119,7 +119,7 @@ CREATE TABLE aircraft_types(
 //The table should create programmatically
 
 CREATE TABLE fleet(
-  ac_id SERIAL PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   ac_name varchar(70),
   ac_type varchar(3),
   ac_reg varchar(8),

@@ -10,7 +10,11 @@ import {
   MouseEvent,
 } from "react"
 import { IFlight } from "../types/airline.types"
-import { useDeleteFlightMutation, useLoadFlightsMutation, useUpdateFlightMutation } from "../store/airline/airline.api"
+import {
+  useDeleteCompanyDataMutation,
+  useInsertCompanyDataMutation,
+  useUpdateCompanyDataMutation,
+} from "../store/company/company.api"
 import { useAuth } from "../hooks/useAuth"
 
 interface Props {
@@ -30,9 +34,9 @@ type EventFlightEdit =
 export default function EditableFlight(props: Props) {
   const { row, setRow, setDialogRef, setErrorMsg, setResult } = props
   const { company } = useAuth()
-  const [flightDeleteQuery] = useDeleteFlightMutation()
-  const [loadFlights] = useLoadFlightsMutation()
-  const [updateFlight] = useUpdateFlightMutation()
+  const [dataDeleteQuery] = useDeleteCompanyDataMutation()
+  const [insertCompanyData] = useInsertCompanyDataMutation()
+  const [updateCompanyData] = useUpdateCompanyDataMutation()
 
   const types = ["date", "number", "text", "text", "text", "text", "time", "time", "number"]
   const icons = [
@@ -76,7 +80,11 @@ export default function EditableFlight(props: Props) {
   const handleUpdateFlight = async (e: EventFlightEdit) => {
     e.preventDefault()
     try {
-      const response = await updateFlight({ id: company!.co_id, flight: row }).unwrap()
+      const response = await updateCompanyData({
+        tbType: "flight",
+        tbName: company!.co_tb_2,
+        value: row,
+      }).unwrap()
       setResult(response.data)
       closeEditFlight(e)
     } catch (err) {
@@ -90,7 +98,7 @@ export default function EditableFlight(props: Props) {
     e.preventDefault()
     try {
       const flight = `('${row.date}'::date, ${row.flight}, '${row.acType}','${row.acReg}','${row.from}','${row.to}', '${row.std}'::time, '${row.sta}'::time, ${row.seats})`
-      const response = await loadFlights({ id: company!.co_id, values: flight }).unwrap()
+      const response = await insertCompanyData({ tbType: "flights", tbName: company!.co_tb_2, values: flight }).unwrap()
       setResult(response.data)
       closeEditFlight(e)
     } catch (err) {
@@ -110,7 +118,7 @@ export default function EditableFlight(props: Props) {
     const answer = confirm("This flight will be deleted from flights!")
     try {
       if (answer) {
-        const response = await flightDeleteQuery({ company_id: company!.co_id, flight_id: row.id }).unwrap()
+        const response = await dataDeleteQuery({ tbType: "flight", tbName: company!.co_tb_2, id: row.id }).unwrap()
         setResult(response.data)
         closeEditFlight(e)
       }

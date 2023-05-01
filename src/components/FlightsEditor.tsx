@@ -1,12 +1,13 @@
 import { ChangeEvent, MutableRefObject, useEffect, useRef, useState } from "react"
-import { useAppSelector } from "../hooks/redux"
+// import { useAppSelector } from "../hooks/redux"
 import { useAuth } from "../hooks/useAuth"
 import { handleDataFileInput } from "../services/datafile.loader"
-import { useGetFlightsQuery, useLoadFlightsMutation } from "../store/airline/airline.api"
+import { useGetCompanyDataQuery, useInsertCompanyDataMutation } from "../store/company/company.api"
 import { LoadingSpinner } from "./LoadingSpinner"
 import { IFlight } from "../types/airline.types"
 import Table from "./Table"
 import EditableFlight from "./EditableFlight"
+import SaveRemove from "./SaveRemove"
 
 const initialFlights = {
   id: 0,
@@ -24,27 +25,24 @@ const initialFlights = {
 const headers = Object.keys(initialFlights).slice(1) as Array<keyof IFlight>
 
 export default function FlightsEditor() {
-  const { selected } = useAppSelector((state) => state.airport)
-  const { user, country, company } = useAuth()
+  // const { selected } = useAppSelector((state) => state.airport)
+  const { company } = useAuth()
 
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
-  const [flights, setFlights] = useState<IFlight[]>([initialFlights])
+  // const [flights, setFlights] = useState<IFlight[]>([initialFlights])
   const [newFlights, setNewFlights] = useState<IFlight[]>([])
 
   const [errorMsg, setErrorMsg] = useState("")
   const [result, setResult] = useState("")
 
-  const [loadFlights, { data: response, isError, isSuccess, isLoading }] = useLoadFlightsMutation()
-  const { data, error } = useGetFlightsQuery({ id: company!.co_id, date })
+  const [insertCompanyData, { data: response, isError, isSuccess, isLoading }] = useInsertCompanyDataMutation()
+  const { data, error } = useGetCompanyDataQuery({ tbType: "flights", tbName: company!.co_tb_2, date })
 
   useEffect(() => {
-    setFlights([initialFlights])
     setErrorMsg("")
-    if (data && data.length != 0) setFlights(data)
     if (error != null && typeof error === "object" && "data" in error) setErrorMsg(error.data as string)
     if (error != null && typeof error === "object" && "error" in error) setErrorMsg(error.error as string)
-    if (response) setResult(response.data)
-  }, [data, error, isSuccess, response])
+  }, [error])
 
   function handleDecreaseDate() {
     setDate(
@@ -86,7 +84,7 @@ export default function FlightsEditor() {
             `('${row.date}'::date, ${row.flight}, '${row.acType}','${row.acReg}','${row.from}','${row.to}', '${row.std}'::time, '${row.sta}'::time, ${row.seats})`,
         )
         .join(",")
-      await loadFlights({ id: company!.co_id, values }).unwrap()
+      await insertCompanyData({ tbType: "flights", tbName: company!.co_tb_2, values }).unwrap()
       setNewFlights([])
     } catch (err) {
       setNewFlights([])
@@ -105,7 +103,7 @@ export default function FlightsEditor() {
         setResult={setResult}
       />
       <div className="max-w-max max-h-max">
-        <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>
+        {errorMsg && <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>}
         {isLoading && (
           <div className="ml-48 mt-12">
             <LoadingSpinner />
@@ -181,31 +179,14 @@ export default function FlightsEditor() {
           {/* Save - Remove buttons for xlsx file upload-------------------------------------------------------- */}
 
           {newFlights.length != 0 && !isLoading && (
-            <div className="flex w-full justify-end mb-1">
-              <button
-                onClick={() => setNewFlights([])}
-                type="button"
-                className="mr-6 px-2 py-1 rounded-full active:scale-90 hover:bg-slate-300 dark:hover:bg-slate-800 opacity-75 hover:opacity-100"
-              >
-                <i className="fas fa-trash-can mr-2" />
-                <span>Remove</span>
-              </button>
-              <button
-                onClick={handleFlightsInsert}
-                type="button"
-                className="px-2 py-1 rounded-full active:scale-90 bg-teal-500 dark:bg-teal-800 opacity-75 hover:opacity-100"
-              >
-                <i className="fas fa-download mr-2" />
-                <span>Save</span>
-              </button>
-            </div>
+            <SaveRemove setNew={setNewFlights} handleSave={handleFlightsInsert} />
           )}
 
           {/* Table with flights from xlsx or from DB --------------------------------------------------------------*/}
 
           {newFlights.length != 0 && !isLoading && <Table headers={headers} data={newFlights} />}
-          {flights && !newFlights.length && !isLoading && (
-            <Table headers={headers} data={flights} setData={setFlights} handleEdit={handleEditFlight} />
+          {data && !newFlights.length && !isLoading && (
+            <Table headers={headers} data={data} handleEdit={handleEditFlight} />
           )}
 
           {/* Queries result info -------------------------------------------------------*/}

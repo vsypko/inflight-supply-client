@@ -15,7 +15,7 @@ export default function Profile() {
   const [openCountryDropdown, setOpenCountryDropdown] = useState(false)
 
   const [value, setValue] = useState<IUserUpdateRequest>({
-    id: user!.usr_id,
+    id: user!.id,
     firstname: user!.usr_firstname || "",
     lastname: user!.usr_lastname || "",
     phone: user!.usr_phone || "",

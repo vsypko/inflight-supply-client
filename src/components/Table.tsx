@@ -3,7 +3,6 @@ import { Dispatch, SetStateAction } from "react"
 export default function Table<T>({
   headers,
   data,
-  setData,
   handleEdit,
 }: {
   headers: (keyof T)[]
