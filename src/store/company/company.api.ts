@@ -20,14 +20,11 @@ export const airlineApi = api.injectEndpoints({
       invalidatesTags: ["Data"],
     }),
 
-    updateCompanyData: builder.mutation<
-      { data: string },
-      { tbType: string; tbName: string; value: IFleet | IFlight | object }
-    >({
-      query: (data) => ({
-        url: `company/${data.tbType}`,
+    updateCompanyData: builder.mutation<{ data: string }, { tbType: string; tbName: string; value: any }>({
+      query: (dataToUpdate) => ({
+        url: `company/${dataToUpdate.tbType}`,
         method: "PATCH",
-        body: { tb: data.tbName, value: data.value },
+        body: { tb: dataToUpdate.tbName, value: dataToUpdate.value },
       }),
       invalidatesTags: ["Data"],
     }),

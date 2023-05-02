@@ -23,8 +23,8 @@ export default function Messages() {
       {isSuccess && (
         <ul>
           {data.users.map((user) => (
-            <li key={user.usr_id}>
-              <p>id: {user.usr_id}</p>
+            <li key={user.id}>
+              <p>id: {user.id}</p>
               <p>email: {user.usr_email}</p>
               <p>role: {user.usr_role_name}</p>
             </li>

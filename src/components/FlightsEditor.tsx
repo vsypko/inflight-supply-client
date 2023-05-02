@@ -8,6 +8,7 @@ import { IFlight } from "../types/airline.types"
 import Table from "./Table"
 import EditableFlight from "./EditableFlight"
 import SaveRemove from "./SaveRemove"
+import Dialog from "./Dialog"
 
 const initialFlights = {
   id: 0,
@@ -95,7 +96,7 @@ export default function FlightsEditor() {
 
   return (
     <>
-      <EditableFlight
+      <Dialog<IFlight>
         row={editRow}
         setRow={setEditRow}
         setDialogRef={setDialogRef}
