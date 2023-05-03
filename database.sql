@@ -30,7 +30,7 @@ cn_flag text
 
 
 create TABLE company(
-co_id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 co_category varchar(12),
 co_name varchar(255),
 co_register_num varchar(16),
@@ -53,7 +53,7 @@ br_manager_surname varchar
 );
 
 create TABLE users(
-  usr_id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   usr_firstname varchar(50),
   usr_lastname varchar(50),
   usr_email varchar(62) UNIQUE NOT NULL,
@@ -122,6 +122,6 @@ CREATE TABLE fleet(
   id SERIAL PRIMARY KEY,
   ac_name varchar(70),
   ac_type varchar(3),
-  ac_reg varchar(8),
+  ac_reg varchar(8) UNIQUE NOT NULL,
   ac_seats integer,
 );

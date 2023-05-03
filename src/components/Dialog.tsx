@@ -56,19 +56,6 @@ export default function Dialog<
 
   const ref = useRef<HTMLDialogElement | null>(null)
 
-  const closeDialog = (e: EventDataEdit) => {
-    e.preventDefault()
-    ref.current?.classList.add("close")
-    ref.current?.addEventListener(
-      "animationend",
-      () => {
-        ref.current?.classList.remove("close")
-        ref.current?.close()
-      },
-      { once: true },
-    )
-  }
-
   useEffect(() => {
     if (row && typeof row === "object" && "date" in row) {
       setInputTypes(["date", "number", "text", "text", "text", "text", "time", "time", "number"])
@@ -96,6 +83,19 @@ export default function Dialog<
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     setRow((row) => ({ ...row, [event.target.name]: event.target.value }))
+  }
+
+  const closeDialog = (e: EventDataEdit) => {
+    e.preventDefault()
+    ref.current?.classList.add("close")
+    ref.current?.addEventListener(
+      "animationend",
+      () => {
+        ref.current?.classList.remove("close")
+        ref.current?.close()
+      },
+      { once: true },
+    )
   }
 
   const handleUpdate = async (e: EventDataEdit) => {
@@ -162,6 +162,7 @@ export default function Dialog<
     } catch (err) {
       if (err != null && typeof err === "object" && "data" in err) setErrorMsg(err.data as string)
       if (err != null && typeof err === "object" && "error" in err) setErrorMsg(err.error as string)
+      closeDialog(e)
     }
   }
 
@@ -171,7 +172,7 @@ export default function Dialog<
         autoFocus={index === 0}
         type={inputTypes[index]}
         name={key as string}
-        value={row[key] as string | number | readonly string[] | undefined}
+        value={row[key] as string}
         id={key as string}
         onChange={onChange}
         className="block w-full text-slate-800 dark:text-slate-100 bg-transparent appearance-none border-0 border-b-2 border-slate-400 dark:border-slate-600 focus:border-slate-700 dark:focus:border-slate-400 focus:outline-none focus:ring-0 peer"
@@ -196,11 +197,11 @@ export default function Dialog<
         </button>
       </div>
 
-      {/* Airline data add, change and delete form --------------------------------------------------*/}
+      {/* Airline data (flights, fleet) add, change and delete form --------------------------------------------------*/}
 
       <form method="dialog" onSubmit={(e) => handleAdd(e)}>
         <div className="grid md:grid-cols-2 gap-8 md:gap-8 w-full p-3 mt-6">
-          {(Object.keys(row as object) as Array<keyof T>).slice(1).map((key, index) => (
+          {(Object.keys(row) as Array<keyof T>).slice(1).map((key, index) => (
             <div key={key as string} className="relative w-full">
               {/* For inputs with keys For and To need to be airports dataset ----------------------------------------------- */}
               {renderedInput(key, index)}

@@ -1,12 +1,10 @@
 import { ChangeEvent, MutableRefObject, useEffect, useRef, useState } from "react"
-// import { useAppSelector } from "../hooks/redux"
 import { useAuth } from "../hooks/useAuth"
 import { handleDataFileInput } from "../services/datafile.loader"
 import { useGetCompanyDataQuery, useInsertCompanyDataMutation } from "../store/company/company.api"
 import { LoadingSpinner } from "./LoadingSpinner"
 import { IFlight } from "../types/airline.types"
 import Table from "./Table"
-import EditableFlight from "./EditableFlight"
 import SaveRemove from "./SaveRemove"
 import Dialog from "./Dialog"
 
@@ -26,16 +24,11 @@ const initialFlights = {
 const headers = Object.keys(initialFlights).slice(1) as Array<keyof IFlight>
 
 export default function FlightsEditor() {
-  // const { selected } = useAppSelector((state) => state.airport)
   const { company } = useAuth()
-
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
-  // const [flights, setFlights] = useState<IFlight[]>([initialFlights])
   const [newFlights, setNewFlights] = useState<IFlight[]>([])
-
   const [errorMsg, setErrorMsg] = useState("")
   const [result, setResult] = useState("")
-
   const [insertCompanyData, { data: response, isError, isSuccess, isLoading }] = useInsertCompanyDataMutation()
   const { data, error } = useGetCompanyDataQuery({ tbType: "flights", tbName: company!.co_tb_2, date })
 
