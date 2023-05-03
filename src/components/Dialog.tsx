@@ -51,7 +51,7 @@ export default function Dialog<
   const [insertCompanyData] = useInsertCompanyDataMutation()
   const [updateCompanyData] = useUpdateCompanyDataMutation()
 
-  const [types, setTypes] = useState<string[]>([""])
+  const [inputTypes, setInputTypes] = useState<string[]>([""])
   const [icons, setIcons] = useState<string[]>([""])
 
   const ref = useRef<HTMLDialogElement | null>(null)
@@ -71,7 +71,7 @@ export default function Dialog<
 
   useEffect(() => {
     if (row && typeof row === "object" && "date" in row) {
-      setTypes(["date", "number", "text", "text", "text", "text", "time", "time", "number"])
+      setInputTypes(["date", "number", "text", "text", "text", "text", "time", "time", "number"])
       setIcons([
         "fas fa-calendar-day",
         "fas fa-ticket",
@@ -88,8 +88,8 @@ export default function Dialog<
         setRow((row) => ({ ...row, date: formatedDate }))
       }
     } else {
-      setTypes(["text", "text", "text", "number"])
-      setIcons(["fas fa-pen", "fas fa-plane-up", "fas fa-plane", "fas fa-users-gear"])
+      setInputTypes(["text", "text", "text", "number"])
+      setIcons(["fas fa-plane-circle-check", "fas fa-plane-up", "fas fa-plane", "fas fa-users-gear"])
     }
     setDialogRef(ref.current)
   }, [row, ref])
@@ -169,7 +169,7 @@ export default function Dialog<
     return (
       <input
         autoFocus={index === 0}
-        type={types[index]}
+        type={inputTypes[index]}
         name={key as string}
         value={row[key] as string | number | readonly string[] | undefined}
         id={key as string}
@@ -187,7 +187,7 @@ export default function Dialog<
       className="edit rounded-lg p-0 bg-slate-200 dark:bg-slate-700 shadow-md shadow-slate-700 dark:shadow-slate-600 text-slate-800 dark:text-slate-200"
     >
       <div className="flex justify-between rounded-t p-2 items-center text-lg dark:bg-slate-800 bg-slate-300">
-        <p className="font-medium pl-4">FLIGHT</p>
+        <p className="font-medium pl-4">{row.date ? "FLIGHT" : "FLEET"}</p>
         <button
           onClick={(e) => closeDialog(e)}
           className="py-1 px-3.5 rounded-full hover:bg-slate-400 dark:hover:bg-slate-700 opacity-70 hover:opacity-100 active:scale-90"
@@ -196,7 +196,7 @@ export default function Dialog<
         </button>
       </div>
 
-      {/* Flight's data add, change and delete form --------------------------------------------------*/}
+      {/* Airline data add, change and delete form --------------------------------------------------*/}
 
       <form method="dialog" onSubmit={(e) => handleAdd(e)}>
         <div className="grid md:grid-cols-2 gap-8 md:gap-8 w-full p-3 mt-6">
