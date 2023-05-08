@@ -125,3 +125,14 @@ CREATE TABLE fleet(
   ac_reg varchar(8) UNIQUE NOT NULL,
   ac_seats integer,
 );
+
+//The table should create programmatically
+CREATE TABLE supply(
+  id SERIAL PRIMARY KEY,
+  su_code integer UNIQUE NOT NULL,
+  su_name varchar(255),
+  su_category varchar(32),
+  su_area varchar(128),
+  su_description text, 
+  su_img_url varchar(36)
+);

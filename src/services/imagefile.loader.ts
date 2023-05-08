@@ -11,7 +11,6 @@ export function handleImgFileInput(
   const photo = e.target.files?.[0]
   if (!photo) return
   const reader = new FileReader()
-
   reader.readAsDataURL(photo)
 
   reader.onloadend = async (e) => {

@@ -11,8 +11,8 @@ export default function Table<T>({
   handleEdit?: (row: T) => void
 }): JSX.Element {
   return (
-    <div className="rounded-md max-h-[500px] md:max-h-[700px] max-w-max overflow-auto shadow-md dark:shadow-slate-600">
-      <table className="text-left">
+    <div className="rounded-md max-h-[500px] md:max-h-[700px] max-w-max shadow-md overflow-auto dark:shadow-slate-600">
+      <table className="text-left table-auto">
         <thead className="sticky top-0 text-lg dark:bg-slate-600 bg-slate-300 z-10">
           <tr>
             {headers.map((header) => (
@@ -33,7 +33,7 @@ export default function Table<T>({
               }}
             >
               {headers.map((header) => (
-                <td key={header as string} className="px-6">
+                <td key={header as string} className="px-6 whitespace-nowrap">
                   {row[header] as string}
                 </td>
               ))}

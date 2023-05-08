@@ -1,18 +1,34 @@
 import { useAuth } from "../hooks/useAuth"
 import { ChangeEvent, FormEvent, useState } from "react"
 import { useActions } from "../hooks/actions"
-import ImageEditor from "../components/ImageEditor"
-import { useUserProfileUpdateMutation } from "../store/auth/auth.api"
+import ImgEditor from "../components/ImgEditor"
+import {
+  useUserProfileUpdateMutation,
+  useUserUrlRemoveMutation,
+  useUserUrlUpdateMutation,
+} from "../store/auth/auth.api"
 import DropdownCountries from "../components/DropdownCountries"
 import { IUserUpdateRequest } from "../types/user.types"
 
 export default function Profile() {
   const { user, company, country } = useAuth()
-  const { updateUserData } = useActions()
+  const { updateUserUrl, updateUserData } = useActions()
+  const [userUrlUpdateQuery] = useUserUrlUpdateMutation()
+  const [userUrlRemoveQuery] = useUserUrlRemoveMutation()
   const [userProfileUpdateQuery] = useUserProfileUpdateMutation()
 
   const [photoEdit, setPhotoEdit] = useState(false)
   const [openCountryDropdown, setOpenCountryDropdown] = useState(false)
+
+  const imgEditorProps = {
+    path: "user/geturl/",
+    url: user?.usr_url,
+    id: user?.id,
+    setImageEdit: setPhotoEdit,
+    imgUpdateQuery: userUrlUpdateQuery,
+    imgRemoveQuery: userUrlRemoveQuery,
+    imgUrlUpdateAction: updateUserUrl,
+  }
 
   const [value, setValue] = useState<IUserUpdateRequest>({
     id: user!.id,
@@ -36,17 +52,15 @@ export default function Profile() {
     <div className="flex flex-col items-center text-lg">
       <h1 className="w-full py-4 text-center text-3xl font-bold">PROFILE</h1>
       <div className="w-full md:w-1/2 px-4 md:px-0">
-        <div className="flex p-2 h-[218px] border border-spacing-1 rounded-xl border-slate-600 dark:border-slate-100 justify-center relative">
-          {user && user.usr_url && !photoEdit ? (
+        <div className="flex p-2 h-[218px] border border-spacing-1 rounded-xl border-slate-600 dark:border-slate-100 justify-center items-center relative">
+          {user?.usr_url && !photoEdit ? (
             <>
               <img
                 width="200px"
                 height="200px"
                 use-credentials="true"
                 alt=""
-                src={
-                  user.usr_url_data ? user.usr_url_data : import.meta.env.VITE_API_URL + "user/geturl/" + user.usr_url
-                }
+                src={import.meta.env.VITE_API_URL + "user/geturl/" + user.usr_url}
                 className="absolute"
               />
 
@@ -59,7 +73,7 @@ export default function Profile() {
               </button>
             </>
           ) : (
-            <ImageEditor setPhotoEdit={setPhotoEdit} />
+            <ImgEditor imgEditorProps={imgEditorProps} />
           )}
         </div>
         <form onSubmit={handleSave}>

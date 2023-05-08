@@ -171,11 +171,7 @@ export default function MainNavigation() {
                         <img
                           use-credentials="true"
                           alt=""
-                          src={
-                            user.usr_url_data
-                              ? user.usr_url_data
-                              : import.meta.env.VITE_API_URL + "user/geturl/" + user!.usr_url
-                          }
+                          src={import.meta.env.VITE_API_URL + "user/geturl/" + user.usr_url}
                           className="w-9 h-9 rounded-full mr-3"
                         />
                       ) : (

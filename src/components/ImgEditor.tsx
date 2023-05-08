@@ -1,78 +1,77 @@
 import { ChangeEvent, Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
-import { useActions } from "../hooks/actions"
-import { useAuth } from "../hooks/useAuth"
 import { imageUtils } from "../services/image.utils"
 import { dataUrlToBlob, handleImgFileInput } from "../services/imagefile.loader"
-import { useUserUrlRemoveMutation, useUserUrlUpdateMutation } from "../store/auth/auth.api"
+import { ActionCreatorWithPayload } from "@reduxjs/toolkit"
 
-export default function ImageEditor({
-  setPhotoEdit,
-}: {
-  setPhotoEdit: Dispatch<SetStateAction<boolean>>
-}): JSX.Element {
+interface IProps {
+  path: string
+  url: string | undefined
+  id: number | undefined
+  setImageEdit: Dispatch<SetStateAction<boolean>>
+  imgUpdateQuery: any
+  imgRemoveQuery: any
+  imgUrlUpdateAction?: ActionCreatorWithPayload<{
+    url: string | undefined
+  }>
+}
+
+export default function ImgEditor({ imgEditorProps }: { imgEditorProps: IProps }): JSX.Element {
+  const { path, url, id, setImageEdit, imgUpdateQuery, imgRemoveQuery, imgUrlUpdateAction } = imgEditorProps
+
   const [imageLoaded, setImageLoaded] = useState(false)
-  const { user } = useAuth()
-  const { updateUserUrl } = useActions()
-  const [userUrlUpdateQuery] = useUserUrlUpdateMutation()
-  const [userUrlRemoveQuery] = useUserUrlRemoveMutation()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const maxView = 200
 
   useEffect(() => {
     const loadImageToCanvas = async () => {
-      if (user && user.usr_url) {
+      if (url) {
         const image = await imageUtils(canvasRef, maxView)
-        image.src = import.meta.env.VITE_API_URL + "user/geturl/" + user!.usr_url
+        image.src = import.meta.env.VITE_API_URL + path + url
         setImageLoaded(true)
       }
     }
     loadImageToCanvas()
   }, [canvasRef])
 
-  function handlePhotoInput(e: ChangeEvent<HTMLInputElement>) {
+  function handleImageFileInput(e: ChangeEvent<HTMLInputElement>) {
     handleImgFileInput(e, maxView, setImageLoaded, canvasRef)
   }
 
-  function handlePhotoRemove() {
+  function handleImageRemove() {
     if (!canvasRef.current) return
     canvasRef.current.onwheel = null
     canvasRef.current.onpointerdown = null
     const ctx = canvasRef.current.getContext("2d")
     ctx?.clearRect(0, 0, maxView, maxView)
-    updateUserUrl({ url: undefined, url_data: undefined })
-    userUrlRemoveQuery(user!.usr_url)
+
+    const oldUrl = url
+    if (imgUrlUpdateAction) imgUrlUpdateAction({ url: undefined })
+    imgRemoveQuery(oldUrl)
     setImageLoaded(false)
   }
 
-  function handlePhotoCancel() {
+  function handleImageCancel() {
     setImageLoaded(false)
-    setPhotoEdit(false)
+    setImageEdit(false)
   }
 
-  async function handlePhotoSave() {
+  async function handleImageSave() {
     let dataUrl = canvasRef.current?.toDataURL()
     if (!dataUrl) return
-    let userUrl: string
-    let newUrl: boolean
-    if (!user?.usr_url) {
-      userUrl = crypto.randomUUID()
-      newUrl = true
-    } else {
-      userUrl = user.usr_url
-      newUrl = false
-    }
+    const imageUrl = crypto.randomUUID()
     try {
-      const photoInBlob = dataUrlToBlob(dataUrl)
-      const photo = new FormData()
-      photo.append("photo", photoInBlob, `${userUrl}`)
-      photo.append("id", `${user!.id}`)
-      photo.append("newUrl", `${newUrl}`)
+      const imageInBlob = dataUrlToBlob(dataUrl)
+      const image = new FormData()
+      image.append("image", imageInBlob, `${imageUrl}`)
+      image.append("id", `${id}`)
       const ctx = canvasRef.current?.getContext("2d")
       ctx?.clearRect(0, 0, maxView, maxView)
-      await userUrlUpdateQuery(photo).unwrap()
-      updateUserUrl({ url: userUrl, url_data: dataUrl })
+
+      //to be change-----------------------------------------------
+      await imgUpdateQuery(image).unwrap()
+      if (imgUrlUpdateAction) imgUrlUpdateAction({ url: imageUrl })
       setImageLoaded(false)
-      setPhotoEdit(false)
+      setImageEdit(false)
     } catch (e) {
       console.log(e)
     }
@@ -87,34 +86,40 @@ export default function ImageEditor({
         height="200px"
         className="absolute border border-slate-500 border-spacing-1"
       />
-      {!imageLoaded && (
+      {!imageLoaded ? (
         <>
           <div className="w-[200px] h-[200px] bg-slate-400 dark:bg-slate-600 flex justify-center items-center">
             <i className="fas fa-cloud-arrow-up text-4xl" />
           </div>
           <label
-            htmlFor="photo"
+            htmlFor="Image"
             className="absolute right-0 bottom-1 lg:text-xl lg:px-3 lg:right-2 active:scale-90 cursor-pointer px-1 hover:bg-slate-300 hover:rounded-full dark:hover:bg-slate-800 opacity-70 hover:opacity-100"
           >
             <i className="fas fa-camera mr-2" />
-            <span>Upload photo</span>
+            <span>Upload Image</span>
           </label>
-          <input id="photo" name="photo" type="file" accept="image/*" className="hidden" onChange={handlePhotoInput} />
+          <input
+            id="Image"
+            name="Image"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageFileInput}
+          />
         </>
-      )}
-      {imageLoaded && (
+      ) : (
         <div className="flex flex-col absolute right-0 bottom-0 lg:right-4">
-          <button onClick={handlePhotoRemove} className={buttonClasses}>
+          <button onClick={handleImageRemove} className={buttonClasses}>
             <i className="fas fa-trash-can mr-2" />
             <span>Delete</span>
           </button>
 
-          <button onClick={handlePhotoCancel} className={buttonClasses}>
+          <button onClick={handleImageCancel} className={buttonClasses}>
             <i className="fas fa-arrow-turn-up mr-2" />
             <span>Cancel</span>
           </button>
 
-          <button onClick={handlePhotoSave} className={buttonClasses}>
+          <button onClick={handleImageSave} className={buttonClasses}>
             <i className="fas fa-download mr-2" />
             <span>Save</span>
           </button>

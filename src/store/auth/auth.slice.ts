@@ -26,13 +26,10 @@ export const authSlice = createSlice({
       state.token = null
     },
 
-    updateUserUrl(
-      state,
-      { payload: { url, url_data } }: PayloadAction<{ url: string | undefined; url_data: string | undefined }>,
-    ): void {
+    updateUserUrl(state, { payload: { url } }: PayloadAction<{ url: string | undefined }>): void {
       if (state.user) {
         state.user.usr_url = url
-        state.user.usr_url_data = url_data
+        // state.user.usr_url_data = url_data
       }
     },
 

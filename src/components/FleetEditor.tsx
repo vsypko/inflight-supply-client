@@ -23,7 +23,7 @@ export default function FleetEditor() {
   const { data, error } = useGetCompanyDataQuery({ tbType: "fleet", tbName: company!.co_tb_1 })
   const [insertCompanyData, { data: response, isError, isSuccess, isLoading }] = useInsertCompanyDataMutation()
 
-  const [fleet, setFleet] = useState<IFleet[]>([initialFleet])
+  // const [fleet, setFleet] = useState<IFleet[]>([initialFleet])
   const [newFleet, setNewFleet] = useState<IFleet[]>([])
   const [editRow, setEditRow] = useState<IFleet>(initialFleet)
   const [errorMsg, setErrorMsg] = useState("")
@@ -85,7 +85,7 @@ export default function FleetEditor() {
                   className="px-2.5 py-1 rounded-full active:scale-90 cursor-pointer hover:bg-slate-300  dark:hover:bg-slate-800 opacity-75 hover:opacity-100"
                 >
                   <i className="fas fa-plus mr-2" />
-                  <span>Add aircraft</span>
+                  <span>Add Aircraft</span>
                 </button>
               </div>
 
