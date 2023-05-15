@@ -38,14 +38,14 @@ export default function DropdownMenu({ open, setOpen, close }: UserDropownProps)
     >
       <ul>
         <li onClick={selectionHandler}>
-          <NavLink to={`/profile/${user!.usr_role_name}`} className={itemStyle}>
+          <NavLink to={`/profile/${user!.id}`} className={itemStyle}>
             <i className="fas fa-user-pen mr-4" />
             <span>PROFILE</span>
           </NavLink>
         </li>
 
         <li onClick={selectionHandler}>
-          <NavLink to={`/account/${user!.usr_role_name}`} className={itemStyle}>
+          <NavLink to={`/account/${user!.id}`} className={itemStyle}>
             <i className="fas fa-address-card mr-4" />
             <span>ACCOUNT</span>
           </NavLink>

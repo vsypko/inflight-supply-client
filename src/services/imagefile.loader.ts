@@ -1,10 +1,9 @@
 import { ChangeEvent, Dispatch, RefObject, SetStateAction } from "react"
 import { imageUtils } from "./image.utils"
 
-export function handleImgFileInput(
+export async function imgFileInput(
   e: ChangeEvent<HTMLInputElement>,
   maxView: number,
-  setLoaded: Dispatch<SetStateAction<boolean>>,
   canvasRef: RefObject<HTMLCanvasElement>,
 ) {
   e.preventDefault()
@@ -12,15 +11,13 @@ export function handleImgFileInput(
   if (!photo) return
   const reader = new FileReader()
   reader.readAsDataURL(photo)
-
   reader.onloadend = async (e) => {
     const image = await imageUtils(canvasRef, maxView)
     image.src = e.target?.result as string
-    if (image) setLoaded(true)
   }
 }
 
-export function dataUrlToBlob(data: string): Blob {
+function dataUrlToBlob(data: string): Blob {
   data = data.replace(/^data:image\/png;base64,/, "")
   const binaryString = window.atob(data)
   const uint8Array = new Uint8Array(binaryString.length)
@@ -28,4 +25,30 @@ export function dataUrlToBlob(data: string): Blob {
     uint8Array[i] = binaryString.charCodeAt(i)
   }
   return new Blob([uint8Array], { type: "image/png" })
+}
+
+export async function imageSave(
+  canvas: HTMLCanvasElement | null,
+  maxView: number,
+  imgUpdateQuery: any,
+  imgUrl: string,
+  tbName?: string,
+  id?: number,
+) {
+  let dataUrl = canvas?.toDataURL()
+  if (!dataUrl) return
+  try {
+    const imageInBlob = dataUrlToBlob(dataUrl)
+    const image = new FormData()
+    image.append("image", imageInBlob, `${imgUrl}`)
+    if (id) image.append("id", `${id}`)
+    if (tbName) image.append("tb", tbName)
+    const ctx = canvas?.getContext("2d")
+    ctx?.clearRect(0, 0, maxView, maxView)
+
+    //request API for save or update image --------------------------------------------------------------------
+    await imgUpdateQuery(image).unwrap()
+  } catch (e) {
+    console.log(e)
+  }
 }

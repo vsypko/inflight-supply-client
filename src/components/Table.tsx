@@ -33,7 +33,7 @@ export default function Table<T>({
               }}
             >
               {headers.map((header) => (
-                <td key={header as string} className="px-6 whitespace-nowrap">
+                <td key={header as string} className="px-6 truncate max-w-md">
                   {row[header] as string}
                 </td>
               ))}

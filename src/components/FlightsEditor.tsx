@@ -12,8 +12,8 @@ const initialFlights = {
   id: 0,
   date: "",
   flight: 0,
-  acType: "",
-  acReg: "",
+  type: "",
+  reg: "",
   from: "",
   to: "",
   std: "",
@@ -48,7 +48,7 @@ export default function FlightsEditor() {
 
   function handleIncreaseDate() {
     setDate(
-      new Date(new Date(date).getFullYear(), new Date(date).getMonth(), new Date(date).getUTCDate() + 2, 0)
+      new Date(new Date(date).getFullYear(), new Date(date).getMonth(), new Date(date).getUTCDate() + 2)
         .toISOString()
         .slice(0, 10),
     )
@@ -75,7 +75,7 @@ export default function FlightsEditor() {
       const values = newFlights
         .map(
           (row) =>
-            `('${row.date}'::date, ${row.flight}, '${row.acType}','${row.acReg}','${row.from}','${row.to}', '${row.std}'::time, '${row.sta}'::time, ${row.seats})`,
+            `('${row.date}'::date, ${row.flight}, '${row.type}', '${row.reg}', '${row.from}', '${row.to}', '${row.std}'::time, '${row.sta}'::time, ${row.seats})`,
         )
         .join(",")
       await insertCompanyData({ tbType: "flights", tbName: company!.co_tb_2, values }).unwrap()
@@ -172,7 +172,7 @@ export default function FlightsEditor() {
 
           {/* Save - Remove buttons for xlsx file upload-------------------------------------------------------- */}
 
-          {newFlights.length != 0 && !isLoading && (
+          {newFlights.length !== 0 && !isLoading && (
             <SaveRemove setNew={setNewFlights} handleSave={handleFlightsInsert} />
           )}
 

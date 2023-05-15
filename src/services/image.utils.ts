@@ -75,3 +75,12 @@ export async function imageUtils(canvasRef: RefObject<HTMLCanvasElement>, maxVie
   }
   return image
 }
+
+export function imageRemove(canvasRef: RefObject<HTMLCanvasElement>, maxView: number) {
+  if (!canvasRef.current) return
+  canvasRef.current.onwheel = null
+  canvasRef.current.onpointerdown = null
+  canvasRef.current.onpointermove = null
+  const ctx = canvasRef.current.getContext("2d")
+  ctx?.clearRect(0, 0, maxView, maxView)
+}

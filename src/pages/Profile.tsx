@@ -16,15 +16,16 @@ export default function Profile() {
   const [userUrlUpdateQuery] = useUserUrlUpdateMutation()
   const [userUrlRemoveQuery] = useUserUrlRemoveMutation()
   const [userProfileUpdateQuery] = useUserProfileUpdateMutation()
+  const [imgLoaded, setImgLoaded] = useState(false)
 
-  const [photoEdit, setPhotoEdit] = useState(false)
   const [openCountryDropdown, setOpenCountryDropdown] = useState(false)
 
   const imgEditorProps = {
     path: "user/geturl/",
     url: user?.usr_url,
     id: user?.id,
-    setImageEdit: setPhotoEdit,
+    imgLoaded,
+    setImgLoaded,
     imgUpdateQuery: userUrlUpdateQuery,
     imgRemoveQuery: userUrlRemoveQuery,
     imgUrlUpdateAction: updateUserUrl,
@@ -53,7 +54,7 @@ export default function Profile() {
       <h1 className="w-full py-4 text-center text-3xl font-bold">PROFILE</h1>
       <div className="w-full md:w-1/2 px-4 md:px-0">
         <div className="flex p-2 h-[218px] border border-spacing-1 rounded-xl border-slate-600 dark:border-slate-100 justify-center items-center relative">
-          {user?.usr_url && !photoEdit ? (
+          {user?.usr_url && !imgLoaded ? (
             <>
               <img
                 width="200px"
@@ -65,8 +66,8 @@ export default function Profile() {
               />
 
               <button
-                onClick={() => setPhotoEdit(true)}
-                className="absolute bottom-1 right-1 px-2 py-1 text-lg lg:text-xl lg:px-3 lg:right-6 rounded-full  active:scale-90 hover:bg-slate-300 dark:hover:bg-slate-800 opacity-70 hover:opacity-100"
+                onClick={() => setImgLoaded(true)}
+                className="absolute bottom-1 right-1 px-2 py-1 text-lg lg:text-xl lg:px-3 lg:right-6 rounded-full active:scale-90 hover:bg-slate-300 dark:hover:bg-slate-800 opacity-70 hover:opacity-100"
               >
                 <i className="fas fa-pencil mr-2" />
                 <span>Edit</span>
@@ -125,26 +126,10 @@ export default function Profile() {
 
             {/*-Phone Input--------------------------------------------------------------------------------*/}
 
-            <div className="relative mt-6 w-full group">
-              <input
-                type="text"
-                name="phone"
-                id="phone"
-                value={value.phone}
-                onChange={onChange}
-                className="block mt-6 pl-28 w-full text-slate-800 dark:text-slate-100 bg-transparent appearance-none border-0 border-b-2 border-slate-400 dark:border-slate-600 focus:border-slate-700 dark:focus:border-slate-400 focus:outline-none focus:ring-0 peer"
-                placeholder="000000000"
-              />
-              <label
-                htmlFor="phone"
-                className="absolute text-slate-600 dark:text-slate-400 duration-300 transform -translate-y-9 scale-100 top-8 origin-[0] peer-focus:left-0 peer-focus:text-slate-500 dark:peer-focus:text-slate-400 peer-focus:scale-75 peer-focus:-translate-y-12"
-              >
-                <i className="fas fa-mobile-screen-button mr-2"></i>
-                <span>Phone</span>
-              </label>
+            <div className="relative mt-6 w-full group flex border-b-2 border-slate-400 dark:border-slate-600">
               <button
                 type="button"
-                className="absolute top-6 flex items-center text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 dark:group-hover:text-slate-200 dark:peer-focus:text-slate-200"
+                className="flex mt-6 items-center text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 dark:group-hover:text-slate-200 dark:peer-focus:text-slate-200"
                 onClick={() => setOpenCountryDropdown((prev) => !prev)}
               >
                 <img src={`data:image/png;base64, ${country?.cn_flag}`} alt="" className="py-1 mr-1" />
@@ -158,6 +143,23 @@ export default function Profile() {
               {openCountryDropdown && (
                 <DropdownCountries value={value} setValue={setValue} setOpen={setOpenCountryDropdown} />
               )}
+              <input
+                type="tel"
+                name="phone"
+                id="phone"
+                value={value.phone}
+                onChange={onChange}
+                // pattern="[0-9]{2}-[0-9]{3}-[0-9]{4}"
+                className="block mt-6 ml-8 w-full text-slate-800 dark:text-slate-100 bg-transparent appearance-none focus:border-slate-700 dark:focus:border-slate-400 focus:outline-none focus:ring-0 peer"
+                placeholder=""
+              />
+              <label
+                htmlFor="phone"
+                className="absolute text-slate-600 dark:text-slate-400 duration-300 transform -translate-y-9 scale-100 top-8 origin-[0] peer-focus:left-0 peer-focus:text-slate-500 dark:peer-focus:text-slate-400 peer-focus:scale-75 peer-focus:-translate-y-12"
+              >
+                <i className="fas fa-mobile-screen-button mr-2"></i>
+                <span>Phone</span>
+              </label>
             </div>
 
             <div className="block mt-4 items-center border-0 border-b-2 border-slate-400 dark:border-slate-600">

@@ -97,15 +97,15 @@ CREATE TABLE ipv6(
 
 CREATE TABLE flights(
   id SERIAL PRIMARY KEY,
-  fl_date DATE NOT NULL DEFAULT CURRENT_DATE,
-  fl_num integer,
-  fl_ac_iata varchar(3),
-  fl_ac_reg varchar(6),
-  fl_from varchar(3),
-  fl_to varchar(3),
-  fl_std time,
-  fl_sta time,
-  fl_ac_sts integer,
+  date DATE NOT NULL DEFAULT CURRENT_DATE,
+  flight integer,
+  type varchar(3),
+  reg varchar(6),
+  from varchar(3),
+  to varchar(3),
+  std time,
+  sta time,
+  seats integer,
   CONSTRAINT unique_row UNIQUE (fl_date,fl_num,fl_from)
 );
 
@@ -120,19 +120,19 @@ CREATE TABLE aircraft_types(
 
 CREATE TABLE fleet(
   id SERIAL PRIMARY KEY,
-  ac_name varchar(70),
-  ac_type varchar(3),
-  ac_reg varchar(8) UNIQUE NOT NULL,
-  ac_seats integer,
+  name varchar(70),
+  type varchar(3),
+  reg varchar(8) UNIQUE NOT NULL,
+  seats integer,
 );
 
 //The table should create programmatically
 CREATE TABLE supply(
   id SERIAL PRIMARY KEY,
-  su_code integer UNIQUE NOT NULL,
-  su_name varchar(255),
-  su_category varchar(32),
-  su_area varchar(128),
-  su_description text, 
-  su_img_url varchar(36)
+  code integer UNIQUE NOT NULL,
+  name varchar(255),
+  category varchar(32),
+  area varchar(128),
+  description text, 
+  img_url varchar(36)
 );

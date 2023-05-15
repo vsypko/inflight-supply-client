@@ -1,130 +1,110 @@
-import { ChangeEvent, Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
-import { imageUtils } from "../services/image.utils"
-import { dataUrlToBlob, handleImgFileInput } from "../services/imagefile.loader"
+import { ChangeEvent, Dispatch, RefObject, SetStateAction, useEffect, useRef } from "react"
+import { imageRemove, imageUtils } from "../services/image.utils"
+import { imageSave, imgFileInput } from "../services/imagefile.loader"
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit"
 
 interface IProps {
   path: string
   url: string | undefined
   id: number | undefined
-  setImageEdit: Dispatch<SetStateAction<boolean>>
+  imgLoaded: boolean
+  setImgLoaded: Dispatch<SetStateAction<boolean>>
   imgUpdateQuery: any
   imgRemoveQuery: any
+  setCanvasRef?: Dispatch<SetStateAction<RefObject<HTMLCanvasElement> | null>>
   imgUrlUpdateAction?: ActionCreatorWithPayload<{
-    url: string | undefined
+    imgUrl: string | undefined
   }>
 }
 
 export default function ImgEditor({ imgEditorProps }: { imgEditorProps: IProps }): JSX.Element {
-  const { path, url, id, setImageEdit, imgUpdateQuery, imgRemoveQuery, imgUrlUpdateAction } = imgEditorProps
-
-  const [imageLoaded, setImageLoaded] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const maxView = 200
 
+  const { path, url, id, imgLoaded, setImgLoaded, imgUpdateQuery, imgRemoveQuery, imgUrlUpdateAction, setCanvasRef } =
+    imgEditorProps
+
   useEffect(() => {
+    setImgLoaded(false)
     const loadImageToCanvas = async () => {
-      if (url) {
+      if (url && url !== "undefined") {
         const image = await imageUtils(canvasRef, maxView)
         image.src = import.meta.env.VITE_API_URL + path + url
-        setImageLoaded(true)
+        setImgLoaded(true)
       }
     }
+    if (setCanvasRef) setCanvasRef(canvasRef)
     loadImageToCanvas()
-  }, [canvasRef])
+  }, [canvasRef, url, id])
 
-  function handleImageFileInput(e: ChangeEvent<HTMLInputElement>) {
-    handleImgFileInput(e, maxView, setImageLoaded, canvasRef)
+  async function handleImageFileInput(e: ChangeEvent<HTMLInputElement>) {
+    if (setCanvasRef) setCanvasRef(canvasRef)
+    await imgFileInput(e, maxView, canvasRef)
+    setImgLoaded(true)
   }
 
   function handleImageRemove() {
-    if (!canvasRef.current) return
-    canvasRef.current.onwheel = null
-    canvasRef.current.onpointerdown = null
-    const ctx = canvasRef.current.getContext("2d")
-    ctx?.clearRect(0, 0, maxView, maxView)
-
+    imageRemove(canvasRef, maxView)
     const oldUrl = url
-    if (imgUrlUpdateAction) imgUrlUpdateAction({ url: undefined })
+    if (imgUrlUpdateAction) imgUrlUpdateAction({ imgUrl: undefined })
     imgRemoveQuery(oldUrl)
-    setImageLoaded(false)
   }
 
   function handleImageCancel() {
-    setImageLoaded(false)
-    setImageEdit(false)
+    setImgLoaded(false)
+    imageRemove(canvasRef, maxView)
   }
 
   async function handleImageSave() {
-    let dataUrl = canvasRef.current?.toDataURL()
-    if (!dataUrl) return
-    const imageUrl = crypto.randomUUID()
+    setImgLoaded(false)
+    const imgUrl = crypto.randomUUID()
     try {
-      const imageInBlob = dataUrlToBlob(dataUrl)
-      const image = new FormData()
-      image.append("image", imageInBlob, `${imageUrl}`)
-      image.append("id", `${id}`)
-      const ctx = canvasRef.current?.getContext("2d")
-      ctx?.clearRect(0, 0, maxView, maxView)
-
-      //to be change-----------------------------------------------
-      await imgUpdateQuery(image).unwrap()
-      if (imgUrlUpdateAction) imgUrlUpdateAction({ url: imageUrl })
-      setImageLoaded(false)
-      setImageEdit(false)
+      if (!canvasRef.current) return
+      await imageSave(canvasRef.current, maxView, id, imgUpdateQuery, imgUrl)
+      if (imgUrlUpdateAction) imgUrlUpdateAction({ imgUrl })
     } catch (e) {
       console.log(e)
     }
   }
+
   const buttonClasses =
-    "flex px-2 lg:px-4 py-1 mt-4 mb-1 text-base lg:text-lg items-center rounded-full active:scale-90 hover:bg-slate-300 dark:hover:bg-slate-800 opacity-70 hover:opacity-100"
+    "flex px-2 lg:px-4 py-1 mt-4 mb-1 text-lg items-center rounded-full active:scale-90 hover:bg-slate-300 dark:hover:bg-slate-800 opacity-70 hover:opacity-100"
   return (
-    <>
-      <canvas
-        ref={canvasRef}
-        width="200px"
-        height="200px"
-        className="absolute border border-slate-500 border-spacing-1"
-      />
-      {!imageLoaded ? (
-        <>
-          <div className="w-[200px] h-[200px] bg-slate-400 dark:bg-slate-600 flex justify-center items-center">
-            <i className="fas fa-cloud-arrow-up text-4xl" />
-          </div>
-          <label
-            htmlFor="Image"
-            className="absolute right-0 bottom-1 lg:text-xl lg:px-3 lg:right-2 active:scale-90 cursor-pointer px-1 hover:bg-slate-300 hover:rounded-full dark:hover:bg-slate-800 opacity-70 hover:opacity-100"
-          >
-            <i className="fas fa-camera mr-2" />
-            <span>Upload Image</span>
-          </label>
+    <div className="relative w-full flex justify-center">
+      <canvas ref={canvasRef} width="200px" height="200px" className="border border-slate-500 w-[200px] h-[200px]" />
+      {!imgLoaded ? (
+        <label className="absolute top-0 flex flex-col justify-center items-center w-[200px] h-[200px] bg-slate-300 dark:bg-slate-700 active:scale-90 cursor-pointer opacity-60 hover:opacity-90">
+          <i className="fas fa-cloud-arrow-up text-4xl" />
+          <span>Upload Image</span>
           <input
-            id="Image"
-            name="Image"
+            id="image"
+            name="image"
             type="file"
             accept="image/*"
             className="hidden"
             onChange={handleImageFileInput}
           />
-        </>
+        </label>
       ) : (
-        <div className="flex flex-col absolute right-0 bottom-0 lg:right-4">
-          <button onClick={handleImageRemove} className={buttonClasses}>
-            <i className="fas fa-trash-can mr-2" />
-            <span>Delete</span>
-          </button>
+        imgUrlUpdateAction && (
+          <div className="md:absolute flex flex-col right-0 bottom-0 justify-end items-left ml-3">
+            <button onClick={handleImageRemove} className={buttonClasses}>
+              <i className="fas fa-trash-can mr-2" />
+              <span>Delete</span>
+            </button>
 
-          <button onClick={handleImageCancel} className={buttonClasses}>
-            <i className="fas fa-arrow-turn-up mr-2" />
-            <span>Cancel</span>
-          </button>
+            <button onClick={handleImageCancel} className={buttonClasses}>
+              <i className="fas fa-arrow-turn-up mr-2" />
+              <span>Cancel</span>
+            </button>
 
-          <button onClick={handleImageSave} className={buttonClasses}>
-            <i className="fas fa-download mr-2" />
-            <span>Save</span>
-          </button>
-        </div>
+            <button onClick={handleImageSave} className={buttonClasses}>
+              <i className="fas fa-download mr-2" />
+              <span>Save</span>
+            </button>
+          </div>
+        )
       )}
-    </>
+    </div>
   )
 }

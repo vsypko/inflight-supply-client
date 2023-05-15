@@ -1,7 +1,7 @@
 export interface Item {
   id: number
   code: number
-  name: string
+  title: string
   category: string
   area: string
   description: string

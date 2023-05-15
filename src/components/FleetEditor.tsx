@@ -11,8 +11,8 @@ import Dialog from "./Dialog"
 const initialFleet: IFleet = {
   id: 0,
   name: "",
-  acType: "",
-  acReg: "",
+  type: "",
+  reg: "",
   seats: 0,
 }
 
@@ -33,6 +33,7 @@ export default function FleetEditor() {
   const handleEditFleet = (row: IFleet) => {
     setEditRow(row)
     setErrorMsg("")
+    setResult("")
     dialogRef?.showModal()
   }
 
@@ -43,7 +44,7 @@ export default function FleetEditor() {
 
   async function handleFleetInsert() {
     try {
-      const values = newFleet.map((row) => `('${row.name}', '${row.acType}', '${row.acReg}', ${row.seats})`).join(",")
+      const values = newFleet.map((row) => `('${row.name}', '${row.type}', '${row.reg}', ${row.seats})`).join(",")
       await insertCompanyData({ tbType: "fleet", tbName: company!.co_tb_1, values }).unwrap()
       setNewFleet([])
     } catch (err) {
@@ -68,7 +69,7 @@ export default function FleetEditor() {
         setErrorMsg={setErrorMsg}
         setResult={setResult}
       />
-      <div className="max-w-max max-h-max text-xl">
+      <div className="max-w-max max-h-max">
         {errorMsg && <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>}
         {isLoading && (
           <div className="ml-48 mt-12">
@@ -113,8 +114,9 @@ export default function FleetEditor() {
           {data && !newFleet.length && !isLoading && (
             <Table headers={headers} data={data} handleEdit={handleEditFleet} />
           )}
+          {/* Queries result info -------------------------------------------------------*/}
           <div className="flex w-full m-1 h-6">
-            {response && <h5 className="text-teal-500 py-1 whitespace-pre-line result">{response.data}</h5>}
+            {result && <h5 className="text-teal-500 py-1 whitespace-pre-line result">{result}</h5>}
           </div>
         </div>
       </div>

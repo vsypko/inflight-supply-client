@@ -28,7 +28,7 @@ export async function handleDataFileInput<T>(
 }
 
 function timeConverter(time: number): string {
-  const convertedTime = new Date(time * 24.0001 * 60 * 60 * 1000)
+  const convertedTime = new Date(time * 24.001 * 60 * 60 * 1000)
   const hours =
     convertedTime.getUTCHours() < 10
       ? "0" + convertedTime.getUTCHours().toString()

@@ -48,8 +48,8 @@ export default function DropdownCountries({ value, setValue, setOpen }: Dropdown
   }
 
   return (
-    <div className="absolute w-1/2 block z-10 mr-12 mt-2 rounded-b-md  overflow-y-scroll shadow-md dark:shadow-slate-600 bg-slate-200 dark:bg-slate-900">
-      <div className="flex px-1 sticky top-0">
+    <div className="absolute w-1/2 block z-10 top-14 rounded-b-md overflow-y-scroll shadow-md dark:shadow-slate-600 bg-slate-200 dark:bg-slate-800">
+      <div className="flex sticky top-0">
         <label htmlFor="input-country-search" className="sr-only">
           Country Search
         </label>
@@ -59,18 +59,21 @@ export default function DropdownCountries({ value, setValue, setOpen }: Dropdown
           onChange={(e) => search(e.target.value)}
           type="text"
           id="input-country-search"
-          className="w-full p-1 pl-10 bg-slate-300 dark:bg-slate-700 rounded-full outline-none"
+          className="w-full p-1 pl-12 bg-slate-300 dark:bg-slate-700 rounded-full outline-none"
         />
       </div>
-      <div className="max-h-48 pl-3 mt-1 overflow-x-hidden">
+      <div className="max-h-56 pl-3 mt-1 overflow-x-hidden">
         <ul className="list-none">
           {countriesList?.map((item) => (
             <li
               key={item.cn_iso}
-              className="flex py-2 text-sm hover:bg-slate-600 hover:text-slate-300 cursor-pointer transition-colors space-x-3"
+              className="flex items-center py-1 text-base hover:bg-slate-600 hover:text-slate-300 cursor-pointer transition-colors space-x-3"
               onClick={() => selectionHandler(item)}
             >
-              <img alt="" src={`data:image/png;base64, ${item.cn_flag}`} />
+              <div className="w-10 h-6">
+                <img alt="" src={`data:image/png;base64, ${item.cn_flag}`} />
+              </div>
+
               <span>{`+${item.cn_phonecode}`}</span>
               <span className="text-ellipsis overflow-x-hidden whitespace-nowrap">{item.cn_case_name}</span>
             </li>

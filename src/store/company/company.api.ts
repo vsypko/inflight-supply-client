@@ -1,7 +1,7 @@
+import { Item } from "../../types/supplier.types"
 import { api } from "../api"
-import { IFleet, IFlight } from "../../types/airline.types"
 
-export const airlineApi = api.injectEndpoints({
+export const companyApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getCompanyData: builder.query<[], { tbType: string; tbName: string; date?: string }>({
       query: (data) => ({
@@ -11,7 +11,10 @@ export const airlineApi = api.injectEndpoints({
       providesTags: ["Data"],
     }),
 
-    insertCompanyData: builder.mutation<{ data: string }, { tbType: string; tbName: string; values: string }>({
+    insertCompanyData: builder.mutation<
+      { data: string; row: Item },
+      { tbType: string; tbName: string; values: string }
+    >({
       query: (data) => ({
         url: `company/${data.tbType}`,
         method: "POST",
@@ -20,11 +23,11 @@ export const airlineApi = api.injectEndpoints({
       invalidatesTags: ["Data"],
     }),
 
-    updateCompanyData: builder.mutation<{ data: string }, { tbType: string; tbName: string; value: any }>({
-      query: (dataToUpdate) => ({
-        url: `company/${dataToUpdate.tbType}`,
+    updateCompanyData: builder.mutation<{ data: string; row: Item }, { tbType: string; tbName: string; value: any }>({
+      query: (data) => ({
+        url: `company/${data.tbType}`,
         method: "PATCH",
-        body: { tb: dataToUpdate.tbName, value: dataToUpdate.value },
+        body: { tb: data.tbName, value: data.value },
       }),
       invalidatesTags: ["Data"],
     }),
@@ -34,6 +37,24 @@ export const airlineApi = api.injectEndpoints({
         url: `company/${data.tbType}`,
         method: "DELETE",
         params: { tb: data.tbName, id: data.id },
+      }),
+      invalidatesTags: ["Data"],
+    }),
+
+    imgUrlUpdate: builder.mutation({
+      query: (data) => ({
+        url: "company/items/img/update",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Data"],
+    }),
+
+    imgUrlRemove: builder.mutation({
+      query: (data) => ({
+        url: `company/items/img/${data.url}`,
+        method: "DELETE",
+        body: { tb: data.table },
       }),
       invalidatesTags: ["Data"],
     }),
@@ -47,4 +68,6 @@ export const {
   useInsertCompanyDataMutation,
   useUpdateCompanyDataMutation,
   useDeleteCompanyDataMutation,
-} = airlineApi
+  useImgUrlUpdateMutation,
+  useImgUrlRemoveMutation,
+} = companyApi

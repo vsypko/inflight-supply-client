@@ -49,7 +49,7 @@ export default function AdminAirline() {
                 }`}
               >
                 <i className="far fa-calendar-days text-2xl py-2.5 px-4 rounded-full bg-lime-600 mr-2" />
-                <h1 className="p-1 font-semibold">Schedule</h1>
+                <h1 className="p-1 font-semibold">Flights</h1>
               </button>
             </div>
             <div className={`transition-all ${action === "staff" ? "md:ml-4" : ""}`}>
