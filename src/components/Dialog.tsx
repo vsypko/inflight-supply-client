@@ -50,6 +50,7 @@ export default function Dialog<T extends IRow>(props: Props<T>): JSX.Element {
     if (err != null && typeof err === "object" && "data" in err) setErrorMsg(err.data as string)
     if (err != null && typeof err === "object" && "error" in err) setErrorMsg(err.error as string)
   }
+
   useEffect(() => {
     setDialogRef(ref.current)
   }, [ref])

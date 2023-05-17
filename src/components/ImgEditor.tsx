@@ -1,5 +1,5 @@
 import { ChangeEvent, Dispatch, RefObject, SetStateAction, useEffect, useRef } from "react"
-import { imageRemove, imageUtils } from "../services/image.utils"
+import { imageClear, imageUtils } from "../services/image.utils"
 import { imageSave, imgFileInput } from "../services/imagefile.loader"
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit"
 
@@ -25,7 +25,6 @@ export default function ImgEditor({ imgEditorProps }: { imgEditorProps: IProps }
     imgEditorProps
 
   useEffect(() => {
-    setImgLoaded(false)
     const loadImageToCanvas = async () => {
       if (url && url !== "undefined") {
         const image = await imageUtils(canvasRef, maxView)
@@ -33,6 +32,7 @@ export default function ImgEditor({ imgEditorProps }: { imgEditorProps: IProps }
         setImgLoaded(true)
       }
     }
+    setImgLoaded(false)
     if (setCanvasRef) setCanvasRef(canvasRef)
     loadImageToCanvas()
   }, [canvasRef, url, id])
@@ -44,7 +44,7 @@ export default function ImgEditor({ imgEditorProps }: { imgEditorProps: IProps }
   }
 
   function handleImageRemove() {
-    imageRemove(canvasRef, maxView)
+    imageClear(canvasRef, maxView)
     const oldUrl = url
     if (imgUrlUpdateAction) imgUrlUpdateAction({ imgUrl: undefined })
     imgRemoveQuery(oldUrl)
@@ -52,7 +52,7 @@ export default function ImgEditor({ imgEditorProps }: { imgEditorProps: IProps }
 
   function handleImageCancel() {
     setImgLoaded(false)
-    imageRemove(canvasRef, maxView)
+    imageClear(canvasRef, maxView)
   }
 
   async function handleImageSave() {
@@ -60,7 +60,7 @@ export default function ImgEditor({ imgEditorProps }: { imgEditorProps: IProps }
     const imgUrl = crypto.randomUUID()
     try {
       if (!canvasRef.current) return
-      await imageSave(canvasRef.current, maxView, id, imgUpdateQuery, imgUrl)
+      await imageSave(canvasRef.current, maxView, imgUpdateQuery, imgUrl, id)
       if (imgUrlUpdateAction) imgUrlUpdateAction({ imgUrl })
     } catch (e) {
       console.log(e)

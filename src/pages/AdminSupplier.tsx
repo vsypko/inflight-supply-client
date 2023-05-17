@@ -14,7 +14,7 @@ import {
 import Table from "../components/Table"
 import SaveRemove from "../components/SaveRemove"
 import { imageSave } from "../services/imagefile.loader"
-import { imageRemove } from "../services/image.utils"
+import { imageClear } from "../services/image.utils"
 
 const initialItem: Item = {
   id: 0,
@@ -42,8 +42,10 @@ export default function AdminSupplier() {
 
   const { company } = useAuth()
   const { data, error } = useGetCompanyDataQuery({ tbType: "supplies", tbName: company!.co_tb_1 })
-  const [insertCompanyData, { data: response, isError, isSuccess, isLoading }] = useInsertCompanyDataMutation()
-  const [updateCompanyData, { data: res }] = useUpdateCompanyDataMutation()
+  const [insertCompanyData, { isLoading }] = useInsertCompanyDataMutation()
+  const [updateCompanyData] = useUpdateCompanyDataMutation()
+  const [deleteItem] = useDeleteCompanyDataMutation()
+  const [response, setResponse] = useState("")
   const [imgUpdateQuery] = useImgUrlUpdateMutation()
   const [imgRemoveQuery] = useImgUrlRemoveMutation()
   const [imgEditorProps, setImgEditorProps] = useState({
@@ -64,17 +66,12 @@ export default function AdminSupplier() {
   }
 
   useEffect(() => {
-    handleError(error)
+    if (error) handleError(error)
   }, [error])
 
   const handleEditItem = (row: Item) => {
+    if (canvasRef && editRow && row.id !== editRow.id) imageClear(canvasRef, maxView)
     setEditRow(row)
-    if (canvasRef) imageRemove(canvasRef, maxView)
-    setImgEditorProps((props) => ({
-      ...props,
-      url: row.img_url,
-      id: row.id,
-    }))
     setErrorMsg("")
   }
 
@@ -104,53 +101,65 @@ export default function AdminSupplier() {
   }
 
   const handleAddItem = async () => {
-    const imgUrl = crypto.randomUUID()
+    let imgUrl = ""
+    if (imgLoaded) imgUrl = crypto.randomUUID()
     try {
       const values = `(${editRow?.code},'${editRow?.title}', '${editRow?.category}', '${editRow?.area}', '${editRow?.description}', '${imgUrl}')`
       const res = await insertCompanyData({ tbType: "supplies", tbName: company!.co_tb_1, values }).unwrap()
-      setEditRow(res.row)
-      if (!imgLoaded) return
-      if (!canvasRef) return
-      await imageSave(canvasRef.current, maxView, imgUpdateQuery, imgUrl, company!.co_tb_1)
+      setResponse(res.data)
+      if (!canvasRef || !imgLoaded) return
+      await imageSave(canvasRef.current, maxView, imgUpdateQuery, imgUrl, res.row.id, company!.co_tb_1)
+      setEditRow((row) => ({ ...(row as Item), img_url: imgUrl }))
     } catch (err) {
       handleError(err)
     }
   }
 
   const handleUpdateItem = async () => {
-    const imgUrl = crypto.randomUUID()
+    let imgUrl = ""
+    if (imgLoaded) imgUrl = crypto.randomUUID()
     try {
-      const res = await updateCompanyData({ tbType: "supplies", tbName: company!.co_tb_1, value: editRow }).unwrap()
-      console.log(res)
-
-      if (!imgLoaded) return
-      if (!canvasRef) return
-      await imageSave(canvasRef.current, maxView, imgUpdateQuery, imgUrl, company!.co_tb_1)
+      const res = await updateCompanyData({
+        tbType: "supplies",
+        tbName: company!.co_tb_1,
+        value: { ...editRow, img_url: imgUrl },
+      }).unwrap()
+      setResponse(res.data)
+      if (!canvasRef || !imgLoaded) return
+      await imageSave(canvasRef.current, maxView, imgUpdateQuery, imgUrl, editRow?.id, company!.co_tb_1)
+      setEditRow((row) => ({ ...(row as Item), img_url: imgUrl }))
     } catch (err) {
       handleError(err)
     }
   }
 
+  const handleDeleteItem = async () => {
+    if (editRow && editRow.id) {
+      const res = await deleteItem({ tbType: "supplies", tbName: company!.co_tb_1, id: editRow.id }).unwrap()
+      setResponse(res.data)
+      setEditRow(null)
+    }
+  }
+
+  const handleImgRemove = async () => {
+    if (canvasRef) imageClear(canvasRef, maxView)
+    if (editRow?.img_url) {
+      const oldUrl = editRow?.img_url
+      const res = await imgRemoveQuery({ tbType: "supplies", tbName: company!.co_tb_1, url: oldUrl }).unwrap()
+      setResponse(res.data)
+    }
+    setImgLoaded(false)
+    setEditRow((row) => ({ ...(row as Item), img_url: "" }))
+  }
+
   useEffect(() => {
     setImgEditorProps((props) => ({
       ...props,
+      id: editRow?.id,
+      url: editRow?.img_url,
       imgLoaded,
     }))
-  }, [imgLoaded])
-
-  const handleImgRemove = () => {
-    if (canvasRef) imageRemove(canvasRef, maxView)
-    // if (editRow?.img_url) {
-    //   const oldUrl = editRow?.img_url
-    //   imgRemoveQuery({ url: oldUrl, table: company!.co_tb_1 })
-    // }
-    setImgLoaded(false)
-    setImgEditorProps((props) => ({
-      ...props,
-      url: "",
-      imgLoaded,
-    }))
-  }
+  }, [imgLoaded, editRow?.id, editRow?.img_url])
 
   return (
     <div className="w-full">
@@ -159,7 +168,7 @@ export default function AdminSupplier() {
           <h1>Supplier</h1>
         </div>
         <div className="flex text-xl w-full justify-center">
-          <div className="block w-full max-w-max">
+          <div className="block w-full max-w-max relative">
             {errorMsg && <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>}
             {!newItems.length && !isLoading && (
               <div className="flex text-lg justify-between items-center">
@@ -195,13 +204,23 @@ export default function AdminSupplier() {
             )}
 
             {newItems.length != 0 && !isLoading && <SaveRemove setNew={setNewItems} handleSave={handleItemsInsert} />}
-            {newItems.length != 0 && !isLoading && <Table headers={headers} data={newItems} />}
+            {newItems.length != 0 && !isLoading && <Table headers={headers} data={newItems} height="max-h-[700px]" />}
             {data && !newItems.length && !isLoading && (
-              <Table headers={headers} data={data} handleEdit={handleEditItem} />
+              <Table
+                headers={headers}
+                data={data}
+                height="max-h-[200px]"
+                mdheight="md:max-h-[400px]"
+                handleEdit={handleEditItem}
+              />
             )}
 
-            <div className="flex m-1 text-base">
-              {response && <h5 className="text-teal-500 whitespace-pre-line result">{response.data}</h5>}
+            <div className="flex m-1 text-base absolute">
+              {response && (
+                <h5 onAnimationEnd={() => setResponse("")} className="text-teal-500 whitespace-pre-line result">
+                  {response}
+                </h5>
+              )}
             </div>
             {editRow && (
               <>
@@ -213,17 +232,17 @@ export default function AdminSupplier() {
                       setImgLoaded(false)
                       setEditRow(null)
                     }}
-                    className="absolute py-1 px-3.5 top-0 right-0 rounded-full hover:bg-slate-400 dark:hover:bg-slate-700 opacity-70 hover:opacity-100 active:scale-90"
+                    className="absolute z-10 py-1 px-3.5 top-2 right-0 rounded-full hover:bg-slate-400 dark:hover:bg-slate-700 opacity-70 hover:opacity-100 active:scale-90"
                   >
                     <i className="fas fa-xmark text-2xl" />
                   </button>
                   {/* image editor---------------------------------------------------- */}
-                  <div className="mb-2">
+                  <div className="my-5">
                     <ImgEditor imgEditorProps={imgEditorProps} />
                   </div>
                   <div className="w-full flex flex-col md:pl-4 pb-4">
                     {(Object.keys(editRow) as Array<keyof Item>).slice(1, 5).map((key, index) => (
-                      <div key={key as string} className="flex w-full text-xl relative items-center mb-2">
+                      <div key={key as string} className="flex w-full text-xl relative mb-2">
                         <label htmlFor={key} className="w-1/3 md:w-1/4 capitalize font-semibold">
                           {key + ":"}
                         </label>
@@ -235,7 +254,8 @@ export default function AdminSupplier() {
                           value={editRow[key]}
                           className={`w-2/3 md:w-3/4 bg-transparent opacity-70 focus:outline-none hover:opacity-100 focus:opacity-100 peer`}
                         />
-                        <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/3 md:left-[calc(100%*1/4)] border-slate-500 bottom-0 peer-focus:w-2/3 md:peer-focus:w-3/4 peer-focus:border-b" />
+                        {/* <div className="absolute w-0 transition-all duration-300 ease-in-out left-[calc(100%*1/3)] md:left-[calc(100%*1/4)] border-slate-500 bottom-0 peer-focus:w-2/3 md:peer-focus:w-3/4 peer-focus:border-b-2" /> */}
+                        <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/3 md:left-1/4 border-slate-500 bottom-0 peer-focus:w-2/3 md:peer-focus:w-3/4 peer-focus:border-b" />
                       </div>
                     ))}
                     <div className="flex w-full text-xl relative">
@@ -280,9 +300,8 @@ export default function AdminSupplier() {
                         </button>
 
                         <button
-                          disabled={!editRow.id}
                           type="button"
-                          // onClick={(e) => handleDelete(e)}
+                          onClick={handleDeleteItem}
                           className="py-1 px-3 mx-2 rounded-full bg-red-600 opacity-75 hover:opacity-100 active:scale-90"
                         >
                           <i className="fas fa-trash-can mr-2" />

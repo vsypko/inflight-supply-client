@@ -32,8 +32,8 @@ export async function imageSave(
   maxView: number,
   imgUpdateQuery: any,
   imgUrl: string,
-  tbName?: string,
   id?: number,
+  tbName?: string,
 ) {
   let dataUrl = canvas?.toDataURL()
   if (!dataUrl) return

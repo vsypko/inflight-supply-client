@@ -50,11 +50,11 @@ export const companyApi = api.injectEndpoints({
       invalidatesTags: ["Data"],
     }),
 
-    imgUrlRemove: builder.mutation({
+    imgUrlRemove: builder.mutation<{ data: string }, { tbType: string; tbName: string; url: string }>({
       query: (data) => ({
         url: `company/items/img/${data.url}`,
         method: "DELETE",
-        body: { tb: data.table },
+        body: { tb: data.tbName },
       }),
       invalidatesTags: ["Data"],
     }),

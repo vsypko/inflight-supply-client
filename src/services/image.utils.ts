@@ -76,7 +76,7 @@ export async function imageUtils(canvasRef: RefObject<HTMLCanvasElement>, maxVie
   return image
 }
 
-export function imageRemove(canvasRef: RefObject<HTMLCanvasElement>, maxView: number) {
+export function imageClear(canvasRef: RefObject<HTMLCanvasElement>, maxView: number) {
   if (!canvasRef.current) return
   canvasRef.current.onwheel = null
   canvasRef.current.onpointerdown = null
