@@ -28,10 +28,10 @@ const initialItem: Item = {
 const inputTypes = ["number", "text", "text", "text"]
 const headers = Object.keys(initialItem).slice(1, 6) as Array<keyof Item>
 const maxView = 200
-type EventDataEdit =
-  | SyntheticEvent<HTMLDialogElement, Event>
-  | FormEvent<HTMLFormElement>
-  | MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
+// type EventDataEdit =
+//   | SyntheticEvent<HTMLDialogElement, Event>
+//   | FormEvent<HTMLFormElement>
+//   | MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
 
 export default function AdminSupplier() {
   const [newItems, setNewItems] = useState<Item[]>([])
@@ -135,6 +135,8 @@ export default function AdminSupplier() {
 
   const handleDeleteItem = async () => {
     if (editRow && editRow.id) {
+      const answer = confirm(`Please confirm deletion of ${editRow.title}.`)
+      if (!answer) return
       const res = await deleteItem({ tbType: "supplies", tbName: company!.co_tb_1, id: editRow.id }).unwrap()
       setResponse(res.data)
       setEditRow(null)
@@ -209,7 +211,7 @@ export default function AdminSupplier() {
               <Table
                 headers={headers}
                 data={data}
-                height="max-h-[200px]"
+                height="max-h-[185px]"
                 mdheight="md:max-h-[400px]"
                 handleEdit={handleEditItem}
               />
@@ -237,10 +239,10 @@ export default function AdminSupplier() {
                     <i className="fas fa-xmark text-2xl" />
                   </button>
                   {/* image editor---------------------------------------------------- */}
-                  <div className="my-5">
+                  <div className="my-3">
                     <ImgEditor imgEditorProps={imgEditorProps} />
                   </div>
-                  <div className="w-full flex flex-col md:pl-4 pb-4">
+                  <div className="w-full flex flex-col md:pl-4 pb-4 mt-3">
                     {(Object.keys(editRow) as Array<keyof Item>).slice(1, 5).map((key, index) => (
                       <div key={key as string} className="flex w-full text-xl relative mb-2">
                         <label htmlFor={key} className="w-1/3 md:w-1/4 capitalize font-semibold">
@@ -254,7 +256,6 @@ export default function AdminSupplier() {
                           value={editRow[key]}
                           className={`w-2/3 md:w-3/4 bg-transparent opacity-70 focus:outline-none hover:opacity-100 focus:opacity-100 peer`}
                         />
-                        {/* <div className="absolute w-0 transition-all duration-300 ease-in-out left-[calc(100%*1/3)] md:left-[calc(100%*1/4)] border-slate-500 bottom-0 peer-focus:w-2/3 md:peer-focus:w-3/4 peer-focus:border-b-2" /> */}
                         <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/3 md:left-1/4 border-slate-500 bottom-0 peer-focus:w-2/3 md:peer-focus:w-3/4 peer-focus:border-b" />
                       </div>
                     ))}

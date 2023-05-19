@@ -29,16 +29,16 @@ export const authSlice = createSlice({
     updateUserUrl(state, { payload: { imgUrl } }: PayloadAction<{ imgUrl: string | undefined }>): void {
       if (state.user) {
         state.user.usr_url = imgUrl
-        // state.user.usr_url_data = url_data
       }
     },
 
     updateCountry(state, { payload: country }: PayloadAction<ICountry>): void {
       if (state.country) {
-        state.country.cn_iso = country.cn_iso
-        state.country.cn_case_name = country.cn_case_name
-        state.country.cn_phonecode = country.cn_phonecode
-        state.country.cn_flag = country.cn_flag
+        state.country.iso = country.iso
+        state.country.title_case = country.title_case
+        state.country.phonecode = country.phonecode
+        state.country.currency = country.currency
+        state.country.flag = country.flag
       }
     },
 

@@ -34,15 +34,15 @@ export default function DropdownCountries({ value, setValue, setOpen }: Dropdown
     searchStr = searchStr.toLowerCase()
     newData = data!.filter((item) => {
       return (
-        item.cn_phonecode.toString().toLowerCase().startsWith(searchStr) ||
-        item.cn_case_name.toLowerCase().startsWith(searchStr)
+        item.phonecode.toString().toLowerCase().startsWith(searchStr) ||
+        item.title_case.toLowerCase().startsWith(searchStr)
       )
     })
     setCountriesList(newData)
   }
 
   const selectionHandler = (item: ICountry) => {
-    setValue((value) => ({ ...value, cn: item.cn_iso }))
+    setValue((value) => ({ ...value, cn: item.iso }))
     updateCountry(item)
     setOpen((prev) => !prev)
   }
@@ -66,16 +66,16 @@ export default function DropdownCountries({ value, setValue, setOpen }: Dropdown
         <ul className="list-none">
           {countriesList?.map((item) => (
             <li
-              key={item.cn_iso}
-              className="flex items-center py-1 text-base hover:bg-slate-600 hover:text-slate-300 cursor-pointer transition-colors space-x-3"
+              key={item.iso}
+              className="flex items-center py-1 text-base hover:bg-slate-600 hover:text-slate-300 cursor-pointer transition-colors"
               onClick={() => selectionHandler(item)}
             >
-              <div className="w-10 h-6">
-                <img alt="" src={`data:image/png;base64, ${item.cn_flag}`} />
+              <div className="w-1/5">
+                <img alt="" src={`data:image/png;base64, ${item.flag}`} />
               </div>
 
-              <span>{`+${item.cn_phonecode}`}</span>
-              <span className="text-ellipsis overflow-x-hidden whitespace-nowrap">{item.cn_case_name}</span>
+              <span className="w-1/5 flex justify-end mr-2">{`+${item.phonecode}`}</span>
+              <span className="w-3/5 text-ellipsis overflow-x-hidden whitespace-nowrap">{item.title_case}</span>
             </li>
           ))}
         </ul>

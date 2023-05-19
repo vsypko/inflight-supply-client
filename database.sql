@@ -17,15 +17,17 @@ ap_home_link varchar,
 ap_keywords varchar
 );
 
-create TABLE country(
-cn_id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-cn_iso char(2) not null,
-cn_name varchar(80) not null,
-cn_case_name varchar(80) not null,
-cn_iso3 char(4),
-cn_numcode smallint DEFAULT 0,
-cn_phonecode integer NOT NULL,
-cn_flag text
+create TABLE countries(
+id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+iso char(2) not null,
+title varchar(80) not null,
+title_case varchar(80) not null,
+iso3 char(4),
+numcode smallint DEFAULT 0,
+phonecode integer NOT NULL,
+currency char(4),
+currency3 smallint DEFAULT 0,
+flag text
 );
 
 
@@ -65,7 +67,7 @@ create TABLE users(
   usr_created_time DATE NOT NULL DEFAULT CURRENT_DATE
   usr_co integer REFERENCES company (co_id) DEFAULT 0,
   usr_phone varchar(14),
-  usr_cn varchar(2) REFERENCES country (cn_iso) DEFAULT 'ZZ'
+  usr_cn varchar(2) REFERENCES countried (iso) DEFAULT 'ZZ'
 );
 
 create TABLE roles(
@@ -130,9 +132,9 @@ CREATE TABLE fleet(
 CREATE TABLE supply(
   id SERIAL PRIMARY KEY,
   code integer UNIQUE NOT NULL,
-  name varchar(255),
+  title varchar(255),
   category varchar(32),
   area varchar(128),
   description text, 
-  img_url varchar(36)
+  img_url uuid
 );

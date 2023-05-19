@@ -36,7 +36,7 @@ export default function Profile() {
     firstname: user!.usr_firstname || "",
     lastname: user!.usr_lastname || "",
     phone: user!.usr_phone || "",
-    cn: user!.usr_cn === "ZZ" ? country!.cn_iso : user!.usr_cn || "ZZ",
+    cn: user!.usr_cn === "ZZ" ? country!.iso : user!.usr_cn || "ZZ",
   })
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -132,8 +132,8 @@ export default function Profile() {
                 className="flex mt-6 items-center text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 dark:group-hover:text-slate-200 dark:peer-focus:text-slate-200"
                 onClick={() => setOpenCountryDropdown((prev) => !prev)}
               >
-                <img src={`data:image/png;base64, ${country?.cn_flag}`} alt="" className="py-1 mr-1" />
-                <span className="mr-1">+{country!.cn_phonecode}</span>
+                <img src={`data:image/png;base64, ${country?.flag}`} alt="" className="py-1 mr-1" />
+                <span className="mr-1">+{country!.phonecode}</span>
                 <i
                   className={`fa-solid fa-chevron-down transition-all ${
                     openCountryDropdown ? "rotate-180" : "rotate-0"
