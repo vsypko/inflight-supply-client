@@ -20,13 +20,14 @@ const initialItem: Item = {
   id: 0,
   code: 0,
   title: "",
+  price: 0.0,
   category: "",
   area: "",
   description: "",
   img_url: "",
 }
-const inputTypes = ["number", "text", "text", "text"]
-const headers = Object.keys(initialItem).slice(1, 6) as Array<keyof Item>
+// const inputTypes = ["number", "text", "number", "text", "text", "text"]
+const headers = Object.keys(initialItem).slice(1, 7) as Array<keyof Item>
 const maxView = 200
 // type EventDataEdit =
 //   | SyntheticEvent<HTMLDialogElement, Event>
@@ -76,7 +77,18 @@ export default function AdminSupplier() {
   }
 
   const onChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setEditRow((row) => ({ ...(row as Item), [event.target.name]: event.target.value }))
+    let value = event.target.value
+    if (event.target.name === "price") {
+      if (value && isNaN(Number(value))) {
+        event.preventDefault()
+        return
+      }
+      if (value.includes(".") && value.split(".")[1] && value.split(".")[1].length > 2) {
+        event.preventDefault()
+        return
+      }
+    }
+    setEditRow((row) => ({ ...(row as Item), [event.target.name]: value }))
   }
 
   function handleFileUpload(e: ChangeEvent<HTMLInputElement>) {
@@ -89,7 +101,7 @@ export default function AdminSupplier() {
       const values = newItems
         .map(
           (row) =>
-            `(${row.code},'${row.title}', '${row.category}', '${row.area}', '${row.description}', '${row.img_url}')`,
+            `(${row.code},'${row.title}', ${row.price} '${row.category}', '${row.area}', '${row.description}', '${row.img_url}')`,
         )
         .join(",")
       await insertCompanyData({ tbType: "supplies", tbName: company!.co_tb_1, values }).unwrap()
@@ -104,7 +116,7 @@ export default function AdminSupplier() {
     let imgUrl = ""
     if (imgLoaded) imgUrl = crypto.randomUUID()
     try {
-      const values = `(${editRow?.code},'${editRow?.title}', '${editRow?.category}', '${editRow?.area}', '${editRow?.description}', '${imgUrl}')`
+      const values = `(${editRow?.code},'${editRow?.title}', ${editRow?.price}, '${editRow?.category}', '${editRow?.area}', '${editRow?.description}', '${imgUrl}')`
       const res = await insertCompanyData({ tbType: "supplies", tbName: company!.co_tb_1, values }).unwrap()
       setResponse(res.data)
       if (!canvasRef || !imgLoaded) return
@@ -243,19 +255,24 @@ export default function AdminSupplier() {
                     <ImgEditor imgEditorProps={imgEditorProps} />
                   </div>
                   <div className="w-full flex flex-col md:pl-4 pb-4 mt-3">
-                    {(Object.keys(editRow) as Array<keyof Item>).slice(1, 5).map((key, index) => (
-                      <div key={key as string} className="flex w-full text-xl relative mb-2">
+                    {headers.slice(0, 5).map((key, index) => (
+                      <div key={key} className="flex w-full text-xl relative mb-2">
                         <label htmlFor={key} className="w-1/3 md:w-1/4 capitalize font-semibold">
                           {key + ":"}
                         </label>
                         <input
                           id={key}
-                          type={inputTypes[index]}
+                          type="text"
                           name={key}
                           onChange={onChange}
                           value={editRow[key]}
                           className={`w-2/3 md:w-3/4 bg-transparent opacity-70 focus:outline-none hover:opacity-100 focus:opacity-100 peer`}
                         />
+                        {index === 2 && (
+                          <span className="absolute left-[calc(100%/3-1rem)] md:left-[calc(100%/4-1rem)] opacity-70 peer-hover:opacity-100 peer-focus:opacity-100">
+                            $
+                          </span>
+                        )}
                         <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/3 md:left-1/4 border-slate-500 bottom-0 peer-focus:w-2/3 md:peer-focus:w-3/4 peer-focus:border-b" />
                       </div>
                     ))}

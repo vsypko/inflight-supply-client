@@ -44,7 +44,9 @@ export default function Table<T>({
             >
               {headers.map((header) => (
                 <td key={header as string} className="px-6 truncate max-w-md">
-                  {row[header] as string}
+                  <div className={`${header === "price" ? "flex justify-end" : "flex justify-start"}`}>
+                    {header === "price" ? "$ " + (row[header] as number).toFixed(2) : (row[header] as string)}
+                  </div>
                 </td>
               ))}
             </tr>

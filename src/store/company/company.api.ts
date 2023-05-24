@@ -3,7 +3,7 @@ import { api } from "../api"
 
 export const companyApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getCompanyData: builder.query<[], { tbType: string; tbName: string; date?: string }>({
+    getCompanyData: builder.query<Item[], { tbType: string; tbName: string; date?: string }>({
       query: (data) => ({
         url: `company/${data.tbType}`,
         params: { tb: data.tbName, date: data?.date },
@@ -23,7 +23,7 @@ export const companyApi = api.injectEndpoints({
       invalidatesTags: ["Data"],
     }),
 
-    updateCompanyData: builder.mutation<{ data: string; row: Item }, { tbType: string; tbName: string; value: any }>({
+    updateCompanyData: builder.mutation<{ data: string }, { tbType: string; tbName: string; value: any }>({
       query: (data) => ({
         url: `company/${data.tbType}`,
         method: "PATCH",

@@ -133,6 +133,7 @@ CREATE TABLE supply(
   id SERIAL PRIMARY KEY,
   code integer UNIQUE NOT NULL,
   title varchar(255),
+  price: numeric(15,6),
   category varchar(32),
   area varchar(128),
   description text, 
