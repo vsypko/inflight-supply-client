@@ -96,12 +96,12 @@ export default function AdminSupplier() {
     handleDataFileInput(e, headers, setNewItems)
   }
 
-  async function handleItemsInsert() {
+  async function handleInsertItems() {
     try {
       const values = newItems
         .map(
           (row) =>
-            `(${row.code},'${row.title}', ${row.price} '${row.category}', '${row.area}', '${row.description}', '${row.img_url}')`,
+            `(${row.code},'${row.title}', ${row.price}, '${row.category}', '${row.area}', '${row.description}', '${row.img_url}')`,
         )
         .join(",")
       await insertCompanyData({ tbType: "supplies", tbName: company!.co_tb_1, values }).unwrap()
@@ -120,8 +120,8 @@ export default function AdminSupplier() {
       const res = await insertCompanyData({ tbType: "supplies", tbName: company!.co_tb_1, values }).unwrap()
       setResponse(res.data)
       if (!canvasRef || !imgLoaded) return
-      await imageSave(canvasRef.current, maxView, imgUpdateQuery, imgUrl, res.row.id, company!.co_tb_1)
-      setEditRow((row) => ({ ...(row as Item), img_url: imgUrl }))
+      await imageSave(canvasRef.current, maxView, imgUpdateQuery, imgUrl, res.id, company!.co_tb_1)
+      setEditRow((row) => ({ ...(row as Item), id: res.id!, img_url: imgUrl }))
     } catch (err) {
       handleError(err)
     }
@@ -217,7 +217,7 @@ export default function AdminSupplier() {
               </div>
             )}
 
-            {newItems.length != 0 && !isLoading && <SaveRemove setNew={setNewItems} handleSave={handleItemsInsert} />}
+            {newItems.length != 0 && !isLoading && <SaveRemove setNew={setNewItems} handleSave={handleInsertItems} />}
             {newItems.length != 0 && !isLoading && <Table headers={headers} data={newItems} height="max-h-[700px]" />}
             {data && !newItems.length && !isLoading && (
               <Table
@@ -265,7 +265,9 @@ export default function AdminSupplier() {
                           type="text"
                           name={key}
                           onChange={onChange}
-                          value={editRow[key]}
+                          value={
+                            key === "price" && typeof editRow[key] === "number" ? editRow[key].toFixed(2) : editRow[key]
+                          }
                           className={`w-2/3 md:w-3/4 bg-transparent opacity-70 focus:outline-none hover:opacity-100 focus:opacity-100 peer`}
                         />
                         {index === 2 && (

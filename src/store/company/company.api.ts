@@ -12,7 +12,7 @@ export const companyApi = api.injectEndpoints({
     }),
 
     insertCompanyData: builder.mutation<
-      { data: string; row: Item },
+      { data: string; id?: number },
       { tbType: string; tbName: string; values: string }
     >({
       query: (data) => ({
