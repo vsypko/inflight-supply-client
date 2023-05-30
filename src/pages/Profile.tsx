@@ -36,7 +36,7 @@ export default function Profile() {
     firstname: user!.firstname || "",
     lastname: user!.lastname || "",
     phone: user!.phone || "",
-    country: user!.country === "ZZ" ? country!.iso : user!.country || "ZZ",
+    country: user!.country,
   })
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -85,13 +85,13 @@ export default function Profile() {
                 type="text"
                 name="firstname"
                 value={value.firstname}
-                id="first_name"
+                id="firstname"
                 onChange={onChange}
                 className="block mt-6 w-full text-slate-800 dark:text-slate-100 bg-transparent appearance-none border-0 border-b-2 border-slate-400 dark:border-slate-600 focus:border-slate-700 dark:focus:border-slate-400 focus:outline-none focus:ring-0 peer"
                 placeholder=" "
               />
               <label
-                htmlFor="first_name"
+                htmlFor="firstname"
                 className="absolute text-slate-600 dark:text-slate-400 duration-300 transform -translate-y-9 scale-90 top-8 origin-[0] peer-focus:left-0 peer-focus:text-slate-500 dark:peer-focus:text-slate-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-2 peer-focus:scale-75 peer-focus:-translate-y-12"
               >
                 <i className="far fa-user mr-2" />
@@ -103,13 +103,13 @@ export default function Profile() {
                 type="text"
                 name="lastname"
                 value={value.lastname}
-                id="last_name"
+                id="lastname"
                 onChange={onChange}
                 className="block mt-6 w-full text-slate-800 dark:text-slate-100 bg-transparent appearance-none border-0 border-b-2 border-slate-400 dark:border-slate-600 focus:border-slate-700 dark:focus:border-slate-400 focus:outline-none focus:ring-0 peer"
                 placeholder=" "
               />
               <label
-                htmlFor="last_name"
+                htmlFor="lastname"
                 className="absolute text-slate-600 dark:text-slate-400 duration-300 transform -translate-y-9 scale-90 top-8 origin-[0] peer-focus:left-0 peer-focus:text-slate-500 dark:peer-focus:text-slate-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-2 peer-focus:scale-75 peer-focus:-translate-y-12"
               >
                 <i className="fas fa-user mr-2" />

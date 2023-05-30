@@ -10,7 +10,7 @@ export interface IUser {
   role: string
   company: number | undefined
   phone: string | undefined
-  country: string | undefined
+  country: string
   img_url_data: string | undefined
 }
 
@@ -48,12 +48,7 @@ export interface IUserUpdateRequest {
 }
 
 export interface IUserUpdateResponse {
-  id: number
-  firstname: string
-  lastname: string
-  email: string
-  phone: string
-  country_iso: string
+  user: IUser
   country: ICountry
 }
 

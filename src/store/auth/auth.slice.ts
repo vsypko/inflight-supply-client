@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { ICountry, IUserState } from "../../types/user.types"
+import { ICountry, IUser, IUserState } from "../../types/user.types"
 
 const initialState: IUserState = {
   user: null,
@@ -45,18 +45,14 @@ export const authSlice = createSlice({
     updateUserData(
       state,
       {
-        payload: { firstname, lastname, phone, country },
+        payload: { user, country },
       }: PayloadAction<{
-        firstname: string | undefined
-        lastname: string | undefined
-        phone: string | undefined
-        country: ICountry | null
+        user: IUser
+        country: ICountry
       }>,
     ): void {
       if (state.user && state.country) {
-        state.user.firstname = firstname
-        state.user.lastname = lastname
-        state.user.phone = phone
+        state.user = user
         state.country = country
       }
     },
