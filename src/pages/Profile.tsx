@@ -22,7 +22,7 @@ export default function Profile() {
 
   const imgEditorProps = {
     path: "user/geturl/",
-    url: user?.usr_url,
+    url: user?.img_url,
     id: user?.id,
     imgLoaded,
     setImgLoaded,
@@ -33,10 +33,10 @@ export default function Profile() {
 
   const [value, setValue] = useState<IUserUpdateRequest>({
     id: user!.id,
-    firstname: user!.usr_firstname || "",
-    lastname: user!.usr_lastname || "",
-    phone: user!.usr_phone || "",
-    cn: user!.usr_cn === "ZZ" ? country!.iso : user!.usr_cn || "ZZ",
+    firstname: user!.firstname || "",
+    lastname: user!.lastname || "",
+    phone: user!.phone || "",
+    country: user!.country === "ZZ" ? country!.iso : user!.country || "ZZ",
   })
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -54,14 +54,14 @@ export default function Profile() {
       <h1 className="w-full py-4 text-center text-3xl font-bold">PROFILE</h1>
       <div className="w-full md:w-1/2 px-4 md:px-0">
         <div className="flex p-2 h-[218px] border border-spacing-1 rounded-xl border-slate-600 dark:border-slate-100 justify-center items-center relative">
-          {user?.usr_url && !imgLoaded ? (
+          {user?.img_url && !imgLoaded ? (
             <>
               <img
                 width="200px"
                 height="200px"
                 use-credentials="true"
                 alt=""
-                src={import.meta.env.VITE_API_URL + "user/geturl/" + user.usr_url}
+                src={import.meta.env.VITE_API_URL + "user/geturl/" + user.img_url}
                 className="absolute"
               />
 
@@ -121,7 +121,7 @@ export default function Profile() {
                 <i className="far fa-envelope mr-2" />
                 <span>Email</span>
               </div>
-              <span className="text-slate-800 dark:text-slate-200">{user?.usr_email}</span>
+              <span className="text-slate-800 dark:text-slate-200">{user?.email}</span>
             </div>
 
             {/*-Phone Input--------------------------------------------------------------------------------*/}
@@ -168,10 +168,10 @@ export default function Profile() {
                 <span>Company</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-800 dark:text-slate-200">{company?.co_name}</span>
+                <span className="text-slate-800 dark:text-slate-200">{company?.name}</span>
                 <div className="flex justify-end items-center">
-                  <img src={`data:image/png;base64, ${company?.co_cn_flag}`} alt="" className="py-1" />
-                  <span className="text-slate-800 dark:text-slate-200 ml-2">{company?.co_cn_name}</span>
+                  <img src={`data:image/png;base64, ${company?.country.flag}`} alt="" className="py-1" />
+                  <span className="text-slate-800 dark:text-slate-200 ml-2">{company?.country.title_case}</span>
                 </div>
               </div>
             </div>
@@ -181,7 +181,7 @@ export default function Profile() {
                 <span>Role</span>
               </div>
 
-              <span className="text-slate-800 dark:text-slate-200">{user?.usr_role_name}</span>
+              <span className="text-slate-800 dark:text-slate-200">{user?.role}</span>
             </div>
           </div>
 

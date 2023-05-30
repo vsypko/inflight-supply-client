@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, SyntheticEvent, useEffect, useState, MouseEvent, RefObject } from "react"
 import ImgEditor from "../components/ImgEditor"
-import { Item } from "../types/supplier.types"
+import { Item } from "../types/company.types"
 import { handleDataFileInput } from "../services/datafile.loader"
 import { useAuth } from "../hooks/useAuth"
 import {
@@ -26,13 +26,9 @@ const initialItem: Item = {
   description: "",
   img_url: "",
 }
-// const inputTypes = ["number", "text", "number", "text", "text", "text"]
+
 const headers = Object.keys(initialItem).slice(1, 7) as Array<keyof Item>
 const maxView = 200
-// type EventDataEdit =
-//   | SyntheticEvent<HTMLDialogElement, Event>
-//   | FormEvent<HTMLFormElement>
-//   | MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
 
 export default function AdminSupplier() {
   const [newItems, setNewItems] = useState<Item[]>([])
@@ -42,7 +38,8 @@ export default function AdminSupplier() {
   const [canvasRef, setCanvasRef] = useState<RefObject<HTMLCanvasElement> | null>(null)
 
   const { company } = useAuth()
-  const { data, error } = useGetCompanyDataQuery({ tbType: "supplies", tbName: company!.co_tb_1 })
+  const { data, error } = useGetCompanyDataQuery({ tbType: "supplies", tbName: company!.table1 })
+
   const [insertCompanyData, { isLoading }] = useInsertCompanyDataMutation()
   const [updateCompanyData] = useUpdateCompanyDataMutation()
   const [deleteItem] = useDeleteCompanyDataMutation()
@@ -104,7 +101,7 @@ export default function AdminSupplier() {
             `(${row.code},'${row.title}', ${row.price}, '${row.category}', '${row.area}', '${row.description}', '${row.img_url}')`,
         )
         .join(",")
-      await insertCompanyData({ tbType: "supplies", tbName: company!.co_tb_1, values }).unwrap()
+      await insertCompanyData({ tbType: "supplies", tbName: company!.table1, values }).unwrap()
       setNewItems([])
     } catch (err) {
       setNewItems([])
@@ -117,10 +114,10 @@ export default function AdminSupplier() {
     if (imgLoaded) imgUrl = crypto.randomUUID()
     try {
       const values = `(${editRow?.code},'${editRow?.title}', ${editRow?.price}, '${editRow?.category}', '${editRow?.area}', '${editRow?.description}', '${imgUrl}')`
-      const res = await insertCompanyData({ tbType: "supplies", tbName: company!.co_tb_1, values }).unwrap()
+      const res = await insertCompanyData({ tbType: "supplies", tbName: company!.table1, values }).unwrap()
       setResponse(res.data)
       if (!canvasRef || !imgLoaded) return
-      await imageSave(canvasRef.current, maxView, imgUpdateQuery, imgUrl, res.id, company!.co_tb_1)
+      await imageSave(canvasRef.current, maxView, imgUpdateQuery, imgUrl, res.id, company!.table1)
       setEditRow((row) => ({ ...(row as Item), id: res.id!, img_url: imgUrl }))
     } catch (err) {
       handleError(err)
@@ -133,12 +130,12 @@ export default function AdminSupplier() {
     try {
       const res = await updateCompanyData({
         tbType: "supplies",
-        tbName: company!.co_tb_1,
+        tbName: company!.table1,
         value: { ...editRow, img_url: imgUrl },
       }).unwrap()
       setResponse(res.data)
       if (!canvasRef || !imgLoaded) return
-      await imageSave(canvasRef.current, maxView, imgUpdateQuery, imgUrl, editRow?.id, company!.co_tb_1)
+      await imageSave(canvasRef.current, maxView, imgUpdateQuery, imgUrl, editRow?.id, company!.table1)
       setEditRow((row) => ({ ...(row as Item), img_url: imgUrl }))
     } catch (err) {
       handleError(err)
@@ -149,7 +146,7 @@ export default function AdminSupplier() {
     if (editRow && editRow.id) {
       const answer = confirm(`Please confirm deletion of ${editRow.title}.`)
       if (!answer) return
-      const res = await deleteItem({ tbType: "supplies", tbName: company!.co_tb_1, id: editRow.id }).unwrap()
+      const res = await deleteItem({ tbType: "supplies", tbName: company!.table1, id: editRow.id }).unwrap()
       setResponse(res.data)
       setEditRow(null)
     }
@@ -159,7 +156,7 @@ export default function AdminSupplier() {
     if (canvasRef) imageClear(canvasRef, maxView)
     if (editRow?.img_url) {
       const oldUrl = editRow?.img_url
-      const res = await imgRemoveQuery({ tbType: "supplies", tbName: company!.co_tb_1, url: oldUrl }).unwrap()
+      const res = await imgRemoveQuery({ tbType: "supplies", tbName: company!.table1, url: oldUrl }).unwrap()
       setResponse(res.data)
     }
     setImgLoaded(false)
@@ -294,7 +291,7 @@ export default function AdminSupplier() {
                   </div>
                 </div>
 
-                <div className="flex w-full text-sm justify-around md:justify-between mt-2 text-slate-maxView">
+                <div className="flex w-full text-sm justify-around md:justify-between mt-2 text-slate-200">
                   {imgLoaded && (
                     <div className="w-full">
                       <button
@@ -322,7 +319,7 @@ export default function AdminSupplier() {
                         <button
                           type="button"
                           onClick={handleDeleteItem}
-                          className="py-1 px-3 mx-2 rounded-full bg-red-600 opacity-75 hover:opacity-100 active:scale-90"
+                          className="py-1 px-3 mx-2 rounded-full bg-red-700 opacity-75 hover:opacity-100 active:scale-90"
                         >
                           <i className="fas fa-trash-can mr-2" />
                           <span>DELETE</span>
@@ -332,7 +329,7 @@ export default function AdminSupplier() {
                     <button
                       type="button"
                       onClick={handleAddItem}
-                      className="py-1 px-3 rounded-full bg-teal-700 opacity-70 hover:opacity-100 active:scale-90"
+                      className="py-1 px-3 rounded-full bg-teal-800 opacity-70 hover:opacity-100 active:scale-90"
                     >
                       <i className="fas fa-plus mr-2" />
                       <span>NEW</span>

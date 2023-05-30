@@ -71,7 +71,7 @@ export default function ImgEditor({ imgEditorProps }: { imgEditorProps: IProps }
     "flex px-2 lg:px-4 py-1 mt-4 mb-1 text-lg items-center rounded-full active:scale-90 hover:bg-slate-300 dark:hover:bg-slate-800 opacity-70 hover:opacity-100"
   return (
     <div className="relative w-full flex justify-center">
-      <canvas ref={canvasRef} width="200px" height="200px" className="border border-slate-500 w-[200px] h-[200px]" />
+      <canvas ref={canvasRef} width="200px" height="200px" className="border border-slate-500 w-[201px] h-[201px]" />
       {!imgLoaded ? (
         <label className="absolute top-0 flex flex-col justify-center items-center w-[200px] h-[200px] bg-slate-300 dark:bg-slate-700 active:scale-90 cursor-pointer opacity-60 hover:opacity-90">
           <i className="fas fa-cloud-arrow-up text-4xl" />

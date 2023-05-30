@@ -1,12 +1,11 @@
-import { ChangeEvent, useEffect, useState } from "react"
+import { useState } from "react"
 import { useAppSelector } from "../hooks/redux"
 import { useAuth } from "../hooks/useAuth"
 import FlightsEditor from "../components/FlightsEditor"
 import FleetEditor from "../components/FleetEditor"
 
 export default function AdminAirline() {
-  const { selected } = useAppSelector((state) => state.airport)
-  const { user, country, company } = useAuth()
+  const { company } = useAuth()
   const [action, setAction] = useState("fleet")
 
   return (
@@ -15,18 +14,18 @@ export default function AdminAirline() {
         <div className="w-full md:w-1/4 md:text-2xl">
           <div className="flex justify-between m-3">
             <h1>Company:</h1>
-            <span className="font-bold">{company?.co_name}</span>
+            <span className="font-bold">{company?.name}</span>
           </div>
           <div className="flex justify-between m-3">
             <h1>Country:</h1>
             <div className="flex">
-              <span className="font-bold mr-2">{company?.co_cn_name}</span>
-              <img src={`data:image/png;base64, ${company?.co_cn_flag}`} alt="" className="py-1" />
+              <span className="font-bold mr-2">{company?.country.title_case}</span>
+              <img src={`data:image/png;base64, ${company?.country.flag}`} alt="" className="py-1" />
             </div>
           </div>
           <div className="flex justify-between m-3">
             <h1>IATA code:</h1>
-            <span className="font-bold">{company?.co_iata_code}</span>
+            <span className="font-bold">{company?.iata}</span>
           </div>
 
           <div className="flex md:flex-col mt-4 justify-around md:space-y-10">

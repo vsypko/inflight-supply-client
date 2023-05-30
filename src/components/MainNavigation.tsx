@@ -111,11 +111,11 @@ export default function MainNavigation() {
                     </span>
                   </NavLink>
                 </li>
-                {user != null && user.usr_role_name != "user" && (
+                {user != null && user.role != "user" && (
                   <li className="nav-item">
                     <NavLink
                       className={({ isActive }) => (isActive ? activeLink : regularLink)}
-                      to={`/admin/${user.usr_role_name}`}
+                      to={`/admin/${user.role}`}
                       onClick={() => setNavDropdownOpen(false)}
                     >
                       <i className="fas fa-screwdriver-wrench mr-2"></i>
@@ -167,11 +167,11 @@ export default function MainNavigation() {
                         userDropdownOpen ? "opacity-100" : "opacity-75"
                       }`}
                     >
-                      {user && user.usr_url ? (
+                      {user && user.img_url ? (
                         <img
                           use-credentials="true"
                           alt=""
-                          src={import.meta.env.VITE_API_URL + "user/geturl/" + user.usr_url}
+                          src={import.meta.env.VITE_API_URL + "user/geturl/" + user.img_url}
                           className="w-9 h-9 rounded-full mr-3"
                         />
                       ) : (

@@ -16,7 +16,7 @@ import {
   useUpdateCompanyDataMutation,
 } from "../store/company/company.api"
 import { useAuth } from "../hooks/useAuth"
-import { IAddPayload, IDeletePayload, IRow, IUpdatePayload } from "../types/airline.types"
+import { IAddPayload, IDeletePayload, IRow, IUpdatePayload } from "../types/company.types"
 
 interface Props<T> {
   row: T
@@ -73,17 +73,17 @@ export default function Dialog<T extends IRow>(props: Props<T>): JSX.Element {
         const formatedDate = new Date().toISOString().slice(0, 10)
         setRow((row) => ({ ...row, date: formatedDate }))
       }
-      setUpdatePayload({ tbType: "flight", tbName: company!.co_tb_2, value: row })
+      setUpdatePayload({ tbType: "flight", tbName: company!.table2, value: row })
       const data = `('${row.date}', ${row.flight}, '${row.type}', '${row.reg}', '${row.from}', '${row.to}', '${row.std}', '${row.sta}', ${row.seats})`
-      setAddPayload({ tbType: "flights", tbName: company!.co_tb_2, values: data })
-      setDeletePayload({ tbType: "flight", tbName: company!.co_tb_2, id: row.id })
+      setAddPayload({ tbType: "flights", tbName: company!.table2, values: data })
+      setDeletePayload({ tbType: "flight", tbName: company!.table2, id: row.id })
     } else {
       setInputTypes(["text", "text", "text", "number"])
       setIcons(["fas fa-plane-circle-check", "fas fa-plane-up", "fas fa-plane", "fas fa-users-gear"])
-      setUpdatePayload({ tbType: "fleet", tbName: company!.co_tb_1, value: row })
+      setUpdatePayload({ tbType: "fleet", tbName: company!.table1, value: row })
       const data = `('${row.name}','${row.type}','${row.reg}', ${row.seats})`
-      setAddPayload({ tbType: "fleet", tbName: company!.co_tb_1, values: data })
-      setDeletePayload({ tbType: "fleet", tbName: company!.co_tb_1, id: row.id })
+      setAddPayload({ tbType: "fleet", tbName: company!.table1, values: data })
+      setDeletePayload({ tbType: "fleet", tbName: company!.table1, id: row.id })
     }
   }, [row])
 
@@ -150,7 +150,7 @@ export default function Dialog<T extends IRow>(props: Props<T>): JSX.Element {
           value={row[key] as string}
           id={key as string}
           onChange={onChange}
-          className="block w-full text-slate-800 dark:text-slate-100 bg-transparent appearance-none border-0 border-b-2 border-slate-400 dark:border-slate-600 focus:border-slate-700 dark:focus:border-slate-400 focus:outline-none focus:ring-0 peer"
+          className="block w-full outline-none text-slate-800 dark:text-slate-100 bg-transparent appearance-none border-0 border-b-2 border-slate-400 dark:border-slate-600 focus:border-slate-700 dark:focus:border-slate-400 focus:ring-0 peer"
           placeholder=" "
         />
         <label
@@ -207,7 +207,7 @@ export default function Dialog<T extends IRow>(props: Props<T>): JSX.Element {
                   disabled={!row.id}
                   type="button"
                   onClick={(e) => handleDelete(e)}
-                  className="py-1 px-2 mx-1 rounded-full bg-red-600 opacity-75 hover:opacity-100 active:scale-90"
+                  className="py-1 px-2 mx-1 rounded-full bg-red-700 opacity-75 hover:opacity-100 active:scale-90"
                 >
                   <i className="fas fa-trash-can mr-2" />
                   <span>DELETE</span>
@@ -216,7 +216,7 @@ export default function Dialog<T extends IRow>(props: Props<T>): JSX.Element {
             )}
             <button
               type="submit"
-              className="py-1 px-2 rounded-full bg-teal-700 opacity-70 hover:opacity-100 active:scale-90"
+              className="py-1 px-2 rounded-full bg-teal-800 opacity-70 hover:opacity-100 active:scale-90"
             >
               <i className="fas fa-plus mr-2" />
               <span>NEW</span>

@@ -8,7 +8,7 @@ interface IValue {
   firstname: string
   lastname: string
   phone: string
-  cn: string
+  country: string
 }
 
 interface DropdownProps {
@@ -42,7 +42,7 @@ export default function DropdownCountries({ value, setValue, setOpen }: Dropdown
   }
 
   const selectionHandler = (item: ICountry) => {
-    setValue((value) => ({ ...value, cn: item.iso }))
+    setValue((value) => ({ ...value, country: item.iso }))
     updateCountry(item)
     setOpen((prev) => !prev)
   }
@@ -62,7 +62,7 @@ export default function DropdownCountries({ value, setValue, setOpen }: Dropdown
           className="w-full p-1 pl-12 bg-slate-300 dark:bg-slate-700 rounded-full outline-none"
         />
       </div>
-      <div className="max-h-56 pl-3 mt-1 overflow-x-hidden">
+      <div className="max-h-56 pl-3 mt-1 overflow-x-hidden transition-all">
         <ul className="list-none">
           {countriesList?.map((item) => (
             <li

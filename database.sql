@@ -31,19 +31,19 @@ flag text
 );
 
 
-create TABLE company(
+create TABLE companies(
 id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-co_category varchar(12),
-co_name varchar(255),
-co_register_num varchar(16),
-co_icao_code varchar(4) UNIQUE,
-co_iata_code varchar(3) UNIQUE,
-co_cn varchar(2) REFERENCES country (cn_iso) NOT NULL DEFAULT 'ZZ',
-co_addr_city varchar(35),
-co_addr_line varchar(128),
-co_home_link varchar(128),
-co_tb varchar(36),
-co_tb2 varchar(36)
+category varchar(12),
+name varchar(255),
+reg_number varchar(16),
+icao varchar(4) UNIQUE,
+iata varchar(3) UNIQUE,
+country varchar(2) REFERENCES country (cn_iso) NOT NULL DEFAULT 'ZZ',
+city varchar(35),
+address varchar(128),
+link varchar(128),
+table1 varchar(36),
+table2 varchar(36)
 );
 
 create TABLE co_branch(

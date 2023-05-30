@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState, MouseEvent } from "react"
+import { useState, MouseEvent } from "react"
 
 export default function Table<T>({
   headers,

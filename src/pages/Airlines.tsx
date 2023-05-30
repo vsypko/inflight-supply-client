@@ -1,7 +1,5 @@
-import { ChangeEvent, useState } from "react"
 import { useAppSelector } from "../hooks/redux"
 import { useAuth } from "../hooks/useAuth"
-import { handleXLSXFileInput } from "../services/datafile.loader"
 
 export default function Airlines() {
   const { selected } = useAppSelector((state) => state.airport)
@@ -14,14 +12,14 @@ export default function Airlines() {
       <div>{selected?.ap_municipality}</div>
       <div>{selected?.ap_name}</div>
       <div>{selected?.ap_iata_code}</div>
-      <div>{user?.usr_email}</div>
-      <div>{user?.usr_firstname}</div>
-      <div>{user?.usr_lastname}</div>
+      <div>{user?.email}</div>
+      <div>{user?.firstname}</div>
+      <div>{user?.lastname}</div>
       <div className="flex">
-        <span>+{user?.usr_cn === "ZZ" ? "" : country?.cn_phonecode}</span>
-        <span>-{user?.usr_phone}</span>
+        <span>+{user?.country === "ZZ" ? "" : country?.phonecode}</span>
+        <span>-{user?.phone}</span>
       </div>
-      <div>role: {user?.usr_role_name}</div>
+      <div>role: {user?.role}</div>
     </div>
   )
 }

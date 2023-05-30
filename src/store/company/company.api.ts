@@ -1,9 +1,8 @@
-import { Item } from "../../types/supplier.types"
 import { api } from "../api"
 
 export const companyApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getCompanyData: builder.query<Item[], { tbType: string; tbName: string; date?: string }>({
+    getCompanyData: builder.query<any[], { tbType: string; tbName: string; date?: string }>({
       query: (data) => ({
         url: `company/${data.tbType}`,
         params: { tb: data.tbName, date: data?.date },

@@ -25,8 +25,8 @@ export default function Messages() {
           {data.users.map((user) => (
             <li key={user.id}>
               <p>id: {user.id}</p>
-              <p>email: {user.usr_email}</p>
-              <p>role: {user.usr_role_name}</p>
+              <p>email: {user.email}</p>
+              <p>role: {user.role}</p>
             </li>
           ))}
         </ul>

@@ -3,7 +3,7 @@ import { useAuth } from "../hooks/useAuth"
 import { handleDataFileInput } from "../services/datafile.loader"
 import { useGetCompanyDataQuery, useInsertCompanyDataMutation } from "../store/company/company.api"
 import { LoadingSpinner } from "./LoadingSpinner"
-import { IFlight } from "../types/airline.types"
+import { IFlight } from "../types/company.types"
 import Table from "./Table"
 import SaveRemove from "./SaveRemove"
 import Dialog from "./Dialog"
@@ -30,7 +30,7 @@ export default function FlightsEditor() {
   const [errorMsg, setErrorMsg] = useState("")
   const [result, setResult] = useState("")
   const [insertCompanyData, { data: response, isError, isSuccess, isLoading }] = useInsertCompanyDataMutation()
-  const { data, error } = useGetCompanyDataQuery({ tbType: "flights", tbName: company!.co_tb_2, date })
+  const { data, error } = useGetCompanyDataQuery({ tbType: "flights", tbName: company!.table2, date })
 
   useEffect(() => {
     setErrorMsg("")
@@ -78,7 +78,7 @@ export default function FlightsEditor() {
             `('${row.date}'::date, ${row.flight}, '${row.type}', '${row.reg}', '${row.from}', '${row.to}', '${row.std}'::time, '${row.sta}'::time, ${row.seats})`,
         )
         .join(",")
-      await insertCompanyData({ tbType: "flights", tbName: company!.co_tb_2, values }).unwrap()
+      await insertCompanyData({ tbType: "flights", tbName: company!.table2, values }).unwrap()
       setNewFlights([])
     } catch (err) {
       setNewFlights([])
@@ -112,7 +112,7 @@ export default function FlightsEditor() {
               <div className="mb-2 lg:mb-1">
                 <button
                   type="button"
-                  className="px-2.5 py-1 opacity-75 hover:opacity-100 hover:bg-slate-700 rounded-full active:scale-90"
+                  className="h-8 w-8 rounded-full opacity-75 hover:opacity-100 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-90"
                   onClick={handleDecreaseDate}
                 >
                   <i className="fas fa-chevron-left" />
@@ -128,7 +128,7 @@ export default function FlightsEditor() {
                 </label>
                 <button
                   type="button"
-                  className="px-2.5 py-1 opacity-75 hover:opacity-100 hover:bg-slate-700 rounded-full active:scale-90"
+                  className="h-8 w-8 rounded-full opacity-75 hover:opacity-100 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-90"
                   onClick={handleIncreaseDate}
                 >
                   <i className="fas fa-chevron-right" />
@@ -141,7 +141,7 @@ export default function FlightsEditor() {
                 <button
                   onClick={() => handleEditFlight(initialFlights)}
                   type="button"
-                  className="px-2.5 py-1 rounded-full active:scale-90 cursor-pointer hover:bg-slate-300  dark:hover:bg-slate-800 opacity-75 hover:opacity-100"
+                  className="px-3 py-1 rounded-full active:scale-90 cursor-pointer hover:bg-slate-300  dark:hover:bg-slate-700 opacity-75 hover:opacity-100"
                 >
                   <i className="fas fa-plus mr-2" />
                   <span>Add flight</span>
@@ -153,7 +153,7 @@ export default function FlightsEditor() {
               <div className="mb-2 lg:mb-1">
                 <label
                   htmlFor="xlsxFileInput"
-                  className="px-2.5 py-1.5 rounded-full active:scale-90 cursor-pointer hover:bg-slate-300  dark:hover:bg-slate-800 opacity-75 hover:opacity-100"
+                  className="px-3 py-1 rounded-full active:scale-90 cursor-pointer hover:bg-slate-300  dark:hover:bg-slate-700 opacity-75 hover:opacity-100"
                 >
                   <i className="fas fa-upload mr-2" />
                   <span>Upload from file</span>

@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react"
 import { LoadingSpinner } from "./LoadingSpinner"
-import { IFleet } from "../types/airline.types"
+import { IFleet } from "../types/company.types"
 import { handleDataFileInput } from "../services/datafile.loader"
 import { useAuth } from "../hooks/useAuth"
 import { useGetCompanyDataQuery, useInsertCompanyDataMutation } from "../store/company/company.api"
@@ -20,7 +20,7 @@ const headers = Object.keys(initialFleet).slice(1) as Array<keyof IFleet>
 
 export default function FleetEditor() {
   const { user, country, company } = useAuth()
-  const { data, error } = useGetCompanyDataQuery({ tbType: "fleet", tbName: company!.co_tb_1 })
+  const { data, error } = useGetCompanyDataQuery({ tbType: "fleet", tbName: company!.table1 })
   const [insertCompanyData, { data: response, isError, isSuccess, isLoading }] = useInsertCompanyDataMutation()
 
   // const [fleet, setFleet] = useState<IFleet[]>([initialFleet])
@@ -45,7 +45,7 @@ export default function FleetEditor() {
   async function handleFleetInsert() {
     try {
       const values = newFleet.map((row) => `('${row.name}', '${row.type}', '${row.reg}', ${row.seats})`).join(",")
-      await insertCompanyData({ tbType: "fleet", tbName: company!.co_tb_1, values }).unwrap()
+      await insertCompanyData({ tbType: "fleet", tbName: company!.table1, values }).unwrap()
       setNewFleet([])
     } catch (err) {
       setNewFleet([])

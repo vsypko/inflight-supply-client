@@ -28,7 +28,7 @@ export const authSlice = createSlice({
 
     updateUserUrl(state, { payload: { imgUrl } }: PayloadAction<{ imgUrl: string | undefined }>): void {
       if (state.user) {
-        state.user.usr_url = imgUrl
+        state.user.img_url = imgUrl
       }
     },
 
@@ -45,20 +45,18 @@ export const authSlice = createSlice({
     updateUserData(
       state,
       {
-        payload: { firstname, lastname, phone, cn, country },
+        payload: { firstname, lastname, phone, country },
       }: PayloadAction<{
         firstname: string | undefined
         lastname: string | undefined
         phone: string | undefined
-        cn: string | undefined
         country: ICountry | null
       }>,
     ): void {
       if (state.user && state.country) {
-        state.user.usr_firstname = firstname
-        state.user.usr_lastname = lastname
-        state.user.usr_cn = cn
-        state.user.usr_phone = phone
+        state.user.firstname = firstname
+        state.user.lastname = lastname
+        state.user.phone = phone
         state.country = country
       }
     },

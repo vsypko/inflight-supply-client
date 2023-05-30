@@ -1,29 +1,17 @@
 import { ReactNode } from "react"
+import { ICompany } from "./company.types"
 
 export interface IUser {
   id: number
-  usr_firstname: string | undefined
-  usr_lastname: string | undefined
-  usr_email: string
-  usr_url: string | undefined
-  usr_role_name: string
-  usr_co: number | undefined
-  usr_phone: string | undefined
-  usr_cn: string | undefined
-  usr_url_data: string | undefined
-}
-
-export interface ICompany {
-  id: number
-  co_name: string
-  co_category: string
-  co_iata_code: string
-  co_cn: string
-  co_tb_1: string
-  co_tb_2: string
-  co_cn_name: string
-  co_cn_currency: string
-  co_cn_flag: string
+  firstname: string | undefined
+  lastname: string | undefined
+  email: string
+  img_url: string | undefined
+  role: string
+  company: number | undefined
+  phone: string | undefined
+  country: string | undefined
+  img_url_data: string | undefined
 }
 
 export interface ICountry {
@@ -56,14 +44,16 @@ export interface IUserUpdateRequest {
   firstname: string
   lastname: string
   phone: string
-  cn: string
+  country: string
 }
 
 export interface IUserUpdateResponse {
+  id: number
   firstname: string
   lastname: string
+  email: string
   phone: string
-  cn: string
+  country_iso: string
   country: ICountry
 }
 

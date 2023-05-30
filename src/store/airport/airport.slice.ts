@@ -13,12 +13,12 @@ export const airportSlice = createSlice({
   name: "airport",
   initialState,
   reducers: {
-    selectAirport(state, action: PayloadAction<IAirport>) {
+    selectAirport(state, action: PayloadAction<IAirport | null>) {
       state.selected = action.payload
     },
-    unselectAirport(state) {
-      state.selected = null
-    },
+    // unselectAirport(state) {
+    //   state.selected = null
+    // },
   },
 })
 

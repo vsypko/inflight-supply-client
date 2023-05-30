@@ -47,3 +47,35 @@ export interface IRow {
   seats?: number
   name?: string
 }
+
+export interface ICompany {
+  id: number
+  category: string
+  name: string
+  reg_number: string
+  icao?: string
+  iata?: string
+  country: {
+    iso: string
+    title_case: string
+    phonecode: number
+    currency: string
+    flag: string
+  }
+  city: string
+  address: string
+  link?: string
+  table1: string
+  table2: string
+}
+
+export interface Item {
+  id: number
+  code: number
+  title: string
+  price: number
+  category: string
+  area: string
+  description: string
+  img_url: string
+}
