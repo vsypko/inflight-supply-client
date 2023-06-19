@@ -2,11 +2,13 @@ import { useEffect, useState } from "react"
 import { LoadingSpinner } from "../components/LoadingSpinner"
 import { useGetUsersQuery } from "../store/users/users.api"
 import { IUser } from "../types/user.types"
+import { useAuth } from "../hooks/useAuth"
 
 export default function Messages() {
   const [users, setUsers] = useState<IUser[]>([])
+  const { user, company, country } = useAuth()
   const [errorMsg, setErrorMsg] = useState("")
-  const { data, error, isError, isSuccess, isLoading } = useGetUsersQuery("", { refetchOnMountOrArgChange: true })
+  const { data, error, isError, isSuccess, isLoading } = useGetUsersQuery({}, { skip: !user?.company })
 
   useEffect(() => {
     setErrorMsg("")

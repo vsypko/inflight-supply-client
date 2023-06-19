@@ -178,7 +178,7 @@ export default function Profile() {
             <div className="flex flex-col mt-4 border-0 border-b-2 border-slate-400 dark:border-slate-600 justify-between">
               <div className="w-full scale-90 text-slate-600 dark:text-slate-400 origin-[0]">
                 <i className="fas fa-user-shield mr-2"></i>
-                <span>Role</span>
+                <span>Competency</span>
               </div>
 
               <span className="text-slate-800 dark:text-slate-200">{user?.role}</span>
