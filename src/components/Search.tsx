@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, ReactHTMLElement } from "react"
 import { LoadingSpinner } from "../components/LoadingSpinner"
 import { useSearchAirportQuery } from "../store/airport/airport.api"
 import Dropdown from "../components/DropdownData"

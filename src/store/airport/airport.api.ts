@@ -11,8 +11,16 @@ export const airportApi = api.injectEndpoints({
         },
       }),
     }),
+    searchAirportbyCode: build.query<IAirportResponse, string>({
+      query: (search: string) => ({
+        url: "search/airport/code",
+        params: {
+          q: search,
+        },
+      }),
+    }),
   }),
   overrideExisting: false,
 })
 
-export const { useSearchAirportQuery } = airportApi
+export const { useSearchAirportQuery, useLazySearchAirportbyCodeQuery } = airportApi

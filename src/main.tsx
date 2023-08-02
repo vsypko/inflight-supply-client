@@ -5,6 +5,7 @@ import { Provider } from "react-redux"
 import { store } from "./store/store"
 
 import "./index.css"
+import "mapbox-gl/dist/mapbox-gl.css"
 
 if (
   localStorage.theme === "dark" ||
@@ -19,9 +20,7 @@ const main = document.getElementById("root")
 
 const root = createRoot(main as HTMLElement)
 root.render(
-  <StrictMode>
-    <Provider store={store}>
-      <AppRouter />
-    </Provider>
-  </StrictMode>,
+  <Provider store={store}>
+    <AppRouter />
+  </Provider>,
 )
