@@ -2,40 +2,47 @@ import { api } from "../api"
 
 export const companyApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getCompanyData: builder.query<any[], { tbType: string; tbName: string; date?: string }>({
+    getCompanyData: builder.query<any[], { type: string; id: number; date?: string }>({
       query: (data) => ({
-        url: `company/${data.tbType}`,
-        params: { tb: data.tbName, date: data?.date },
+        url: `company/${data.type}`,
+        params: {
+          id: data.id,
+          date: data?.date,
+        },
       }),
       providesTags: ["Data"],
     }),
 
-    insertCompanyData: builder.mutation<
-      { data: string; id?: number },
-      { tbType: string; tbName: string; values: string }
-    >({
+    insertCompanyData: builder.mutation<{ data: string; id: number }, { type: string; values: string }>({
       query: (data) => ({
-        url: `company/${data.tbType}`,
+        url: `company/${data.type}`,
         method: "POST",
-        body: { tb: data.tbName, values: data.values },
+        body: {
+          values: data.values,
+        },
       }),
       invalidatesTags: ["Data"],
     }),
 
-    updateCompanyData: builder.mutation<{ data: string }, { tbType: string; tbName: string; value: any }>({
+    updateCompanyData: builder.mutation<{ data: string }, { type: string; id: number; value: any }>({
       query: (data) => ({
-        url: `company/${data.tbType}`,
+        url: `company/${data.type}`,
         method: "PATCH",
-        body: { tb: data.tbName, value: data.value },
+        body: {
+          id: data.id,
+          value: data.value,
+        },
       }),
       invalidatesTags: ["Data"],
     }),
 
-    deleteCompanyData: builder.mutation<{ data: string }, { tbType: string; tbName: string; id: number }>({
+    deleteCompanyData: builder.mutation<{ data: string }, { type: string; id: number }>({
       query: (data) => ({
-        url: `company/${data.tbType}`,
+        url: `company/${data.type}`,
         method: "DELETE",
-        params: { tb: data.tbName, id: data.id },
+        params: {
+          id: data.id,
+        },
       }),
       invalidatesTags: ["Data"],
     }),
@@ -49,11 +56,13 @@ export const companyApi = api.injectEndpoints({
       invalidatesTags: ["Data"],
     }),
 
-    imgUrlRemove: builder.mutation<{ data: string }, { tbType: string; tbName: string; url: string }>({
+    imgUrlRemove: builder.mutation<{ data: string }, { type: string; id: number }>({
       query: (data) => ({
-        url: `company/items/img/${data.url}`,
+        url: `company/items/img/${data.type}`,
         method: "DELETE",
-        body: { tb: data.tbName },
+        params: {
+          id: data.id,
+        },
       }),
       invalidatesTags: ["Data"],
     }),

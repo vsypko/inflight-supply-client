@@ -1,4 +1,5 @@
 import { IAirportResponse } from "../../types/airport.types"
+import { ISchedule } from "../../types/company.types"
 import { api } from "../api"
 
 export const airportApi = api.injectEndpoints({
@@ -19,8 +20,20 @@ export const airportApi = api.injectEndpoints({
         },
       }),
     }),
+    airportSchedule: build.query<
+      { scheduleFrom: ISchedule[]; scheduleTo: ISchedule[] },
+      { airport: string | null; date: string }
+    >({
+      query: (data) => ({
+        url: "search/airport/schedule",
+        params: {
+          airport: data.airport,
+          date: data.date,
+        },
+      }),
+    }),
   }),
   overrideExisting: false,
 })
 
-export const { useSearchAirportQuery, useLazySearchAirportbyCodeQuery } = airportApi
+export const { useSearchAirportQuery, useLazySearchAirportbyCodeQuery, useLazyAirportScheduleQuery } = airportApi

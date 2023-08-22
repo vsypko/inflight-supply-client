@@ -7,10 +7,10 @@ export async function imgFileInput(
   canvasRef: RefObject<HTMLCanvasElement>,
 ) {
   e.preventDefault()
-  const photo = e.target.files?.[0]
-  if (!photo) return
+  const pic = e.target.files?.[0]
+  if (!pic) return
   const reader = new FileReader()
-  reader.readAsDataURL(photo)
+  reader.readAsDataURL(pic)
   reader.onloadend = async (e) => {
     const image = await imageUtils(canvasRef, maxView)
     image.src = e.target?.result as string
@@ -33,16 +33,17 @@ export async function imageSave(
   imgUpdateQuery: any,
   imgUrl: string,
   id?: number,
-  tbName?: string,
+  type?: string,
 ) {
   let dataUrl = canvas?.toDataURL()
   if (!dataUrl) return
+
   try {
     const imageInBlob = dataUrlToBlob(dataUrl)
     const image = new FormData()
     image.append("image", imageInBlob, `${imgUrl}`)
     if (id) image.append("id", `${id}`)
-    if (tbName) image.append("tb", tbName)
+    if (type) image.append("type", `${type}`)
     const ctx = canvas?.getContext("2d")
     ctx?.clearRect(0, 0, maxView, maxView)
 

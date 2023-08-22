@@ -4,24 +4,9 @@ import { handleDataFileInput } from "../services/datafile.loader"
 import { useGetCompanyDataQuery, useInsertCompanyDataMutation } from "../store/company/company.api"
 import { LoadingSpinner } from "./LoadingSpinner"
 import { IFlight } from "../types/company.types"
-import Table from "./Table"
+import Chart from "./Chart"
 import SaveRemove from "./SaveRemove"
 import Dialog from "./Dialog"
-
-const initialFlights = {
-  id: 0,
-  date: "",
-  flight: 0,
-  type: "",
-  reg: "",
-  from: "",
-  to: "",
-  std: "",
-  sta: "",
-  seats: 0,
-}
-
-const headers = Object.keys(initialFlights).slice(1) as Array<keyof IFlight>
 
 export default function FlightsEditor() {
   const { company } = useAuth()
@@ -30,7 +15,24 @@ export default function FlightsEditor() {
   const [errorMsg, setErrorMsg] = useState("")
   const [result, setResult] = useState("")
   const [insertCompanyData, { data: response, isError, isSuccess, isLoading }] = useInsertCompanyDataMutation()
-  const { data, error } = useGetCompanyDataQuery({ tbType: "flights", tbName: company!.table2, date })
+  const { data, error } = useGetCompanyDataQuery({ type: "flights", id: company!.id, date })
+
+  const initialFlights = {
+    id: 0,
+    date: "",
+    flight: 0,
+    type: "",
+    reg: "",
+    from: "",
+    to: "",
+    std: "",
+    sta: "",
+    seats: 0,
+    co_id: company!.id,
+    co_iata: company!.iata!,
+  }
+
+  const headers = Object.keys(initialFlights).slice(1, 10) as Array<keyof IFlight>
 
   useEffect(() => {
     setErrorMsg("")
@@ -65,20 +67,20 @@ export default function FlightsEditor() {
     dialogRef?.showModal()
   }
 
-  function handleFileUpload(e: ChangeEvent<HTMLInputElement>) {
+  async function handleUploadFile(e: ChangeEvent<HTMLInputElement>) {
     setErrorMsg("")
-    handleDataFileInput(e, headers, setNewFlights)
+    await handleDataFileInput(e, headers, setNewFlights)
   }
 
-  async function handleFlightsInsert() {
+  async function handleInsertFlights() {
     try {
       const values = newFlights
         .map(
           (row) =>
-            `('${row.date}'::date, ${row.flight}, '${row.type}', '${row.reg}', '${row.from}', '${row.to}', '${row.std}'::time, '${row.sta}'::time, ${row.seats})`,
+            `('${row.date}'::date, ${row.flight}, '${row.type}', '${row.reg}', '${row.from}', '${row.to}', '${row.std}'::time, '${row.sta}'::time, ${row.seats}, ${row.co_id}, '${row.co_iata}')`,
         )
         .join(",")
-      await insertCompanyData({ tbType: "flights", tbName: company!.table2, values }).unwrap()
+      await insertCompanyData({ type: "flights", values }).unwrap()
       setNewFlights([])
     } catch (err) {
       setNewFlights([])
@@ -164,7 +166,7 @@ export default function FlightsEditor() {
                   type="file"
                   accept=".xlsx, .ods"
                   className="hidden"
-                  onChange={handleFileUpload}
+                  onChange={(e) => handleUploadFile(e)}
                 />
               </div>
             </div>
@@ -173,14 +175,14 @@ export default function FlightsEditor() {
           {/* Save - Remove buttons for xlsx file upload-------------------------------------------------------- */}
 
           {newFlights.length !== 0 && !isLoading && (
-            <SaveRemove setNew={setNewFlights} handleSave={handleFlightsInsert} />
+            <SaveRemove setNew={setNewFlights} handleSave={handleInsertFlights} />
           )}
 
           {/* Table with flights from xlsx or from DB --------------------------------------------------------------*/}
 
-          {newFlights.length != 0 && !isLoading && <Table headers={headers} data={newFlights} />}
+          {newFlights.length !== 0 && !isLoading && <Chart headers={headers} data={newFlights} />}
           {data && !newFlights.length && !isLoading && (
-            <Table headers={headers} data={data} handleEdit={handleEditFlight} />
+            <Chart headers={headers} data={data} handleEdit={handleEditFlight} />
           )}
 
           {/* Queries result info -------------------------------------------------------*/}

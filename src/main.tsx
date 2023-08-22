@@ -1,4 +1,3 @@
-import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import AppRouter from "./components/AppRouter"
 import { Provider } from "react-redux"

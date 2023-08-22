@@ -4,23 +4,29 @@ import { IFleet } from "../types/company.types"
 import { handleDataFileInput } from "../services/datafile.loader"
 import { useAuth } from "../hooks/useAuth"
 import { useGetCompanyDataQuery, useInsertCompanyDataMutation } from "../store/company/company.api"
-import Table from "./Table"
+import Chart from "./Chart"
 import SaveRemove from "./SaveRemove"
 import Dialog from "./Dialog"
 
-const initialFleet: IFleet = {
-  id: 0,
-  name: "",
-  type: "",
-  reg: "",
-  seats: 0,
-}
-
-const headers = Object.keys(initialFleet).slice(1) as Array<keyof IFleet>
-
 export default function FleetEditor() {
   const { user, country, company } = useAuth()
-  const { data, error } = useGetCompanyDataQuery({ tbType: "fleet", tbName: company!.table1 })
+  const { data, error } = useGetCompanyDataQuery({ type: "fleet", id: company!.id })
+  const initialFleet: IFleet = {
+    id: 0,
+    name: "",
+    type: "",
+    reg: "",
+    seats: 0,
+    co_id: company!.id,
+  }
+  const headers = Object.keys(initialFleet).slice(1, 5) as Array<keyof IFleet>
+
+  useEffect(() => {
+    setErrorMsg("")
+    if (error != null && typeof error === "object" && "data" in error) setErrorMsg(error.data as string)
+    if (error != null && typeof error === "object" && "error" in error) setErrorMsg(error.error as string)
+  }, [error])
+
   const [insertCompanyData, { data: response, isError, isSuccess, isLoading }] = useInsertCompanyDataMutation()
 
   // const [fleet, setFleet] = useState<IFleet[]>([initialFleet])
@@ -44,8 +50,10 @@ export default function FleetEditor() {
 
   async function handleFleetInsert() {
     try {
-      const values = newFleet.map((row) => `('${row.name}', '${row.type}', '${row.reg}', ${row.seats})`).join(",")
-      await insertCompanyData({ tbType: "fleet", tbName: company!.table1, values }).unwrap()
+      const values = newFleet
+        .map((row) => `('${row.name}', '${row.type}', '${row.reg}', ${row.seats}, ${row.co_id})`)
+        .join(",")
+      await insertCompanyData({ type: "fleet", values }).unwrap()
       setNewFleet([])
     } catch (err) {
       setNewFleet([])
@@ -53,12 +61,6 @@ export default function FleetEditor() {
       if (err != null && typeof err === "object" && "error" in err) setErrorMsg(err.error as string)
     }
   }
-
-  useEffect(() => {
-    setErrorMsg("")
-    if (error != null && typeof error === "object" && "data" in error) setErrorMsg(error.data as string)
-    if (error != null && typeof error === "object" && "error" in error) setErrorMsg(error.error as string)
-  }, [error])
 
   return (
     <>
@@ -110,9 +112,9 @@ export default function FleetEditor() {
             </div>
           )}
           {newFleet.length != 0 && !isLoading && <SaveRemove setNew={setNewFleet} handleSave={handleFleetInsert} />}
-          {newFleet.length != 0 && !isLoading && <Table headers={headers} data={newFleet} />}
+          {newFleet.length != 0 && !isLoading && <Chart headers={headers} data={newFleet} />}
           {data && !newFleet.length && !isLoading && (
-            <Table headers={headers} data={data} handleEdit={handleEditFleet} />
+            <Chart headers={headers} data={data} handleEdit={handleEditFleet} />
           )}
           {/* Queries result info -------------------------------------------------------*/}
           <div className="flex w-full m-1 h-6">

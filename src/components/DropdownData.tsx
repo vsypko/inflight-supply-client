@@ -4,22 +4,20 @@ import { Dispatch, SetStateAction } from "react"
 
 interface DropdownProps<T> {
   items: T[] | undefined
-  setSelected: Dispatch<SetStateAction<string>>
   setOpen: Dispatch<SetStateAction<boolean>>
 }
 
-export default function Dropdown({ items, setSelected, setOpen }: DropdownProps<IAirport>) {
+export default function Dropdown({ items, setOpen }: DropdownProps<IAirport>) {
   const { selectAirport } = useActions()
 
   const selectionHandler = (item: IAirport) => {
-    setSelected(item.ap_name)
-    selectAirport(item)
     setOpen((prev) => !prev)
+    selectAirport(item)
   }
 
   return (
     <div className="absolute z-10 left-4 right-4 rounded-b-md max-h-80 overflow-y-scroll shadow-md dark:shadow-slate-600 bg-slate-100 dark:bg-slate-800">
-      <ul className="list-none">
+      <ul className="list-none w-full">
         {items?.map((item) => (
           <li
             key={item.ap_id}

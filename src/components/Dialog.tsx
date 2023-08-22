@@ -33,16 +33,18 @@ type EventDataEdit =
 
 export default function Dialog<T extends IRow>(props: Props<T>): JSX.Element {
   const { row, setRow, setDialogRef, setErrorMsg, setResult } = props
-  const { company } = useAuth()
   const [deleteDataQuery] = useDeleteCompanyDataMutation()
   const [insertDataQuery] = useInsertCompanyDataMutation()
   const [updateDataQuery] = useUpdateCompanyDataMutation()
 
   const [inputTypes, setInputTypes] = useState<string[]>([""])
   const [icons, setIcons] = useState<string[]>([""])
-  const [updatePayload, setUpdatePayload] = useState<IUpdatePayload<T>>({ tbType: "", tbName: "", value: null })
-  const [addPayload, setAddPayload] = useState<IAddPayload>({ tbType: "", tbName: "", values: "" })
-  const [deletePayload, setDeletePayload] = useState<IDeletePayload>({ tbType: "", tbName: "", id: 0 })
+
+  const [rowKeys, setRowKeys] = useState<(keyof T)[]>([])
+
+  const [updatePayload, setUpdatePayload] = useState<IUpdatePayload<T>>({ type: "", id: 0, value: null })
+  const [addPayload, setAddPayload] = useState<IAddPayload>({ type: "", values: "" })
+  const [deletePayload, setDeletePayload] = useState<IDeletePayload>({ type: "", id: 0 })
   const ref = useRef<HTMLDialogElement | null>(null)
 
   const handleError = (err: any): void => {
@@ -69,21 +71,23 @@ export default function Dialog<T extends IRow>(props: Props<T>): JSX.Element {
         "fas fa-clock",
         "fas fa-users-gear",
       ])
+      setRowKeys((Object.keys(row) as Array<keyof T>).slice(1, 10))
       if (row.date === "") {
         const formatedDate = new Date().toISOString().slice(0, 10)
         setRow((row) => ({ ...row, date: formatedDate }))
       }
-      setUpdatePayload({ tbType: "flight", tbName: company!.table2, value: row })
-      const data = `('${row.date}', ${row.flight}, '${row.type}', '${row.reg}', '${row.from}', '${row.to}', '${row.std}', '${row.sta}', ${row.seats})`
-      setAddPayload({ tbType: "flights", tbName: company!.table2, values: data })
-      setDeletePayload({ tbType: "flight", tbName: company!.table2, id: row.id })
+      setUpdatePayload({ type: "flights", id: row.id, value: row })
+      const data = `('${row.date}', ${row.flight}, '${row.type}', '${row.reg}', '${row.from}', '${row.to}', '${row.std}', '${row.sta}', ${row.seats}, ${row.co_id},'${row.co_iata}' )`
+      setAddPayload({ type: "flights", values: data })
+      setDeletePayload({ type: "flights", id: row.id })
     } else {
       setInputTypes(["text", "text", "text", "number"])
       setIcons(["fas fa-plane-circle-check", "fas fa-plane-up", "fas fa-plane", "fas fa-users-gear"])
-      setUpdatePayload({ tbType: "fleet", tbName: company!.table1, value: row })
-      const data = `('${row.name}','${row.type}','${row.reg}', ${row.seats})`
-      setAddPayload({ tbType: "fleet", tbName: company!.table1, values: data })
-      setDeletePayload({ tbType: "fleet", tbName: company!.table1, id: row.id })
+      setRowKeys((Object.keys(row) as Array<keyof T>).slice(1, 5))
+      setUpdatePayload({ type: "fleet", id: row.id, value: row })
+      const data = `('${row.name}','${row.type}','${row.reg}', ${row.seats}, ${row.co_id})`
+      setAddPayload({ type: "fleet", values: data })
+      setDeletePayload({ type: "fleet", id: row.id })
     }
   }, [row])
 
@@ -180,18 +184,20 @@ export default function Dialog<T extends IRow>(props: Props<T>): JSX.Element {
         </button>
       </div>
 
-      {/* Airline data (flights, fleet) add, change and delete form --------------------------------------------------*/}
+      {/* Company flights or fleet add, change and delete form --------------------------------------------------*/}
 
       <form method="dialog" onSubmit={(e) => handleAdd(e)}>
         <div className="grid md:grid-cols-2 gap-8 md:gap-8 w-full p-3 mt-6">
-          {(Object.keys(row) as Array<keyof T>).slice(1).map((key, index) => (
+          {rowKeys.map((key, index) => (
             <div key={key as string} className="relative w-full">
               {/* For inputs with keys For and To need to be airports dataset ----------------------------------------------- */}
               {renderedInput(key, index)}
             </div>
           ))}
 
-          <div className={`flex text-sm ${row.id != 0 ? "justify-between" : "justify-end"} text-slate-200`}>
+          {/* Form сontrol buttons block ----------------------------------------------- */}
+
+          <div className={`flex col-start-2 text-sm ${row.id != 0 ? "justify-between" : "justify-end"} text-slate-200`}>
             {row.id !== 0 && (
               <>
                 <button

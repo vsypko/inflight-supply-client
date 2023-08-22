@@ -26,7 +26,7 @@ export default function ImgEditor({ imgEditorProps }: { imgEditorProps: IProps }
 
   useEffect(() => {
     const loadImageToCanvas = async () => {
-      if (url && url !== "undefined") {
+      if (url && url !== undefined) {
         const image = await imageUtils(canvasRef, maxView)
         image.src = import.meta.env.VITE_API_URL + path + url
         setImgLoaded(true)

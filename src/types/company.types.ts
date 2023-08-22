@@ -9,6 +9,8 @@ export interface IFlight {
   std: string
   sta: string
   seats: number
+  co_id: number
+  co_iata: string
 }
 
 export interface IFleet {
@@ -17,21 +19,27 @@ export interface IFleet {
   type: string
   reg: string
   seats: number
+  co_id: number
+}
+
+export interface ISchedule {
+  departure?: string
+  arrival?: string
+  destination: string
+  flight: string
 }
 
 export interface IUpdatePayload<T> {
-  tbType: string
-  tbName: string
+  type: string
+  id: number
   value: T | null
 }
 export interface IAddPayload {
-  tbType: string
-  tbName: string
+  type: string
   values: string
 }
 export interface IDeletePayload {
-  tbType: string
-  tbName: string
+  type: string
   id: number
 }
 export interface IRow {
@@ -45,6 +53,8 @@ export interface IRow {
   std?: string
   sta?: string
   seats?: number
+  co_id?: number
+  co_iata?: string
   name?: string
 }
 
@@ -65,8 +75,6 @@ export interface ICompany {
   city: string
   address: string
   link?: string
-  table1: string
-  table2: string
 }
 
 export interface Item {
@@ -78,4 +86,5 @@ export interface Item {
   area: string
   description: string
   img_url: string
+  co_id: number
 }

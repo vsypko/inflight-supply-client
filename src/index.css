@@ -3,6 +3,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Roboto";
+  src: local("Roboto"), url("./src/assets/font_roboto/Roboto-Regular.ttf") format("truetype");
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;

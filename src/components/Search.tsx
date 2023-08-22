@@ -37,7 +37,7 @@ export default function Search() {
   }, [data, error])
 
   return (
-    <div className="relative">
+    <div className="w-full relative">
       <div className="w-full flex relative">
         <button
           className="flex items-center justify-center absolute left-0 top-0 z-10 text-xl w-10 h-10 rounded-full bg-slate-300 dark:bg-slate-700"
@@ -52,7 +52,7 @@ export default function Search() {
         </button>
 
         <div
-          className={`ml-5 rounded-r-full bg-slate-300 dark:bg-slate-700 flex transition-all duration-300 ease-in-out h-10 ${
+          className={`flex ml-5 rounded-r-full bg-slate-300 dark:bg-slate-700 transition-all duration-300 ease-out h-10 ${
             selected ? "w-0" : "w-full"
           }`}
         >
@@ -70,16 +70,16 @@ export default function Search() {
         </div>
 
         <div
-          className={`flex justify-between items-center text-xl transition-all duration-500 ease-in-out ${
-            !selected ? "w-0" : "w-full"
+          className={`flex justify-between items-center text-xl transition-all duration-300 ease-out ${
+            !selected ? "w-0 hidden" : "w-full"
           }`}
         >
-          <h1 className="uppercase mr-2 ml-10">{selected?.ap_name}</h1>
+          <h1 className="uppercase mr-2 ml-8">{selected?.ap_name}</h1>
           <h1 className="font-bold">{selected?.ap_iata_code}</h1>
         </div>
       </div>
 
-      {dropdownOpen && <Dropdown items={data?.airports} setSelected={setSearch} setOpen={setDropdownOpen} />}
+      {dropdownOpen && <Dropdown items={data?.airports} setOpen={setDropdownOpen} />}
       {isError && <div className="text-red-500">{errorMsg}</div>}
       {isLoading && (
         <div className="mt-28">

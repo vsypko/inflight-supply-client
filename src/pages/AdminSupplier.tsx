@@ -11,24 +11,10 @@ import {
   useImgUrlRemoveMutation,
   useUpdateCompanyDataMutation,
 } from "../store/company/company.api"
-import Table from "../components/Table"
+import Chart from "../components/Chart"
 import SaveRemove from "../components/SaveRemove"
 import { imageSave } from "../services/imagefile.loader"
 import { imageClear } from "../services/image.utils"
-
-const initialItem: Item = {
-  id: 0,
-  code: 0,
-  title: "",
-  price: 0.0,
-  category: "",
-  area: "",
-  description: "",
-  img_url: "",
-}
-
-const headers = Object.keys(initialItem).slice(1, 7) as Array<keyof Item>
-const maxView = 200
 
 export default function AdminSupplier() {
   const [newItems, setNewItems] = useState<Item[]>([])
@@ -38,24 +24,22 @@ export default function AdminSupplier() {
   const [canvasRef, setCanvasRef] = useState<RefObject<HTMLCanvasElement> | null>(null)
 
   const { company } = useAuth()
-  const { data, error } = useGetCompanyDataQuery({ tbType: "supplies", tbName: company!.table1 })
+  const { data, error } = useGetCompanyDataQuery({ type: "supplies", id: company!.id })
 
-  const [insertCompanyData, { isLoading }] = useInsertCompanyDataMutation()
-  const [updateCompanyData] = useUpdateCompanyDataMutation()
-  const [deleteItem] = useDeleteCompanyDataMutation()
-  const [response, setResponse] = useState("")
-  const [imgUpdateQuery] = useImgUrlUpdateMutation()
-  const [imgRemoveQuery] = useImgUrlRemoveMutation()
-  const [imgEditorProps, setImgEditorProps] = useState({
-    path: "company/items/img/",
-    url: editRow?.img_url,
-    id: editRow?.id,
-    imgLoaded,
-    setImgLoaded,
-    imgUpdateQuery,
-    imgRemoveQuery,
-    setCanvasRef,
-  })
+  const initialItem: Item = {
+    id: 0,
+    code: 0,
+    title: "",
+    price: 0.0,
+    category: "",
+    area: "",
+    description: "",
+    img_url: "",
+    co_id: company!.id,
+  }
+
+  const headers = Object.keys(initialItem).slice(1, 7) as Array<keyof Item>
+  const maxView = 200
 
   const handleError = (err: any): void => {
     setErrorMsg("")
@@ -66,6 +50,24 @@ export default function AdminSupplier() {
   useEffect(() => {
     if (error) handleError(error)
   }, [error])
+
+  const [insertCompanyData, { isLoading }] = useInsertCompanyDataMutation()
+  const [updateCompanyData] = useUpdateCompanyDataMutation()
+  const [deleteItem] = useDeleteCompanyDataMutation()
+  const [response, setResponse] = useState("")
+  const [imgUpdateQuery] = useImgUrlUpdateMutation()
+  const [imgRemoveQuery] = useImgUrlRemoveMutation()
+
+  const [imgEditorProps, setImgEditorProps] = useState({
+    path: "company/items/img/",
+    url: editRow?.img_url,
+    id: editRow?.id,
+    imgLoaded,
+    setImgLoaded,
+    imgUpdateQuery,
+    imgRemoveQuery,
+    setCanvasRef,
+  })
 
   const handleEditItem = (row: Item) => {
     if (canvasRef && editRow && row.id !== editRow.id) imageClear(canvasRef, maxView)
@@ -93,15 +95,15 @@ export default function AdminSupplier() {
     handleDataFileInput(e, headers, setNewItems)
   }
 
-  async function handleInsertItems() {
+  const handleInsertItems = async () => {
     try {
       const values = newItems
         .map(
           (row) =>
-            `(${row.code},'${row.title}', ${row.price}, '${row.category}', '${row.area}', '${row.description}', '${row.img_url}')`,
+            `(${row.code},'${row.title}', ${row.price}, '${row.category}', '${row.area}', '${row.description}', '${row.img_url}, ${row.co_id}')`,
         )
         .join(",")
-      await insertCompanyData({ tbType: "supplies", tbName: company!.table1, values }).unwrap()
+      await insertCompanyData({ type: "supplies", values }).unwrap()
       setNewItems([])
     } catch (err) {
       setNewItems([])
@@ -113,12 +115,13 @@ export default function AdminSupplier() {
     let imgUrl = ""
     if (imgLoaded) imgUrl = crypto.randomUUID()
     try {
-      const values = `(${editRow?.code},'${editRow?.title}', ${editRow?.price}, '${editRow?.category}', '${editRow?.area}', '${editRow?.description}', '${imgUrl}')`
-      const res = await insertCompanyData({ tbType: "supplies", tbName: company!.table1, values }).unwrap()
+      const values = `(${editRow?.code},'${editRow?.title}', ${editRow?.price}, '${editRow?.category}', '${editRow?.area}', '${editRow?.description}', '${imgUrl}', ${editRow?.co_id})`
+      const res = await insertCompanyData({ type: "supplies", values }).unwrap()
       setResponse(res.data)
+
       if (!canvasRef || !imgLoaded) return
-      await imageSave(canvasRef.current, maxView, imgUpdateQuery, imgUrl, res.id, company!.table1)
-      setEditRow((row) => ({ ...(row as Item), id: res.id!, img_url: imgUrl }))
+      await imageSave(canvasRef.current, maxView, imgUpdateQuery, imgUrl, res.id, "supplies")
+      setEditRow((row) => ({ ...(row as Item), id: res.id, img_url: imgUrl }))
     } catch (err) {
       handleError(err)
     }
@@ -129,13 +132,13 @@ export default function AdminSupplier() {
     if (imgLoaded) imgUrl = crypto.randomUUID()
     try {
       const res = await updateCompanyData({
-        tbType: "supplies",
-        tbName: company!.table1,
+        type: "supplies",
+        id: editRow!.id,
         value: { ...editRow, img_url: imgUrl },
       }).unwrap()
       setResponse(res.data)
       if (!canvasRef || !imgLoaded) return
-      await imageSave(canvasRef.current, maxView, imgUpdateQuery, imgUrl, editRow?.id, company!.table1)
+      await imageSave(canvasRef.current, maxView, imgUpdateQuery, imgUrl, editRow?.id, "supplies")
       setEditRow((row) => ({ ...(row as Item), img_url: imgUrl }))
     } catch (err) {
       handleError(err)
@@ -146,7 +149,7 @@ export default function AdminSupplier() {
     if (editRow && editRow.id) {
       const answer = confirm(`Please confirm deletion of ${editRow.title}.`)
       if (!answer) return
-      const res = await deleteItem({ tbType: "supplies", tbName: company!.table1, id: editRow.id }).unwrap()
+      const res = await deleteItem({ type: "supplies", id: editRow.id }).unwrap()
       setResponse(res.data)
       setEditRow(null)
     }
@@ -155,12 +158,11 @@ export default function AdminSupplier() {
   const handleImgRemove = async () => {
     if (canvasRef) imageClear(canvasRef, maxView)
     if (editRow?.img_url) {
-      const oldUrl = editRow?.img_url
-      const res = await imgRemoveQuery({ tbType: "supplies", tbName: company!.table1, url: oldUrl }).unwrap()
+      const res = await imgRemoveQuery({ type: "supplies", id: editRow.id }).unwrap()
       setResponse(res.data)
+      setEditRow((row) => ({ ...(row as Item), img_url: "" }))
     }
     setImgLoaded(false)
-    setEditRow((row) => ({ ...(row as Item), img_url: "" }))
   }
 
   useEffect(() => {
@@ -214,10 +216,13 @@ export default function AdminSupplier() {
               </div>
             )}
 
+            {/* Chart render in case of loading from file ----------------------------------------------------------------------------*/}
             {newItems.length != 0 && !isLoading && <SaveRemove setNew={setNewItems} handleSave={handleInsertItems} />}
-            {newItems.length != 0 && !isLoading && <Table headers={headers} data={newItems} height="max-h-[700px]" />}
+            {newItems.length != 0 && !isLoading && <Chart headers={headers} data={newItems} height="max-h-[700px]" />}
+
+            {/* Chart render in case of loading from database ------------------------------------------------------------------------*/}
             {data && !newItems.length && !isLoading && (
-              <Table
+              <Chart
                 headers={headers}
                 data={data}
                 height="max-h-[185px]"
@@ -233,10 +238,12 @@ export default function AdminSupplier() {
                 </h5>
               )}
             </div>
+
+            {/* Item editor ------------------------------------------------------------------------------------------------------------------- */}
             {editRow && (
               <>
                 <div className="flex flex-col md:pt-10 md:flex-row w-full border-slate-600 border-b text-lg py-2 justify-between relative">
-                  {/* cancel button---------------------------------------------------- */}
+                  {/* cancel button  (xmark) ------------------------------------------------------------------------------------------------- */}
                   <button
                     type="button"
                     onClick={() => {
@@ -247,10 +254,13 @@ export default function AdminSupplier() {
                   >
                     <i className="fas fa-xmark text-2xl" />
                   </button>
-                  {/* image editor---------------------------------------------------- */}
+
+                  {/* image editor------------------------------------------------------------------------------------------------------- */}
                   <div className="my-3">
                     <ImgEditor imgEditorProps={imgEditorProps} />
                   </div>
+
+                  {/* Form for item editing -----------------------------------------------------------------------------------------------*/}
                   <div className="w-full flex flex-col md:pl-4 pb-4 mt-3">
                     {headers.slice(0, 5).map((key, index) => (
                       <div key={key} className="flex w-full text-xl relative mb-2">
@@ -291,6 +301,7 @@ export default function AdminSupplier() {
                   </div>
                 </div>
 
+                {/* Action button block --------------------------------------------------------------------------------------------*/}
                 <div className="flex w-full text-sm justify-around md:justify-between mt-2 text-slate-200">
                   {imgLoaded && (
                     <div className="w-full">

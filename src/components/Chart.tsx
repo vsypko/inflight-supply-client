@@ -1,6 +1,6 @@
 import { useState, MouseEvent } from "react"
 
-export default function Table<T>({
+export default function Chart<T>({
   headers,
   data,
   height = "max-h-[500px]",
