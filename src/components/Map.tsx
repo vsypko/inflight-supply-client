@@ -56,5 +56,5 @@ export default function Map() {
     })
   }, [selected])
 
-  return <div ref={mapContainer} className="w-full h-[500px] border border-slate-600 mt-2" />
+  return <div ref={mapContainer} className="w-full h-[500px] border border-slate-600 mt-4 rounded-lg" />
 }

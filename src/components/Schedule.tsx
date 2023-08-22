@@ -85,7 +85,3 @@ export default function Schedule() {
     </>
   )
 }
-
-// })
-
-// }

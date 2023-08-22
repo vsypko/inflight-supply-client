@@ -8,7 +8,7 @@ export default function ScheduleChart({
   schedule: ISchedule[]
 }) {
   return (
-    <div className="flex rounded-md w-full max-h-[432px] overflow-scroll mb-12">
+    <div className="flex rounded-md w-full max-h-[432px] overflow-scroll my-4">
       <table className="text-center table-auto w-full">
         <thead className="sticky top-0 text-lg dark:bg-slate-600 bg-slate-300 z-10 h-12">
           <tr>
