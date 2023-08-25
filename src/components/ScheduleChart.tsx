@@ -8,22 +8,24 @@ export default function ScheduleChart({
   schedule: ISchedule[]
 }) {
   return (
-    <div className="flex rounded-md w-full max-h-[432px] overflow-scroll my-4">
-      <table className="text-center table-auto w-full">
-        <thead className="sticky top-0 text-lg dark:bg-slate-600 bg-slate-300 z-10 h-12">
+    <div className="flex rounded-md w-full max-h-[336px] overflow-scroll my-4 mb-16">
+      <table className="text-center table-auto w-full tracking-widest">
+        <thead className="text-lg z-10 h-12">
           <tr>
             {headers.map((header) => (
-              <th key={header} className="capitalize">
+              <th key={header} className="capitalize sticky top-0 bg-slate-300 dark:bg-slate-700">
                 {header}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="h-12">
+        <tbody className="h-12 mt-12">
           {schedule.map((row, index) => (
-            <tr key={index} className="odd:bg-slate-100 odd:dark:bg-slate-800 h-12">
+            <tr key={index} className="odd:bg-slate-100 odd:dark:bg-slate-800 h-12 ">
               {headers.map((header) => (
-                <td key={header}>{row[header]}</td>
+                <td key={header} className="text-slate-500">
+                  {row[header]}
+                </td>
               ))}
             </tr>
           ))}
