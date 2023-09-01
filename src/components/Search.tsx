@@ -82,7 +82,7 @@ export default function Search() {
       {dropdownOpen && <Dropdown items={data?.airports} setOpen={setDropdownOpen} />}
       {isError && <div className="text-red-500">{errorMsg}</div>}
       {isLoading && (
-        <div className="mt-28">
+        <div className="absolute top-28 left-10 z-10">
           <LoadingSpinner />
         </div>
       )}

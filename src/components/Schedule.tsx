@@ -3,6 +3,7 @@ import { useAppSelector } from "../hooks/redux"
 import { useLazyAirportScheduleQuery } from "../store/airport/airport.api"
 import { ISchedule } from "../types/company.types"
 import ScheduleChart from "./ScheduleChart"
+import PlaneModel from "./PlaneModel"
 
 export default function Schedule() {
   const [from, setFrom] = useState<ISchedule[] | undefined>([])
@@ -40,8 +41,9 @@ export default function Schedule() {
 
   return (
     <>
-      {data && selected && data.scheduleFrom.length > 0 && !isLoading && (
-        <div className="w-full h-2/3 mt-2">
+      {from?.length === 0 && to?.length === 0 && <PlaneModel />}
+      {(from?.length != 0 || to?.length != 0) && !isLoading && (
+        <div className="w-full md:w-2/3 flex flex-col mt-2 md:px-10">
           <div className="flex mb-2 lg:mb-1 text-xl justify-center">
             <button
               type="button"
@@ -70,15 +72,9 @@ export default function Schedule() {
 
           <div className="w-full pl-2 rounded-md">
             {/* <h1 className="tracking-widest font-bold font-">DEPARTURE</h1> */}
-            <ScheduleChart
-              headers={Object.keys(data?.scheduleFrom[0]) as Array<keyof ISchedule>}
-              schedule={data?.scheduleFrom}
-            />
+            <ScheduleChart headers={Object.keys(from![0]) as Array<keyof ISchedule>} schedule={from!} />
             {/* <h1 className="tracking-widest font-bold font-">ARRIVAL</h1> */}
-            <ScheduleChart
-              headers={Object.keys(data?.scheduleTo[0]) as Array<keyof ISchedule>}
-              schedule={data?.scheduleTo}
-            />
+            <ScheduleChart headers={Object.keys(to![0]) as Array<keyof ISchedule>} schedule={to!} />
           </div>
         </div>
       )}

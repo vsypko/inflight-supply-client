@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react"
 import { IFleet, IFlight } from "../types/company.types"
-import { Item } from "../types/supplier.types"
+import { Item } from "../types/company.types"
 
 export default function SeveRemove({
   setNew,

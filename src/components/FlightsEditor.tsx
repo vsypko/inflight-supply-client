@@ -77,7 +77,9 @@ export default function FlightsEditor() {
       const values = newFlights
         .map(
           (row) =>
-            `('${row.date}'::date, ${row.flight}, '${row.type}', '${row.reg}', '${row.from}', '${row.to}', '${row.std}'::time, '${row.sta}'::time, ${row.seats}, ${row.co_id}, '${row.co_iata}')`,
+            `('${row.date}'::date, ${row.flight}, '${row.type}', '${row.reg}', '${row.from}', '${row.to}', '${
+              row.std
+            }'::time, '${row.sta}'::time, ${row.seats}, ${company!.id}, '${company!.iata}')`,
         )
         .join(",")
       await insertCompanyData({ type: "flights", values }).unwrap()

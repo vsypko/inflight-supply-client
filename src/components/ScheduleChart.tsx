@@ -23,7 +23,7 @@ export default function ScheduleChart({
           {schedule.map((row, index) => (
             <tr key={index} className="odd:bg-slate-100 odd:dark:bg-slate-800 h-12 ">
               {headers.map((header) => (
-                <td key={header} className="text-slate-500">
+                <td key={header} className="text-slate-600 dark:text-slate-300">
                   {row[header]}
                 </td>
               ))}
