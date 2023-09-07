@@ -144,25 +144,25 @@ export default function Dialog<T extends IRow>(props: Props<T>): JSX.Element {
     closeDialog(e)
   }
 
-  const renderedInput = (key: keyof T, index: number) => {
+  const RenderedInput = ({ name, index }: { name: keyof T; index: number }) => {
     return (
       <>
         <input
           autoFocus={index === 0}
           type={inputTypes[index]}
-          name={key as string}
-          value={row[key] as string}
-          id={key as string}
+          name={name as string}
+          value={row[name] as string}
+          id={name as string}
           onChange={onChange}
           className="block w-full outline-none text-slate-800 dark:text-slate-100 bg-transparent appearance-none border-0 border-b-2 border-slate-400 dark:border-slate-600 focus:border-slate-700 dark:focus:border-slate-400 focus:ring-0 peer"
           placeholder=" "
         />
         <label
-          htmlFor={key as string}
+          htmlFor={name as string}
           className="absolute top-4 text-md text-slate-400 dark:text-slate-400 duration-300 transform -translate-y-9 scale-90  origin-[0] peer-focus:left-0 peer-focus:text-slate-500 dark:peer-focus:text-slate-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-7 peer-focus:scale-75 peer-focus:-translate-y-11"
         >
           <i className={`${icons[index]} mr-2`} />
-          <span className="capitalize">{key as string}</span>
+          <span className="capitalize">{name as string}</span>
         </label>
       </>
     )
@@ -190,8 +190,8 @@ export default function Dialog<T extends IRow>(props: Props<T>): JSX.Element {
         <div className="grid md:grid-cols-2 gap-8 md:gap-8 w-full p-3 mt-6">
           {rowKeys.map((key, index) => (
             <div key={key as string} className="relative w-full">
-              {/* For inputs with keys For and To need to be airports dataset ----------------------------------------------- */}
-              {renderedInput(key, index)}
+              {/* For inputs with names From and To need to be airports dataset ----------------------------------------------- */}
+              <RenderedInput name={key} index={index} />
             </div>
           ))}
 
