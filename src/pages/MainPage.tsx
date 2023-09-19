@@ -7,7 +7,7 @@ export default function MainPage() {
     <div className="mt-6 px-3 md:flex relative">
       <div className="w-full md:w-1/3 flex flex-col bg-transparent z-10">
         <Search />
-        <Map />
+        {/* <Map /> */}
       </div>
       <Schedule />
     </div>

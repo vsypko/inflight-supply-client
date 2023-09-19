@@ -1,7 +1,7 @@
 import { useEffect, useState, ReactHTMLElement } from "react"
 import { LoadingSpinner } from "../components/LoadingSpinner"
 import { useSearchAirportQuery } from "../store/airport/airport.api"
-import Dropdown from "../components/DropdownData"
+import Dropdown from "./DropdownSearch"
 import { useDebounce } from "../hooks/debounce"
 import { useAppSelector } from "../hooks/redux"
 import { useActions } from "../hooks/actions"
@@ -74,12 +74,20 @@ export default function Search() {
             !selected ? "w-0 hidden" : "w-full"
           }`}
         >
-          <h1 className="uppercase mr-2 ml-8">{selected?.ap_name}</h1>
-          <h1 className="font-bold">{selected?.ap_iata_code}</h1>
+          <h1 className="uppercase mr-2 ml-8">{selected?.name}</h1>
+          <h1 className="font-bold">{selected?.iata}</h1>
         </div>
       </div>
 
-      {dropdownOpen && <Dropdown items={data?.airports} setOpen={setDropdownOpen} />}
+      {dropdownOpen && (
+        <Dropdown
+          items={data!.airports}
+          setOpen={setDropdownOpen}
+          selector={selectAirport}
+          dataView={["name", "iata"]}
+        />
+      )}
+
       {isError && <div className="text-red-500">{errorMsg}</div>}
       {isLoading && (
         <div className="absolute top-28 left-10 z-10">

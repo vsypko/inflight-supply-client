@@ -1,3 +1,4 @@
+import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import AppRouter from "./components/AppRouter"
 import { Provider } from "react-redux"
@@ -19,7 +20,9 @@ const main = document.getElementById("root")
 
 const root = createRoot(main as HTMLElement)
 root.render(
-  <Provider store={store}>
-    <AppRouter />
-  </Provider>,
+  <StrictMode>
+    <Provider store={store}>
+      <AppRouter />
+    </Provider>
+  </StrictMode>,
 )

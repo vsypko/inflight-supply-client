@@ -88,3 +88,8 @@ export interface Item {
   img_url: string
   co_id: number
 }
+
+export interface ICompanyResponse {
+  total_count: number
+  companies: ICompany[]
+}

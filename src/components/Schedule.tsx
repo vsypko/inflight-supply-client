@@ -33,7 +33,7 @@ export default function Schedule() {
     setFrom([])
     setTo([])
     if (selected) {
-      getSchedule({ airport: selected.ap_iata_code, date }).unwrap()
+      getSchedule({ airport: selected.iata, date }).unwrap()
       if (data?.scheduleFrom) setFrom(data?.scheduleFrom)
       if (data?.scheduleTo) setTo(data?.scheduleTo)
     }

@@ -1,7 +1,17 @@
+import { ICompanyResponse } from "../../types/company.types"
 import { api } from "../api"
 
 export const companyApi = api.injectEndpoints({
   endpoints: (builder) => ({
+    searchCompany: builder.query<ICompanyResponse, string>({
+      query: (search) => ({
+        url: "company",
+        params: {
+          q: search,
+        },
+      }),
+    }),
+
     getCompanyData: builder.query<any[], { type: string; id: number; date?: string }>({
       query: (data) => ({
         url: `company/${data.type}`,
@@ -71,6 +81,7 @@ export const companyApi = api.injectEndpoints({
 })
 
 export const {
+  useSearchCompanyQuery,
   useGetCompanyDataQuery,
   useLazyGetCompanyDataQuery,
   useInsertCompanyDataMutation,

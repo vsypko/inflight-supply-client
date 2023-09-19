@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { ICountry, IUser, IUserState } from "../../types/user.types"
+import { ICompany } from "../../types/company.types"
 
 const initialState: IUserState = {
   user: null,
@@ -42,6 +43,12 @@ export const authSlice = createSlice({
       }
     },
 
+    updateUserCompany(state, { payload: company }: PayloadAction<ICompany>): void {
+      if (state.user) {
+        state.company = company
+      }
+    },
+
     updateUserData(
       state,
       {
@@ -61,4 +68,5 @@ export const authSlice = createSlice({
 
 export const authActions = authSlice.actions
 export const authReducer = authSlice.reducer
-export const { setCredentials, signOut, updateUserData, updateUserUrl, updateCountry } = authSlice.actions
+export const { setCredentials, signOut, updateUserData, updateUserUrl, updateCountry, updateUserCompany } =
+  authSlice.actions

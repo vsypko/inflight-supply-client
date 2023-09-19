@@ -3,8 +3,8 @@ import { ISchedule } from "../../types/company.types"
 import { api } from "../api"
 
 export const airportApi = api.injectEndpoints({
-  endpoints: (build) => ({
-    searchAirport: build.query<IAirportResponse, string>({
+  endpoints: (builder) => ({
+    searchAirport: builder.query<IAirportResponse, string>({
       query: (search: string) => ({
         url: "search/airport",
         params: {
@@ -12,7 +12,7 @@ export const airportApi = api.injectEndpoints({
         },
       }),
     }),
-    searchAirportbyCode: build.query<IAirportResponse, string>({
+    searchAirportbyCode: builder.query<IAirportResponse, string>({
       query: (search: string) => ({
         url: "search/airport/code",
         params: {
@@ -20,7 +20,7 @@ export const airportApi = api.injectEndpoints({
         },
       }),
     }),
-    airportSchedule: build.query<
+    airportSchedule: builder.query<
       { scheduleFrom: ISchedule[]; scheduleTo: ISchedule[] },
       { airport: string | null; date: string }
     >({
