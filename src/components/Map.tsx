@@ -21,7 +21,7 @@ export default function Map() {
     const mapbox = new mapgl.Map({
       container: mapContainer.current as HTMLElement,
       style: "mapbox://styles/mapbox/streets-v12",
-      center: [selected?.ap_longitude || 30, selected?.ap_latitude || 40],
+      center: [selected?.longitude || 30, selected?.latitude || 40],
       pitch: selected ? 60 : 0,
       bearing: 0,
       zoom: selected ? 15 : 1,

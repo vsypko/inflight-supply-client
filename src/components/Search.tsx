@@ -1,4 +1,4 @@
-import { useEffect, useState, ReactHTMLElement } from "react"
+import { useEffect, useState, KeyboardEvent } from "react"
 import { LoadingSpinner } from "../components/LoadingSpinner"
 import { useSearchAirportQuery } from "../store/airport/airport.api"
 import Dropdown from "./DropdownSearch"
@@ -52,7 +52,7 @@ export default function Search() {
         </button>
 
         <div
-          className={`flex ml-5 rounded-r-full bg-slate-300 dark:bg-slate-700 transition-all duration-300 ease-out h-10 ${
+          className={`flex relative ml-5 rounded-r-full bg-slate-300 dark:bg-slate-700 transition-all duration-300 ease-out h-10 ${
             selected ? "w-0" : "w-full"
           }`}
         >
@@ -67,6 +67,17 @@ export default function Search() {
             className="bg-transparent rounded-full outline-none ml-7 w-full text-xl h-10"
             id="airport"
           />
+
+          {dropdownOpen && (
+            <div className="absolute z-10 top-10 left-1 right-5 rounded-b-md max-h-80 overflow-y-scroll shadow-md dark:shadow-slate-600 bg-slate-100 dark:bg-slate-800">
+              <Dropdown
+                items={data?.airports}
+                setOpen={setDropdownOpen}
+                selector={selectAirport}
+                dataView={["name", "iata"]}
+              />
+            </div>
+          )}
         </div>
 
         <div
@@ -78,15 +89,6 @@ export default function Search() {
           <h1 className="font-bold">{selected?.iata}</h1>
         </div>
       </div>
-
-      {dropdownOpen && (
-        <Dropdown
-          items={data!.airports}
-          setOpen={setDropdownOpen}
-          selector={selectAirport}
-          dataView={["name", "iata"]}
-        />
-      )}
 
       {isError && <div className="text-red-500">{errorMsg}</div>}
       {isLoading && (

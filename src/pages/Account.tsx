@@ -1,7 +1,7 @@
 import { useAuth } from "../hooks/useAuth"
 import { useGetUsersQuery } from "../store/users/users.api"
 import { LoadingSpinner } from "../components/LoadingSpinner"
-import { ChangeEvent, useEffect, useState, KeyboardEvent } from "react"
+import { ChangeEvent, useEffect, useState, KeyboardEvent, useRef } from "react"
 import { useSearchCompanyQuery } from "../store/company/company.api"
 import { useDebounce } from "../hooks/debounce"
 import Dropdown from "../components/DropdownSearch"
@@ -12,6 +12,7 @@ interface IAccountData {
   name: string | ""
   reg_number: string | ""
   category: string | ""
+  role: string | ""
 }
 
 export default function Account() {
@@ -22,6 +23,7 @@ export default function Account() {
     name: company ? company.name : "",
     reg_number: company ? company.reg_number : "",
     category: company ? company.category : "airline",
+    role: user?.role ? user.role : "",
   }
 
   const [account, setAccount] = useState<IAccountData>(initialAccountData)
@@ -32,15 +34,6 @@ export default function Account() {
 
     //set a certain state field with the entered data------------------------------------------------------------------
     setAccount((account) => ({ ...account, [event.target.name]: event.target.value }))
-
-    //set all state fields if exists-----------------------------------------------------------------------------------
-    // companies.forEach((item) => {
-    //   if (item.name === event.target.value) setAccount(item)
-    // })
-  }
-
-  const clickHandler = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.code === "ArrowDown") console.log(e.code)
   }
 
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -55,8 +48,10 @@ export default function Account() {
   const [errorMsg, setErrorMsg] = useState("")
 
   useEffect(() => {
-    setErrorMsg("")
-    setDropdownOpen(debounced.length >= 3 && data?.companies.length! > 0)
+    if (data) {
+      setErrorMsg("")
+      setDropdownOpen(debounced.length >= 3 && data.companies.length! > 0 && account.name !== company?.name)
+    }
 
     if (error) {
       if (error != null && typeof error === "object" && "data" in error) setErrorMsg(error.data as string)
@@ -66,30 +61,29 @@ export default function Account() {
 
   return (
     <div className="w-full">
-      <div className="w-full flex justify-center text-2xl font-semibold mt-2">
+      <div className="w-full flex justify-center text-3xl font-semibold mt-2">
         <h1>ACCOUNT</h1>
       </div>
-
       <div className="block md:flex">
         <div className="w-full md:w-1/2 flex justify-center p-4">
           <div className="flex flex-col text-xl md:text-2xl">
-            <div className="flex">
+            <h1 className="mb-4 font-bold text-3xl"> Your profile:</h1>
+            <div className="flex mb-4">
               <h1 className="w-32">First name:</h1>
               <span className="font-bold">{user?.firstname}</span>
             </div>
-            <div className="flex">
+            <div className="flex mb-4">
               <h1 className="w-32">Last name:</h1>
               <span className="font-bold">{user?.lastname}</span>
             </div>
-            <div className="flex">
+            <div className="flex mb-4">
               <h1 className="w-32">Email:</h1>
               <span className="font-bold">{user?.email}</span>
             </div>
-            <div className="flex">
+            <div className="flex mb-4">
               <h1 className="w-32">Tel: </h1>
               <div className="flex items-center">
                 <img src={`data:image/png;base64, ${country?.flag}`} alt="" className="pr-2" />
-
                 <span className="font-bold">
                   +{country?.phonecode}-{user?.phone}
                 </span>
@@ -102,31 +96,25 @@ export default function Account() {
             Please enter your company details or select a company from the list for further operations:
           </span>
 
-          <div className="flex relative text-xl md:text-2xl" onKeyDown={(e) => clickHandler(e)}>
-            <label htmlFor="company" className="capitalize w-1/3 md:w-1/4 mt-4 block">
+          <div className="flex relative text-xl md:text-2xl items-end">
+            <label htmlFor="name" className="capitalize w-1/3 md:w-1/4 mt-4 block">
               Company name:
             </label>
             <input
               id="name"
               autoComplete="off"
-              autoFocus
               name="name"
               type="text"
-              list="companiesList"
+              autoFocus
               onChange={onChange}
+              onClick={() => setDropdownOpen(false)}
               value={account.name}
-              className="w-2/3 md:w-3/4 font-bold bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 peer"
+              className="w-2/3 md:w-3/4 font-bold bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
             />
-            <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/3 md:left-1/4 border-slate-500 bottom-0 peer-focus:w-2/3 md:peer-focus:w-3/4 peer-focus:border-b" />
-            {/* <datalist id="companiesList" className="text-2xl">
-              {data?.companies.map((item) => (
-                <option key={item.id} value={item.name} className="appearance-none w-20 text-2xl" />
-              ))}
-            </datalist> */}
-            {dropdownOpen && data && (
-              <div className="absolute top-12 left-56 w-2/3 md:w-3/4">
+            {dropdownOpen && (
+              <div className="absolute z-10 top-20 md:top-12 left-28 md:right-12 md:left-60 rounded-b-md max-h-80 overflow-y-scroll shadow-md dark:shadow-slate-600 bg-slate-400 dark:bg-slate-800">
                 <Dropdown
-                  items={data.companies}
+                  items={data?.companies}
                   setOpen={setDropdownOpen}
                   selector={updateUserCompany}
                   dataView={["name"]}
@@ -134,9 +122,10 @@ export default function Account() {
                 />
               </div>
             )}
+            <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/3 md:left-1/4 border-slate-500 bottom-0 peer-focus:w-2/3 md:peer-focus:w-3/4 peer-focus:border-b" />
           </div>
 
-          <div className="flex relative text-xl md:text-2xl">
+          <div className="flex relative text-xl md:text-2xl items-end">
             <label htmlFor="reg" className="capitalize w-1/3 md:w-1/4 mt-4">
               Registration number:
             </label>
@@ -147,7 +136,7 @@ export default function Account() {
               type="text"
               onChange={onChange}
               value={account.reg_number}
-              className="w-2/3 md:w-3/4 font-bold bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 peer relative"
+              className="w-2/3 md:w-3/4 font-bold bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
             />
             <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/3 md:left-1/4 border-slate-500 bottom-0 peer-focus:w-2/3 md:peer-focus:w-3/4 peer-focus:border-b" />
           </div>
@@ -169,17 +158,43 @@ export default function Account() {
 
             <input
               type="radio"
-              value="supplyer"
+              value="supplier"
               checked={account.category === "supplier"}
               onChange={onChange}
               name="category"
-              id="supplyer"
+              id="supplier"
               className="appearance-none w-5 h-5 hover:cursor-pointer border-2 border-gray-400 opacity-75 hover:opacity-100 checked:opacity-100 rounded-full checked:bg-teal-500 checked:border-slate-600 dark:checked:border-slate-300"
             />
-            <label htmlFor="supplyer" className="capitalize mr-6 ml-2 hover:cursor-pointer">
+            <label htmlFor="supplier" className="capitalize mr-6 ml-2 hover:cursor-pointer">
               Supplier
             </label>
           </div>
+          <div className="flex items-end relative text-xl md:text-2xl">
+            <label htmlFor="role" className="w-1/3 md:w-1/4 mt-4">
+              Your competency:
+            </label>
+
+            <input
+              autoComplete="off"
+              id="role"
+              name="role"
+              type="text"
+              onChange={onChange}
+              value={account.role}
+              className="w-2/3 md:w-3/4 font-bold bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
+            />
+            <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/3 md:left-1/4 border-slate-500 bottom-0 peer-focus:w-2/3 md:peer-focus:w-3/4 peer-focus:border-b" />
+          </div>
+          {company && company.name !== account.name && (
+            <div className="mt-4 text-slate-500">
+              Such company
+              <span className="font-bold text-slate-600 dark:text-slate-400">{" '" + account.name + "' "}</span>
+              has not yet been registered.
+              <br /> It can be registered with the approval of a super admin and your competency will be registered as
+              an admin.
+              <br /> Would you like to submit a registration request?
+            </div>
+          )}
         </div>
       </div>
       {isError && <div className="text-red-500">{errorMsg}</div>}
