@@ -141,7 +141,14 @@ export default function Profile() {
                 />
               </button>
               {openCountryDropdown && (
-                <DropdownCountries value={value} setValue={setValue} setOpen={setOpenCountryDropdown} />
+                <DropdownCountries
+                  style="absolute w-1/2 block z-10 top-14 rounded-2xl overflow-y-scroll shadow-md dark:shadow-slate-600 bg-slate-200 dark:bg-slate-800"
+                  value={value}
+                  setValue={setValue}
+                  setOpen={setOpenCountryDropdown}
+                  dialcode={true}
+                  isocode={false}
+                />
               )}
               <input
                 type="tel"

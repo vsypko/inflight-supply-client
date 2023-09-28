@@ -12,12 +12,22 @@ interface IValue {
 }
 
 interface DropdownProps {
-  value: IValue
-  setValue: Dispatch<SetStateAction<IValue>>
+  style: string
+  value: any
+  setValue: Dispatch<SetStateAction<any>>
   setOpen: Dispatch<SetStateAction<boolean>>
+  dialcode: boolean
+  isocode: boolean
 }
 
-export default function DropdownCountries({ value, setValue, setOpen }: DropdownProps): JSX.Element {
+export default function DropdownCountries({
+  style,
+  value,
+  setValue,
+  setOpen,
+  dialcode,
+  isocode,
+}: DropdownProps): JSX.Element {
   const { data } = useGetCountriesQuery("")
   const { updateCountry } = useActions()
   let newData: ICountry[] | undefined
@@ -42,13 +52,13 @@ export default function DropdownCountries({ value, setValue, setOpen }: Dropdown
   }
 
   const selectionHandler = (item: ICountry) => {
-    setValue((value) => ({ ...value, country: item.iso }))
-    updateCountry(item)
+    setValue({ ...value, country: item })
+    if (dialcode) updateCountry(item)
     setOpen((prev) => !prev)
   }
 
   return (
-    <div className="absolute w-1/2 block z-10 top-14 rounded-b-md overflow-y-scroll shadow-md dark:shadow-slate-600 bg-slate-200 dark:bg-slate-800">
+    <div className={style}>
       <div className="flex sticky top-0">
         <label htmlFor="input-country-search" className="sr-only">
           Country Search
@@ -62,20 +72,21 @@ export default function DropdownCountries({ value, setValue, setOpen }: Dropdown
           className="w-full p-1 pl-12 bg-slate-300 dark:bg-slate-700 rounded-full outline-none"
         />
       </div>
-      <div className="max-h-56 pl-3 mt-1 overflow-x-hidden transition-all">
+      <div className="max-h-56 mt-1 overflow-x-hidden transition-all">
         <ul className="list-none">
           {countriesList?.map((item) => (
             <li
               key={item.iso}
-              className="flex items-center py-1 text-base hover:bg-slate-600 hover:text-slate-300 cursor-pointer transition-colors"
+              className="flex items-center py-1 px-2 text-base rounded-full hover:bg-slate-600 hover:text-slate-300 cursor-pointer transition-colors"
               onClick={() => selectionHandler(item)}
             >
               <div className="w-1/5">
                 <img alt="" src={`data:image/png;base64, ${item.flag}`} />
               </div>
 
-              <span className="w-1/5 flex justify-end mr-2">{`+${item.phonecode}`}</span>
+              {dialcode && <span className="w-1/5 flex justify-end mr-2">{`+${item.phonecode}`}</span>}
               <span className="w-3/5 text-ellipsis overflow-x-hidden whitespace-nowrap">{item.title_case}</span>
+              {isocode && <span className="items-end">{item.iso}</span>}
             </li>
           ))}
         </ul>

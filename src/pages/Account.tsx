@@ -5,13 +5,18 @@ import { ChangeEvent, useEffect, useState, KeyboardEvent, useRef } from "react"
 import { useSearchCompanyQuery } from "../store/company/company.api"
 import { useDebounce } from "../hooks/debounce"
 import Dropdown from "../components/DropdownSearch"
+import DropdownCountries from "../components/DropdownCountries"
 import { useActions } from "../hooks/actions"
+import { ICountry } from "../types/user.types"
 
 interface IAccountData {
   id: number
   name: string | ""
   reg_number: string | ""
   category: string | ""
+  iata: string | undefined
+  icao: string | undefined
+  country: ICountry | undefined
   role: string | ""
 }
 
@@ -23,6 +28,9 @@ export default function Account() {
     name: company ? company.name : "",
     reg_number: company ? company.reg_number : "",
     category: company ? company.category : "airline",
+    iata: company?.iata ? company.iata : undefined,
+    icao: company?.icao ? company.icao : undefined,
+    country: company?.country ? company.country : undefined,
     role: user?.role ? user.role : "",
   }
 
@@ -37,6 +45,7 @@ export default function Account() {
   }
 
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [openCountryDropdown, setOpenCountryDropdown] = useState(false)
   const debounced = useDebounce(account.name, 700)
   const { updateUserCompany } = useActions()
 
@@ -169,6 +178,85 @@ export default function Account() {
               Supplier
             </label>
           </div>
+
+          {account.category === "airline" && (
+            <div className="flex w-full">
+              <div className="flex w-1/2 items-end relative text-xl md:text-2xl">
+                <label htmlFor="iata" className="w-1/2 mt-4">
+                  Airline IATA code:
+                </label>
+                <input
+                  autoComplete="off"
+                  id="iata"
+                  name="iata"
+                  type="text"
+                  onChange={onChange}
+                  value={account.iata}
+                  className="w-1/2 font-bold bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
+                />
+                <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/2 md:left-1/2 border-slate-500 bottom-0 peer-focus:w-1/2 md:peer-focus:w-1/2 peer-focus:border-b" />
+              </div>
+              <div className="flex w-1/2 items-end relative text-xl md:text-2xl">
+                <label htmlFor="icao" className="w-1/2 mt-4">
+                  Airline ICAO code:
+                </label>
+                <input
+                  autoComplete="off"
+                  id="icao"
+                  name="icao"
+                  type="text"
+                  onChange={onChange}
+                  value={account.icao}
+                  className="w-1/2 font-bold bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
+                />
+                <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/2 md:left-1/2 border-slate-500 bottom-0 peer-focus:w-1/2 md:peer-focus:w-1/2 peer-focus:border-b" />
+              </div>
+            </div>
+          )}
+
+          <div className="flex relative text-xl md:text-2xl items-end">
+            <span className="w-1/2 mt-4">Company registration country:</span>
+            <button
+              type="button"
+              className="flex items-center text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 dark:group-hover:text-slate-200 dark:peer-focus:text-slate-200"
+              onClick={() => setOpenCountryDropdown((prev) => !prev)}
+            >
+              <img src={`data:image/png;base64, ${account.country?.flag}`} alt="" className="mr-4" />
+              <span className="mr-4">{account.country!.title_case}</span>
+              <i
+                className={`fa-solid fa-chevron-down transition-all ${openCountryDropdown ? "rotate-180" : "rotate-0"}`}
+              />
+            </button>
+            {openCountryDropdown && (
+              <DropdownCountries
+                style="absolute w-1/2 block z-10 left-[28rem] top-12 rounded-2xl overflow-y-scroll shadow-md dark:shadow-slate-600 bg-slate-200 dark:bg-slate-800"
+                value={account}
+                setValue={setAccount}
+                setOpen={setOpenCountryDropdown}
+                dialcode={false}
+                isocode={true}
+              />
+            )}
+          </div>
+
+          {/* <input
+              type="text"
+              name="country"
+              id="country"
+              value={account.country?.title_case}
+              onChange={onChange}
+              // pattern="[0-9]{2}-[0-9]{3}-[0-9]{4}"
+              className="mt-6 ml-8 w-full text-slate-800 dark:text-slate-100 bg-transparent appearance-none focus:border-slate-700 dark:focus:border-slate-400 focus:outline-none focus:ring-0 peer"
+              placeholder=""
+            />
+            <label
+              htmlFor="country"
+              className="absolute text-slate-600 dark:text-slate-400 duration-300 transform -translate-y-9 scale-100 top-8 origin-[0] peer-focus:left-0 peer-focus:text-slate-500 dark:peer-focus:text-slate-400 peer-focus:scale-75 peer-focus:-translate-y-12"
+            >
+              <span>Country:</span>
+            </label> */}
+          {/* </div> */}
+
           <div className="flex items-end relative text-xl md:text-2xl">
             <label htmlFor="role" className="w-1/3 md:w-1/4 mt-4">
               Your competency:
@@ -185,6 +273,7 @@ export default function Account() {
             />
             <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/3 md:left-1/4 border-slate-500 bottom-0 peer-focus:w-2/3 md:peer-focus:w-3/4 peer-focus:border-b" />
           </div>
+
           {company && company.name !== account.name && (
             <div className="mt-4 text-slate-500">
               Such company

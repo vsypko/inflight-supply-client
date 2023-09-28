@@ -8,10 +8,10 @@ export default function Airlines() {
   return (
     <div>
       Airlines Page
-      <div>{selected?.ap_country}</div>
-      <div>{selected?.ap_municipality}</div>
-      <div>{selected?.ap_name}</div>
-      <div>{selected?.ap_iata_code}</div>
+      <div>{selected?.country}</div>
+      <div>{selected?.municipality}</div>
+      <div>{selected?.name}</div>
+      <div>{selected?.iata}</div>
       <div>{user?.email}</div>
       <div>{user?.firstname}</div>
       <div>{user?.lastname}</div>
