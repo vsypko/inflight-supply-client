@@ -58,23 +58,20 @@ export interface IRow {
   name?: string
 }
 
-export interface ICompany {
-  id: number
-  category: string
-  name: string
-  reg_number: string
-  icao?: string
-  iata?: string
-  country: {
-    iso: string
-    title_case: string
-    phonecode: number
-    currency: string
-    flag: string
-  }
-  city: string
-  address: string
-  link?: string
+export interface Company {
+  id: number | undefined
+  category: string | undefined
+  name: string | undefined
+  reg_number: string | undefined
+  icao?: string | undefined
+  iata?: string | undefined
+  country_iso: string | undefined
+  country: string | undefined
+  city: string | undefined
+  address: string | undefined
+  link: string | undefined
+  currency: string | undefined
+  flag: string | undefined
 }
 
 export interface Item {
@@ -91,5 +88,5 @@ export interface Item {
 
 export interface ICompanyResponse {
   total_count: number
-  companies: ICompany[]
+  companies: Company[]
 }

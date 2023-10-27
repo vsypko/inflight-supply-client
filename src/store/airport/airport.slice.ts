@@ -1,24 +1,37 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { IAirport } from "../../types/airport.types"
+import { Airport } from "../../types/airport.types"
 
 interface AirportState {
-  selected: IAirport | null
+  airport: Airport
 }
 
-const initialState: AirportState = {
-  selected: null,
+export const initialState: AirportState = {
+  airport: {
+    id: undefined,
+    type_ap: "",
+    name: "",
+    latitude: undefined,
+    longitude: undefined,
+    elevation_ft: undefined,
+    continent: "",
+    country: "",
+    country_iso: "",
+    iso_region: "",
+    municipality: "",
+    scheduled: "",
+    icao: "",
+    iata: "",
+    home_link: "",
+  },
 }
 
 export const airportSlice = createSlice({
   name: "airport",
   initialState,
   reducers: {
-    selectAirport(state, action: PayloadAction<IAirport | null>) {
-      state.selected = action.payload
+    selectAirport(state, { payload: airport }: PayloadAction<Airport>): void {
+      state.airport = airport
     },
-    // unselectAirport(state) {
-    //   state.selected = null
-    // },
   },
 })
 

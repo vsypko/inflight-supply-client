@@ -1,31 +1,42 @@
 import { ReactNode } from "react"
-import { ICompany } from "./company.types"
+import { Company } from "./company.types"
 
-export interface IUser {
-  id: number
+export interface User {
+  id: number | undefined
   firstname: string | undefined
   lastname: string | undefined
-  email: string
+  email: string | undefined
   img_url: string | undefined
-  role: string
-  company: number | undefined
+  role: string | undefined
   phone: string | undefined
-  country: string
   img_url_data: string | undefined
+  country_iso: string | undefined
+  country: string | undefined
+  phonecode: number | undefined
+  flag: string | undefined
+  company_id: number | undefined
+  token: string | undefined
 }
 
-export interface ICountry {
+export interface UserProfile {
+  id: number | undefined
+  firstname: string | undefined
+  lastname: string | undefined
+  phone: string | undefined
+}
+
+export interface Country {
   iso: string
   title_case: string
   phonecode: number
-  currency: string
   flag: string
+  currency: string
 }
 
 export interface IUserState {
-  user: IUser | null
-  company: ICompany | null
-  country: ICountry | null
+  user: User | null
+  company: Company | null
+  country: Country | null
   token: string | null
 }
 
@@ -36,20 +47,19 @@ export interface ITokens {
 
 export interface IUsersResponse {
   total_count: number
-  users: IUser[]
+  users: User[]
 }
 
-export interface IUserUpdateRequest {
+export interface IUserProfileUpdate {
   id: number
   firstname: string
   lastname: string
   phone: string
-  country: string
+  country_iso: string
 }
 
 export interface IUserUpdateResponse {
-  user: IUser
-  country: ICountry
+  user: User
 }
 
 export type Props = {

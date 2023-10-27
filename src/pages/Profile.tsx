@@ -7,12 +7,12 @@ import {
   useUserUrlRemoveMutation,
   useUserUrlUpdateMutation,
 } from "../store/auth/auth.api"
-import DropdownCountries from "../components/DropdownCountries"
-import { IUserUpdateRequest } from "../types/user.types"
+import DropdownCountries from "../components/CountriesDropdown"
+import { Country, User } from "../types/user.types"
 
 export default function Profile() {
-  const { user, company, country } = useAuth()
-  const { updateUserUrl, updateUserData } = useActions()
+  const { user } = useAuth()
+  const { updateUserUrl, setUser } = useActions()
   const [userUrlUpdateQuery] = useUserUrlUpdateMutation()
   const [userUrlRemoveQuery] = useUserUrlRemoveMutation()
   const [userProfileUpdateQuery] = useUserProfileUpdateMutation()
@@ -31,22 +31,14 @@ export default function Profile() {
     imgUrlUpdateAction: updateUserUrl,
   }
 
-  const [value, setValue] = useState<IUserUpdateRequest>({
-    id: user!.id,
-    firstname: user!.firstname || "",
-    lastname: user!.lastname || "",
-    phone: user!.phone || "",
-    country: user!.country,
-  })
-
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setValue((value) => ({ ...value, [event.target.name]: event.target.value }))
+    setUser({ ...user, [event.target.name]: event.target.value })
   }
 
   async function handleSave(e: FormEvent) {
     e.preventDefault()
-    const profile = await userProfileUpdateQuery(value).unwrap()
-    updateUserData(profile)
+    await userProfileUpdateQuery(user).unwrap()
+    // setUser(user)
   }
 
   return (
@@ -54,7 +46,7 @@ export default function Profile() {
       <h1 className="w-full py-4 text-center text-3xl font-bold">PROFILE</h1>
       <div className="w-full md:w-1/2 px-4 md:px-0">
         <div className="flex p-2 h-[218px] border border-spacing-1 rounded-xl border-slate-600 dark:border-slate-100 justify-center items-center relative">
-          {user?.img_url && !imgLoaded ? (
+          {user.img_url && !imgLoaded ? (
             <>
               <img
                 width="200px"
@@ -84,7 +76,7 @@ export default function Profile() {
                 autoFocus
                 type="text"
                 name="firstname"
-                value={value.firstname}
+                value={user.firstname}
                 id="firstname"
                 onChange={onChange}
                 className="block mt-6 w-full text-slate-800 dark:text-slate-100 bg-transparent appearance-none border-0 border-b-2 border-slate-400 dark:border-slate-600 focus:border-slate-700 dark:focus:border-slate-400 focus:outline-none focus:ring-0 peer"
@@ -102,7 +94,7 @@ export default function Profile() {
               <input
                 type="text"
                 name="lastname"
-                value={value.lastname}
+                value={user.lastname}
                 id="lastname"
                 onChange={onChange}
                 className="block mt-6 w-full text-slate-800 dark:text-slate-100 bg-transparent appearance-none border-0 border-b-2 border-slate-400 dark:border-slate-600 focus:border-slate-700 dark:focus:border-slate-400 focus:outline-none focus:ring-0 peer"
@@ -132,8 +124,8 @@ export default function Profile() {
                 className="flex mt-6 items-center text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 dark:group-hover:text-slate-200 dark:peer-focus:text-slate-200"
                 onClick={() => setOpenCountryDropdown((prev) => !prev)}
               >
-                <img src={`data:image/png;base64, ${country?.flag}`} alt="" className="py-1 mr-1" />
-                <span className="mr-1">+{country!.phonecode}</span>
+                <img src={`data:image/png;base64, ${user.flag}`} alt="" className="py-1 mr-1" />
+                <span className="mr-1">+{user.phonecode}</span>
                 <i
                   className={`fa-solid fa-chevron-down transition-all ${
                     openCountryDropdown ? "rotate-180" : "rotate-0"
@@ -143,8 +135,8 @@ export default function Profile() {
               {openCountryDropdown && (
                 <DropdownCountries
                   style="absolute w-1/2 block z-10 top-14 rounded-2xl overflow-y-scroll shadow-md dark:shadow-slate-600 bg-slate-200 dark:bg-slate-800"
-                  value={value}
-                  setValue={setValue}
+                  state={user}
+                  setCountry={setUser}
                   setOpen={setOpenCountryDropdown}
                   dialcode={true}
                   isocode={false}
@@ -154,7 +146,7 @@ export default function Profile() {
                 type="tel"
                 name="phone"
                 id="phone"
-                value={value.phone}
+                value={user.phone}
                 onChange={onChange}
                 // pattern="[0-9]{2}-[0-9]{3}-[0-9]{4}"
                 className="block mt-6 ml-8 w-full text-slate-800 dark:text-slate-100 bg-transparent appearance-none focus:border-slate-700 dark:focus:border-slate-400 focus:outline-none focus:ring-0 peer"
@@ -175,10 +167,10 @@ export default function Profile() {
                 <span>Company</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-800 dark:text-slate-200">{company?.name}</span>
+                {/* <span className="text-slate-800 dark:text-slate-200">{company?.name}</span> */}
                 <div className="flex justify-end items-center">
-                  <img src={`data:image/png;base64, ${company?.country.flag}`} alt="" className="py-1" />
-                  <span className="text-slate-800 dark:text-slate-200 ml-2">{company?.country.title_case}</span>
+                  {/* <img src={`data:image/png;base64, ${company?.country}`} alt="" className="py-1" />
+                  <span className="text-slate-800 dark:text-slate-200 ml-2">{company?.country}</span> */}
                 </div>
               </div>
             </div>
@@ -188,7 +180,7 @@ export default function Profile() {
                 <span>Competency</span>
               </div>
 
-              <span className="text-slate-800 dark:text-slate-200">{user?.role}</span>
+              <span className="text-slate-800 dark:text-slate-200">{user.role}</span>
             </div>
           </div>
 

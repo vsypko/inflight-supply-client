@@ -12,12 +12,12 @@ export const companyApi = api.injectEndpoints({
       }),
     }),
 
-    getCompanyData: builder.query<any[], { type: string; id: number; date?: string }>({
+    getCompanyData: builder.query<any[], { type: string; id: number; date: string }>({
       query: (data) => ({
         url: `company/${data.type}`,
         params: {
           id: data.id,
-          date: data?.date,
+          date: data.date,
         },
       }),
       providesTags: ["Data"],

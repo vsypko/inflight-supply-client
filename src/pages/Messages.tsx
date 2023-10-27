@@ -8,7 +8,7 @@ export default function Messages() {
   const [users, setUsers] = useState<IUser[]>([])
   const { user, company, country } = useAuth()
   const [errorMsg, setErrorMsg] = useState("")
-  const { data, error, isError, isSuccess, isLoading } = useGetUsersQuery({}, { skip: !user?.company })
+  const { data, error, isError, isSuccess, isLoading } = useGetUsersQuery({}, { skip: !user?.company_id })
 
   useEffect(() => {
     setErrorMsg("")

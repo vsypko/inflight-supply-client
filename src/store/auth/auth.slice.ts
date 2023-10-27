@@ -1,72 +1,93 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { ICountry, IUser, IUserState } from "../../types/user.types"
-import { ICompany } from "../../types/company.types"
+import { User } from "../../types/user.types"
 
-const initialState: IUserState = {
-  user: null,
-  company: null,
-  country: null,
-  token: null,
+interface AuthState {
+  user: User
+}
+
+const initialState: AuthState = {
+  user: {
+    id: undefined,
+    firstname: "",
+    lastname: "",
+    email: "",
+    img_url: "",
+    role: "",
+    phone: "",
+    img_url_data: "",
+    country_iso: "",
+    country: "",
+    phonecode: undefined,
+    flag: "",
+    company_id: undefined,
+    token: "",
+  },
 }
 
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setCredentials(state, { payload: { user, company, country, token } }: PayloadAction<IUserState>): void {
+    setUser(state, { payload: user }: PayloadAction<User>): void {
       state.user = user
-      state.company = company
-      state.country = country
-      state.token = token
+      // state.user.firstname = data.firstname ? data.firstname : state.user.firstname
+      // state.user.lastname = data.lastname ? data.lastname : state.user.lastname
+    },
+
+    updateToken(state, { payload: token }: PayloadAction<string>): void {
+      if (state.user) state.user.token = token
     },
 
     signOut(state): void {
-      state.user = null
-      state.company = null
-      state.country = null
-      state.token = null
+      state = initialState
     },
 
     updateUserUrl(state, { payload: { imgUrl } }: PayloadAction<{ imgUrl: string | undefined }>): void {
-      if (state.user) {
-        state.user.img_url = imgUrl
-      }
+      state.user.img_url = imgUrl
     },
 
-    updateCountry(state, { payload: country }: PayloadAction<ICountry>): void {
-      if (state.country) {
-        state.country.iso = country.iso
-        state.country.title_case = country.title_case
-        state.country.phonecode = country.phonecode
-        state.country.currency = country.currency
-        state.country.flag = country.flag
-      }
-    },
+    // updateUserCountry(state, { payload: country }: PayloadAction<ICountry>): void {
+    //   if (state.user) {
+    //   }
+    // },
 
-    updateUserCompany(state, { payload: company }: PayloadAction<ICompany>): void {
-      if (state.user) {
-        state.company = company
-      }
-    },
+    // updateUserCompany(state, { payload: company }: PayloadAction<ICompany>): void {
+    //   if (state.user) {
+    //     state.company = company
+    //   }
+    // },
 
-    updateUserData(
-      state,
-      {
-        payload: { user, country },
-      }: PayloadAction<{
-        user: IUser
-        country: ICountry
-      }>,
-    ): void {
-      if (state.user && state.country) {
-        state.user = user
-        state.country = country
-      }
-    },
+    // setUserRole(state, { payload: role }: PayloadAction<string>): void {
+    //   if (state.user) {
+    //     state.user.role = role
+    //   }
+    // },
+
+    //     updateUserData(
+    //       state,
+    //       {
+    //         payload: { user, country },
+    //       }: PayloadAction<{
+    //         user: IUser
+    //         country: ICountry
+    //       }>,
+    //     ): void {
+    //       if (state.user && state.country) {
+    //         state.user = user
+    //         state.country = country
+    //       }
+    //     },
   },
 })
 
 export const authActions = authSlice.actions
 export const authReducer = authSlice.reducer
-export const { setCredentials, signOut, updateUserData, updateUserUrl, updateCountry, updateUserCompany } =
-  authSlice.actions
+export const {
+  setUser,
+  updateToken,
+  signOut,
+  updateUserUrl,
+  // updateUserCountry,
+  // updateUserCompany,
+  // setUserRole,
+} = authSlice.actions

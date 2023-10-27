@@ -1,14 +1,14 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { Mutex } from "async-mutex"
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query"
-import { signOut, setCredentials } from "./auth/auth.slice"
+import { signOut, updateToken } from "./auth/auth.slice"
 import { RootState } from "./store"
 
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL,
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as RootState).auth.token
+    const token = (getState() as RootState).auth.user?.token
     if (token) headers.set("authorization", `Bearer ${token}`)
     return headers
   },
@@ -28,8 +28,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
       try {
         const updateResult = await baseQuery("user/auth/update", api, extraOptions)
         if (updateResult.data) {
-          const { user, company, country } = (api.getState() as RootState).auth
-          api.dispatch(setCredentials({ user, company, country, token: updateResult.data as string }))
+          api.dispatch(updateToken(updateResult.data as string))
           result = await baseQuery(args, api, extraOptions)
         } else {
           api.dispatch(signOut())

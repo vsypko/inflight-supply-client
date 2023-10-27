@@ -10,9 +10,9 @@ import Admin from "../pages/Admin"
 import Profile from "../pages/Profile"
 import Account from "../pages/Account"
 import { useAuth } from "../hooks/useAuth"
-import { IUser } from "../types/user.types"
+import { User } from "../types/user.types"
 
-const TSXRouter = (user: IUser | null) => {
+const TSXRouter = (user: User | null) => {
   return createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<RootLayout />}>

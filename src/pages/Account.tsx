@@ -4,50 +4,27 @@ import { LoadingSpinner } from "../components/LoadingSpinner"
 import { ChangeEvent, useEffect, useState, KeyboardEvent, useRef } from "react"
 import { useSearchCompanyQuery } from "../store/company/company.api"
 import { useDebounce } from "../hooks/debounce"
-import Dropdown from "../components/DropdownSearch"
-import DropdownCountries from "../components/DropdownCountries"
+import SearchDropdown from "../components/SearchDropdown"
+import CountriesDropdown from "../components/CountriesDropdown"
 import { useActions } from "../hooks/actions"
-import { ICountry } from "../types/user.types"
-
-interface IAccountData {
-  id: number
-  name: string | ""
-  reg_number: string | ""
-  category: string | ""
-  iata: string | undefined
-  icao: string | undefined
-  country: ICountry | undefined
-  role: string | ""
-}
+import { Country } from "../types/user.types"
+import { Company } from "../types/company.types"
+import { useCompany } from "../hooks/useCompany"
 
 export default function Account() {
-  const { user, company, country } = useAuth()
-
-  const initialAccountData: IAccountData = {
-    id: company ? company.id : 0,
-    name: company ? company.name : "",
-    reg_number: company ? company.reg_number : "",
-    category: company ? company.category : "airline",
-    iata: company?.iata ? company.iata : undefined,
-    icao: company?.icao ? company.icao : undefined,
-    country: company?.country ? company.country : undefined,
-    role: user?.role ? user.role : "",
-  }
-
-  const [account, setAccount] = useState<IAccountData>(initialAccountData)
+  const { user } = useAuth()
+  const { company } = useCompany()
+  const { setUser, setCompany } = useActions()
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     //clear the company data if the name field is empty----------------------------------------------------------------
-    if (event.target.name === "name" && event.target.value === "") setAccount(initialAccountData)
-
-    //set a certain state field with the entered data------------------------------------------------------------------
-    setAccount((account) => ({ ...account, [event.target.name]: event.target.value }))
+    // if (event.target.name === "name" && event.target.value === "") setUserCompany(company ? company : null)
+    setCompany({ ...company, [event.target.name]: event.target.value })
   }
 
-  const [dropdownOpen, setDropdownOpen] = useState(false)
-  const [openCountryDropdown, setOpenCountryDropdown] = useState(false)
-  const debounced = useDebounce(account.name, 700)
-  const { updateUserCompany } = useActions()
+  const [openCompaniesDropdown, setOpenCompaniesDropdown] = useState(false)
+  const [openCountriesDropdown, setOpenCountriesDropdown] = useState(false)
+  const debounced = useDebounce(company.name ? company.name : "", 700)
 
   const { data, isLoading, isError, error } = useSearchCompanyQuery(debounced, {
     skip: debounced.length < 3,
@@ -59,7 +36,7 @@ export default function Account() {
   useEffect(() => {
     if (data) {
       setErrorMsg("")
-      setDropdownOpen(debounced.length >= 3 && data.companies.length! > 0 && account.name !== company?.name)
+      setOpenCompaniesDropdown(debounced.length >= 3 && data.companies.length! > 0)
     }
 
     if (error) {
@@ -70,43 +47,80 @@ export default function Account() {
 
   return (
     <div className="w-full">
-      <div className="w-full flex justify-center text-3xl font-semibold mt-2">
+      <div className="w-full flex justify-center text-3xl font-semibold my-2">
         <h1>ACCOUNT</h1>
       </div>
-      <div className="block md:flex">
-        <div className="w-full md:w-1/2 flex justify-center p-4">
+      <div className="block md:flex ">
+        <div className="w-full md:w-5/12 flex justify-center text-slate-500">
           <div className="flex flex-col text-xl md:text-2xl">
             <h1 className="mb-4 font-bold text-3xl"> Your profile:</h1>
-            <div className="flex mb-4">
+            <div className="flex mb-3">
               <h1 className="w-32">First name:</h1>
-              <span className="font-bold">{user?.firstname}</span>
+              <span className="font-bold text-slate-600 dark:text-slate-200">{user.firstname}</span>
             </div>
-            <div className="flex mb-4">
+            <div className="flex mb-3">
               <h1 className="w-32">Last name:</h1>
-              <span className="font-bold">{user?.lastname}</span>
+              <span className="font-bold text-slate-600 dark:text-slate-200">{user.lastname}</span>
             </div>
-            <div className="flex mb-4">
+            <div className="flex mb-3">
               <h1 className="w-32">Email:</h1>
-              <span className="font-bold">{user?.email}</span>
+              <span className="font-bold text-slate-600 dark:text-slate-200">{user.email}</span>
             </div>
-            <div className="flex mb-4">
+            <div className="flex">
               <h1 className="w-32">Tel: </h1>
-              <div className="flex items-center">
-                <img src={`data:image/png;base64, ${country?.flag}`} alt="" className="pr-2" />
-                <span className="font-bold">
-                  +{country?.phonecode}-{user?.phone}
+              <div className="flex items-center ">
+                <img src={`data:image/png;base64, ${user.flag}`} alt="" className="pr-2" />
+                <span className="font-bold text-slate-600 dark:text-slate-200">
+                  +{user.phonecode}-{user.phone}
                 </span>
               </div>
             </div>
           </div>
         </div>
-        <div className="w-full md:w-1/2 text-2xl p-4">
-          <span className="text-slate-500">
+
+        <div className="w-full md:w-7/12 text-2xl p-2">
+          <span className="text-slate-500 text-base md:text-xl">
             Please enter your company details or select a company from the list for further operations:
           </span>
-
-          <div className="flex relative text-xl md:text-2xl items-end">
-            <label htmlFor="name" className="capitalize w-1/3 md:w-1/4 mt-4 block">
+          <div className="flex text-xl md:text-2xl items-center mt-4 text-slate-500">
+            <div>
+              <input
+                type="radio"
+                value="airline"
+                checked={company.category === "airline"}
+                onChange={onChange}
+                name="category"
+                id="airline"
+                className="appearance-none w-5 h-5 hover:cursor-pointer border-2 border-gray-400 opacity-75 hover:opacity-100 checked:opacity-100 rounded-full checked:bg-teal-500 checked:border-slate-600 dark:checked:border-slate-300 peer"
+                // className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              />
+              <label
+                htmlFor="airline"
+                className="capitalize mr-6 ml-2 hover:cursor-pointer peer-checked:text-slate-600 dark:peer-checked:text-slate-200"
+              >
+                Airline
+              </label>
+            </div>
+            <div>
+              <input
+                type="radio"
+                value="supplier"
+                checked={company.category === "supplier"}
+                onChange={onChange}
+                name="category"
+                id="supplier"
+                className="appearance-none w-5 h-5 hover:cursor-pointer border-2 border-gray-400 opacity-75 hover:opacity-100 checked:opacity-100 rounded-full checked:bg-teal-500 checked:border-slate-600 dark:checked:border-slate-300 peer"
+              />
+              <label
+                htmlFor="supplier"
+                className="capitalize mr-6 ml-2 hover:cursor-pointer peer-checked:text-slate-600 dark:peer-checked:text-slate-200"
+              >
+                Supplier
+              </label>
+            </div>
+          </div>
+          <div className="flex relative text-xl md:text-2xl items-end text-slate-500">
+            <label htmlFor="name" className="capitalize w-1/3 md:w-1/2 mt-4 block">
               Company name:
             </label>
             <input
@@ -115,27 +129,27 @@ export default function Account() {
               name="name"
               type="text"
               autoFocus
+              // onBlur={() => setOpenCompaniesDropdown(false)}
+              value={company.name ?? ""}
               onChange={onChange}
-              onClick={() => setDropdownOpen(false)}
-              value={account.name}
-              className="w-2/3 md:w-3/4 font-bold bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
+              onClick={() => setOpenCompaniesDropdown((prev) => !prev)}
+              className="w-2/3 md:w-1/2 font-bold text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
             />
-            {dropdownOpen && (
-              <div className="absolute z-10 top-20 md:top-12 left-28 md:right-12 md:left-60 rounded-b-md max-h-80 overflow-y-scroll shadow-md dark:shadow-slate-600 bg-slate-400 dark:bg-slate-800">
-                <Dropdown
+            {openCompaniesDropdown && (
+              <div className="absolute z-10 top-20 md:top-12 md:left-1/2 w-1/2 rounded-3xl max-h-80 overflow-y-scroll shadow-md shadow-slate-700 bg-slate-100 dark:bg-slate-800">
+                <SearchDropdown
                   items={data?.companies}
-                  setOpen={setDropdownOpen}
-                  selector={updateUserCompany}
-                  dataView={["name"]}
-                  setSearch={setAccount}
+                  setOpen={setOpenCompaniesDropdown}
+                  selector={setCompany}
+                  dataView={["name", "category"]}
                 />
               </div>
             )}
-            <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/3 md:left-1/4 border-slate-500 bottom-0 peer-focus:w-2/3 md:peer-focus:w-3/4 peer-focus:border-b" />
+            <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/2 md:left-1/2 border-slate-500 bottom-0 peer-focus:w-1/2 md:peer-focus:w-1/2 peer-focus:border-b" />
           </div>
 
-          <div className="flex relative text-xl md:text-2xl items-end">
-            <label htmlFor="reg" className="capitalize w-1/3 md:w-1/4 mt-4">
+          <div className="flex relative text-xl md:text-2xl items-end text-slate-500">
+            <label htmlFor="reg_number" className="capitalize w-1/3 md:w-1/2 mt-4 block">
               Registration number:
             </label>
             <input
@@ -144,44 +158,15 @@ export default function Account() {
               name="reg_number"
               type="text"
               onChange={onChange}
-              value={account.reg_number}
-              className="w-2/3 md:w-3/4 font-bold bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
+              value={company.reg_number ?? ""}
+              className="w-2/3 md:w-1/2 font-bold text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
             />
-            <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/3 md:left-1/4 border-slate-500 bottom-0 peer-focus:w-2/3 md:peer-focus:w-3/4 peer-focus:border-b" />
+            <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/2 md:left-1/2 border-slate-500 bottom-0 peer-focus:w-1/2 md:peer-focus:w-1/2 peer-focus:border-b" />
           </div>
 
-          <div className="flex text-xl md:text-2xl items-center mt-4">
-            <input
-              type="radio"
-              value="airline"
-              checked={account.category === "airline"}
-              onChange={onChange}
-              name="category"
-              id="airline"
-              className="appearance-none w-5 h-5 hover:cursor-pointer border-2 border-gray-400 opacity-75 hover:opacity-100 checked:opacity-100 rounded-full checked:bg-teal-500 checked:border-slate-600 dark:checked:border-slate-300"
-              // className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-            />
-            <label htmlFor="airline" className="capitalize mr-6 ml-2 hover:cursor-pointer">
-              Airline
-            </label>
-
-            <input
-              type="radio"
-              value="supplier"
-              checked={account.category === "supplier"}
-              onChange={onChange}
-              name="category"
-              id="supplier"
-              className="appearance-none w-5 h-5 hover:cursor-pointer border-2 border-gray-400 opacity-75 hover:opacity-100 checked:opacity-100 rounded-full checked:bg-teal-500 checked:border-slate-600 dark:checked:border-slate-300"
-            />
-            <label htmlFor="supplier" className="capitalize mr-6 ml-2 hover:cursor-pointer">
-              Supplier
-            </label>
-          </div>
-
-          {account.category === "airline" && (
-            <div className="flex w-full">
-              <div className="flex w-1/2 items-end relative text-xl md:text-2xl">
+          {company.category === "airline" && (
+            <div className="w-full text-slate-500">
+              <div className="flex items-end relative text-xl md:text-2xl">
                 <label htmlFor="iata" className="w-1/2 mt-4">
                   Airline IATA code:
                 </label>
@@ -191,12 +176,12 @@ export default function Account() {
                   name="iata"
                   type="text"
                   onChange={onChange}
-                  value={account.iata}
-                  className="w-1/2 font-bold bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
+                  value={company.iata ?? ""}
+                  className="w-1/2 font-bold text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
                 />
                 <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/2 md:left-1/2 border-slate-500 bottom-0 peer-focus:w-1/2 md:peer-focus:w-1/2 peer-focus:border-b" />
               </div>
-              <div className="flex w-1/2 items-end relative text-xl md:text-2xl">
+              <div className="flex items-end relative text-xl md:text-2xl">
                 <label htmlFor="icao" className="w-1/2 mt-4">
                   Airline ICAO code:
                 </label>
@@ -206,59 +191,47 @@ export default function Account() {
                   name="icao"
                   type="text"
                   onChange={onChange}
-                  value={account.icao}
-                  className="w-1/2 font-bold bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
+                  value={company.icao ?? ""}
+                  className="w-1/2 font-bold text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
                 />
                 <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/2 md:left-1/2 border-slate-500 bottom-0 peer-focus:w-1/2 md:peer-focus:w-1/2 peer-focus:border-b" />
               </div>
             </div>
           )}
 
-          <div className="flex relative text-xl md:text-2xl items-end">
-            <span className="w-1/2 mt-4">Company registration country:</span>
-            <button
-              type="button"
-              className="flex items-center text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 dark:group-hover:text-slate-200 dark:peer-focus:text-slate-200"
-              onClick={() => setOpenCountryDropdown((prev) => !prev)}
-            >
-              <img src={`data:image/png;base64, ${account.country?.flag}`} alt="" className="mr-4" />
-              <span className="mr-4">{account.country!.title_case}</span>
-              <i
-                className={`fa-solid fa-chevron-down transition-all ${openCountryDropdown ? "rotate-180" : "rotate-0"}`}
-              />
-            </button>
-            {openCountryDropdown && (
-              <DropdownCountries
-                style="absolute w-1/2 block z-10 left-[28rem] top-12 rounded-2xl overflow-y-scroll shadow-md dark:shadow-slate-600 bg-slate-200 dark:bg-slate-800"
-                value={account}
-                setValue={setAccount}
-                setOpen={setOpenCountryDropdown}
-                dialcode={false}
-                isocode={true}
-              />
-            )}
+          <div className="flex items-end w-full text-xl md:text-2xl text-slate-500">
+            <span className="flex w-1/2 mt-4 mr-2">Company registration country:</span>
+            <div className="flex w-1/2 mt-4 relative">
+              <button
+                type="button"
+                className="items-end group text-slate-600 dark:text-slate-200"
+                onClick={() => setOpenCountriesDropdown((prev) => !prev)}
+              >
+                <div className="flex items-center">
+                  <img src={`data:image/png;base64, ${company.flag}`} alt="" className="mr-4" />
+                  <span className="mr-4 font-bold">{company.country}</span>
+                  <i
+                    className={`fa-solid fa-chevron-down transition-all group-hover:opacity-100 ${
+                      openCountriesDropdown ? "rotate-180 opacity-100" : "rotate-0 opacity-0"
+                    }`}
+                  />
+                </div>
+              </button>
+              {openCountriesDropdown && (
+                <CountriesDropdown
+                  style="absolute w-full md:w-1/2 block z-10 top-8 rounded-2xl overflow-y-scroll shadow-md dark:shadow-slate-600 bg-slate-200 dark:bg-slate-800"
+                  state={company}
+                  setCountry={setCompany}
+                  setOpen={setOpenCountriesDropdown}
+                  dialcode={false}
+                  isocode={true}
+                />
+              )}
+            </div>
           </div>
 
-          {/* <input
-              type="text"
-              name="country"
-              id="country"
-              value={account.country?.title_case}
-              onChange={onChange}
-              // pattern="[0-9]{2}-[0-9]{3}-[0-9]{4}"
-              className="mt-6 ml-8 w-full text-slate-800 dark:text-slate-100 bg-transparent appearance-none focus:border-slate-700 dark:focus:border-slate-400 focus:outline-none focus:ring-0 peer"
-              placeholder=""
-            />
-            <label
-              htmlFor="country"
-              className="absolute text-slate-600 dark:text-slate-400 duration-300 transform -translate-y-9 scale-100 top-8 origin-[0] peer-focus:left-0 peer-focus:text-slate-500 dark:peer-focus:text-slate-400 peer-focus:scale-75 peer-focus:-translate-y-12"
-            >
-              <span>Country:</span>
-            </label> */}
-          {/* </div> */}
-
-          <div className="flex items-end relative text-xl md:text-2xl">
-            <label htmlFor="role" className="w-1/3 md:w-1/4 mt-4">
+          <div className="flex items-end relative text-xl md:text-2xl text-slate-500">
+            <label htmlFor="role" className="w-1/2 md:w-1/2 mt-4">
               Your competency:
             </label>
 
@@ -267,17 +240,17 @@ export default function Account() {
               id="role"
               name="role"
               type="text"
-              onChange={onChange}
-              value={account.role}
-              className="w-2/3 md:w-3/4 font-bold bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
+              onChange={(e) => setUser({ ...user, role: e.target.value })}
+              value={user.role ?? ""}
+              className="w-1/2 md:w-1/2 font-bold text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
             />
-            <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/3 md:left-1/4 border-slate-500 bottom-0 peer-focus:w-2/3 md:peer-focus:w-3/4 peer-focus:border-b" />
+            <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/2 md:left-1/2 border-slate-500 bottom-0 peer-focus:w-1/2 md:peer-focus:w-1/2 peer-focus:border-b" />
           </div>
 
-          {company && company.name !== account.name && (
+          {company.name !== "" && (
             <div className="mt-4 text-slate-500">
               Such company
-              <span className="font-bold text-slate-600 dark:text-slate-400">{" '" + account.name + "' "}</span>
+              <span className="font-bold text-slate-600 dark:text-slate-400">{" '" + company.name + "' "}</span>
               has not yet been registered.
               <br /> It can be registered with the approval of a super admin and your competency will be registered as
               an admin.

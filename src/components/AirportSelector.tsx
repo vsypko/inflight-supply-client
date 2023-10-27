@@ -1,16 +1,17 @@
 import { useEffect, useState, KeyboardEvent } from "react"
-import { LoadingSpinner } from "../components/LoadingSpinner"
+import { LoadingSpinner } from "./LoadingSpinner"
 import { useSearchAirportQuery } from "../store/airport/airport.api"
-import Dropdown from "./DropdownSearch"
+import Dropdown from "./SearchDropdown"
 import { useDebounce } from "../hooks/debounce"
-import { useAppSelector } from "../hooks/redux"
 import { useActions } from "../hooks/actions"
+import { useAirport } from "../hooks/useAirport"
+import { initialState } from "../store/airport/airport.slice"
 
-export default function Search() {
+export default function AirportSelector() {
   const [search, setSearch] = useState("")
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [errorMsg, setErrorMsg] = useState("")
-  const { selected } = useAppSelector((state) => state.airport)
+  const { airport } = useAirport()
   const { selectAirport } = useActions()
 
   const debounced = useDebounce(search, 700)
@@ -22,13 +23,13 @@ export default function Search() {
 
   const unselectHandler = () => {
     setSearch("")
-    selectAirport(null)
+    selectAirport(initialState.airport)
   }
 
   useEffect(() => {
     if (data) {
       setErrorMsg("")
-      setDropdownOpen(debounced.length >= 3 && data?.airports.length! > 0 && !selected)
+      setDropdownOpen(debounced.length >= 3 && data?.airports.length! > 0 && !airport.name)
     }
     if (error) {
       if (error != null && typeof error === "object" && "data" in error) setErrorMsg(error.data as string)
@@ -42,18 +43,18 @@ export default function Search() {
         <button
           className="flex items-center justify-center absolute left-0 top-0 z-10 text-xl w-10 h-10 rounded-full bg-slate-300 dark:bg-slate-700"
           onClick={unselectHandler}
-          disabled={!selected}
+          disabled={!airport.name}
         >
           <i
             className={`fas fa-magnifying-glass opacity-70 transition-all duration-300 ${
-              selected ? "rotate-90 hover:opacity-100" : "rotate-0"
+              airport.name ? "rotate-90 hover:opacity-100" : "rotate-0"
             }`}
           />
         </button>
 
         <div
-          className={`flex relative ml-5 rounded-r-full bg-slate-300 dark:bg-slate-700 transition-all duration-300 ease-out h-10 ${
-            selected ? "w-0" : "w-full"
+          className={`flex relative ml-5 rounded-r-full bg-slate-300 dark:bg-slate-700 shadow-md shadow-slate-700 transition-all duration-300 ease-out h-10 ${
+            airport.name ? "w-0" : "w-full"
           }`}
         >
           <input
@@ -69,7 +70,7 @@ export default function Search() {
           />
 
           {dropdownOpen && (
-            <div className="absolute z-10 top-10 left-1 right-5 rounded-b-md max-h-80 overflow-y-scroll shadow-md dark:shadow-slate-600 bg-slate-100 dark:bg-slate-800">
+            <div className="absolute z-10 top-10 left-1 right-5 rounded-b-3xl max-h-80 overflow-y-scroll shadow-md shadow-slate-700 bg-slate-100 dark:bg-slate-800">
               <Dropdown
                 items={data?.airports}
                 setOpen={setDropdownOpen}
@@ -82,11 +83,11 @@ export default function Search() {
 
         <div
           className={`flex justify-between items-center text-xl transition-all duration-300 ease-out ${
-            !selected ? "w-0 hidden" : "w-full"
+            !airport.name ? "w-0 hidden" : "w-full"
           }`}
         >
-          <h1 className="uppercase mr-2 ml-8">{selected?.name}</h1>
-          <h1 className="font-bold">{selected?.iata}</h1>
+          <h1 className="uppercase mr-2 ml-8">{airport.name}</h1>
+          <h1 className="font-bold">{airport.iata}</h1>
         </div>
       </div>
 

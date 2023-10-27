@@ -1,4 +1,4 @@
-import { ICountry, IUserUpdateRequest, IUserUpdateResponse } from "../../types/user.types"
+import { Country, User, UserProfile } from "../../types/user.types"
 import { api } from "../api"
 
 export const authApi = api.injectEndpoints({
@@ -19,13 +19,13 @@ export const authApi = api.injectEndpoints({
       }),
     }),
 
-    getCountries: builder.query<ICountry[], string>({
+    getCountries: builder.query<Country[], string>({
       query: () => ({
         url: "search/countries",
       }),
     }),
 
-    userProfileUpdate: builder.mutation<IUserUpdateResponse, IUserUpdateRequest>({
+    userProfileUpdate: builder.mutation<User, UserProfile>({
       query: (data) => ({
         url: "user/updateprofile",
         method: "POST",

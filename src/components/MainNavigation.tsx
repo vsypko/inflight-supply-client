@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { NavLink } from "react-router-dom"
 import { useAuth } from "../hooks/useAuth"
-import DropdownMenu from "./DropdownMenu"
+import DropdownMenu from "./UserMenuDropdown"
 
 function toogleTheme(dark: boolean): void {
   if (!dark) {
