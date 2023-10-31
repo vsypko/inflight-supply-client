@@ -2,20 +2,20 @@ import { useState, MouseEvent } from "react"
 
 export default function Chart<T>({
   headers,
-  data,
+  rows,
   height = "max-h-[500px]",
   mdheight = "max-h-[700px]",
   handleEdit,
 }: {
-  headers: (keyof T)[]
-  data: T[]
+  headers: string[]
+  rows: T[]
   height?: string
   mdheight?: string
   handleEdit?: (row: T) => void
 }): JSX.Element {
   const [selected, setSelected] = useState<number>(-1)
 
-  const handleClick = (e: MouseEvent<HTMLTableRowElement, globalThis.MouseEvent>, row: T, index: number) => {
+  const handleClick = (row: T, index: number) => {
     if (handleEdit) handleEdit(row)
     setSelected(index)
   }
@@ -34,17 +34,19 @@ export default function Chart<T>({
         </thead>
 
         <tbody className="text-base">
-          {data.map((row, index) => (
+          {rows.map((row, index) => (
             <tr
               key={index}
               className={`cursor-pointer hover:bg-teal-300 hover:dark:bg-teal-800 ${
                 index === selected ? "bg-teal-300 dark:bg-teal-800" : "odd:bg-slate-100 odd:dark:bg-slate-800"
               }`}
-              onClick={(e) => handleClick(e, row, index)}
+              onClick={() => handleClick(row, index)}
             >
               {headers.map((header) => (
                 <td key={header as string} className={`px-6 truncate max-w-md ${header === "price" && "text-right"}`}>
-                  {header === "price" ? "$ " + (row[header] as number).toFixed(2) : (row[header] as string)}
+                  {header === "price"
+                    ? "$ " + (row[header as keyof T] as number).toFixed(2)
+                    : (row[header as keyof T] as string)}
                 </td>
               ))}
             </tr>

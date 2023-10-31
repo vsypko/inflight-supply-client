@@ -6,14 +6,12 @@ interface DropdownProps {
   setOpen: Dispatch<SetStateAction<boolean>>
   selector: ActionCreatorWithPayload<any, string>
   dataView: string[]
-  // setSearch?: Dispatch<SetStateAction<any>>
 }
 
 export default function SearchDropdown({ items, setOpen, selector, dataView }: DropdownProps) {
   const selectionHandler = (item: any) => {
     setOpen((prev) => !prev)
     selector(item)
-    // if (setSearch) setSearch(item)
   }
 
   return (

@@ -23,7 +23,6 @@ export default function CountriesDropdown({
   isocode,
 }: DropdownProps): JSX.Element {
   const { data } = useGetCountriesQuery("")
-  // const { updateUserCountry } = useActions()
   let newData: Country[] | undefined
 
   const [countriesList, setCountriesList] = useState<Country[] | undefined>([])
@@ -52,23 +51,21 @@ export default function CountriesDropdown({
       country: item.title_case,
       flag: item.flag,
       phonecode: item.phonecode,
+      currency: item.currency,
     })
-    console.log(state)
-
-    // if (dialcode) updateUserCountry(item)
     setOpen((prev) => !prev)
   }
 
   return (
     <div className={style}>
       <div className="flex relative">
-        {/* <label htmlFor="input-country-search" className="sr-only" /> */}
+        <label htmlFor="country" className="sr-only" />
         <i className="absolute z-20 top-2.5 left-3 fas fa-magnifying-glass" />
         <input
           autoFocus
           onChange={(e) => searchHandler(e.target.value)}
           type="text"
-          id="input-country-search"
+          id="country"
           className="w-full p-1 pl-12 bg-slate-300 dark:bg-slate-700 rounded-full outline-none"
         />
       </div>

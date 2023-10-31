@@ -16,15 +16,15 @@ export default function Auth() {
   const { user } = useAuth()
 
   useEffect(() => {
-    if (user) navigate("/")
-  }, [user])
+    if (user.id) navigate("/")
+  }, [user.id])
 
   const initialValue: IAuthCredentials = { isLogin: true, email: "", password: "" }
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false)
   const [value, setValue] = useState<IAuthCredentials>(initialValue)
   const [errorMsg, setErrorMsg] = useState<string>("")
   const [login, { isLoading, isError }] = useLoginMutation()
-  const { setUser } = useActions()
+  const { setUser, setCompany } = useActions()
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue((value) => ({ ...value, [event.target.name]: event.target.value }))
@@ -34,7 +34,10 @@ export default function Auth() {
     event.preventDefault()
     try {
       const data = await login(value).unwrap()
-      if (data) setUser(data)
+      if (data) {
+        setUser(data.user)
+        setCompany(data.company)
+      }
       navigate("/")
     } catch (err) {
       if (err != null && typeof err === "object" && "data" in err) setErrorMsg(err.data as string)

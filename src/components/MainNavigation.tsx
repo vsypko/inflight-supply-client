@@ -111,7 +111,7 @@ export default function MainNavigation() {
                     </span>
                   </NavLink>
                 </li>
-                {user != null && user.role != "user" && (
+                {user.role && user.role !== "user" && (
                   <li className="nav-item">
                     <NavLink
                       className={({ isActive }) => (isActive ? activeLink : regularLink)}
@@ -138,7 +138,7 @@ export default function MainNavigation() {
               {/* user auth ------------------------------------------------------*/}
 
               <div className="flex flex-col lg:flex-row">
-                {!user && (
+                {!user.id && (
                   <li className="nav-item">
                     <NavLink
                       className={({ isActive }) => (isActive ? activeLink : regularLink)}
@@ -153,7 +153,7 @@ export default function MainNavigation() {
 
                 {/* user avatar and menu ------------------------------------------------------*/}
 
-                {user && (
+                {user.id && (
                   <div
                     onMouseEnter={() => setUserDropdownOpen(true)}
                     onMouseLeave={() => {

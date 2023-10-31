@@ -1,4 +1,4 @@
-export interface IFlight {
+export interface Flight {
   id: number
   date: string
   flight: number
@@ -9,53 +9,40 @@ export interface IFlight {
   std: string
   sta: string
   seats: number
-  co_id: number
-  co_iata: string
+  co_id: number | undefined
+  co_iata: string | undefined
 }
 
-export interface IFleet {
+export interface Fleet {
   id: number
   name: string
   type: string
   reg: string
   seats: number
-  co_id: number
+  co_id: number | undefined
 }
 
-export interface ISchedule {
+export interface Schedule {
   departure?: string
   arrival?: string
   destination: string
   flight: string
 }
 
-export interface IUpdatePayload<T> {
-  type: string
-  id: number
-  value: T | null
-}
-export interface IAddPayload {
-  type: string
-  values: string
-}
-export interface IDeletePayload {
-  type: string
-  id: number
-}
-export interface IRow {
-  id: number
-  date?: string
-  flight?: number
-  type?: string
-  reg?: string
-  from?: string
-  to?: string
-  std?: string
-  sta?: string
-  seats?: number
-  co_id?: number
-  co_iata?: string
-  name?: string
+export interface Row {
+  id: number | undefined
+  date?: string | undefined
+  flight?: number | undefined
+  type?: string | undefined
+  reg?: string | undefined
+  from?: string | undefined
+  to?: string | undefined
+  std?: string | undefined
+  sta?: string | undefined
+  seats?: number | undefined
+  co_id?: number | undefined
+  co_iata?: string | undefined
+  name?: string | undefined
 }
 
 export interface Company {
@@ -83,7 +70,7 @@ export interface Item {
   area: string
   description: string
   img_url: string
-  co_id: number
+  co_id: number | undefined
 }
 
 export interface ICompanyResponse {

@@ -1,6 +1,5 @@
 import * as THREE from "three"
 import { useGLTF } from "@react-three/drei"
-import { GroupProps } from "@react-three/fiber"
 import { GLTF } from "three-stdlib"
 
 type GLTFResult = GLTF & {
@@ -25,7 +24,6 @@ export function Model(props: JSX.IntrinsicElements["group"]) {
         geometry={nodes["blades_turbine_003_turbine-01_accent_yellow_0"].geometry}
         material={materials.PaletteMaterial001}
         position={[5.458, 1.243, -2.922]}
-        // [9.22, -1.55, -4.95]
         rotation={[-Math.PI / 2, 0, 0]}
         scale={0.01}
       />

@@ -1,13 +1,12 @@
 import mapgl from "mapbox-gl"
-import { IAirport } from "../types/airport.types"
 import { useLazySearchAirportbyCodeQuery } from "../store/airport/airport.api"
-import { useAppSelector } from "../hooks/redux"
 import { useActions } from "../hooks/actions"
 import { useEffect, useRef } from "react"
+import { useAirport } from "../hooks/useAirport"
 
 export default function Map() {
   mapgl.accessToken = import.meta.env.VITE_MAP_TOKEN
-  const { selected } = useAppSelector((state) => state.airport)
+  const { airport } = useAirport()
   const mapContainer = useRef<HTMLDivElement | null>(null)
   const [getAirport, { data, error }] = useLazySearchAirportbyCodeQuery()
   const { selectAirport } = useActions()
@@ -21,10 +20,10 @@ export default function Map() {
     const mapbox = new mapgl.Map({
       container: mapContainer.current as HTMLElement,
       style: "mapbox://styles/mapbox/streets-v12",
-      center: [selected?.longitude || 30, selected?.latitude || 40],
-      pitch: selected ? 60 : 0,
+      center: [airport.longitude || 30, airport.latitude || 40],
+      pitch: airport.id ? 60 : 0,
       bearing: 0,
-      zoom: selected ? 15 : 1,
+      zoom: airport.id ? 15 : 1,
     })
 
     mapbox.on("style.load", (e) => {
@@ -54,7 +53,7 @@ export default function Map() {
       let features = mapbox.queryRenderedFeatures(e.point)
       getAirport(features[0].properties?.ref, false).unwrap()
     })
-  }, [selected])
+  }, [airport])
 
   return <div ref={mapContainer} className="w-full h-[500px] border border-slate-600 mt-4 rounded-lg" />
 }

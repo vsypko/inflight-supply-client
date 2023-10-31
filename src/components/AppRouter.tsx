@@ -12,7 +12,7 @@ import Account from "../pages/Account"
 import { useAuth } from "../hooks/useAuth"
 import { User } from "../types/user.types"
 
-const TSXRouter = (user: User | null) => {
+const TSXRouter = (user: User) => {
   return createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<RootLayout />}>
@@ -22,8 +22,8 @@ const TSXRouter = (user: User | null) => {
         <Route path="/messages" element={<Messages />} />
         <Route path="/admin/:id" element={<Admin />} />
         <Route path="/auth" element={<Auth />} />
-        <Route path="/profile/:id" element={user ? <Profile /> : <Navigate replace to="/auth" />} />
-        <Route path="/account/:id" element={user ? <Account /> : <Navigate replace to="/auth" />} />
+        <Route path="/profile/:id" element={user.id ? <Profile /> : <Navigate replace to="/auth" />} />
+        <Route path="/account/:id" element={user.id ? <Account /> : <Navigate replace to="/auth" />} />
       </Route>,
     ),
   )

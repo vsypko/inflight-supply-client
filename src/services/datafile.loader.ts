@@ -5,6 +5,8 @@ export async function handleDataFileInput<T>(
   e: ChangeEvent<HTMLInputElement>,
   headers: string[],
   setData: Dispatch<SetStateAction<T[]>>,
+  co_id: number | undefined,
+  co_iata?: string | undefined,
 ): Promise<void> {
   e.preventDefault()
   const file = e.target.files?.[0]
@@ -18,11 +20,15 @@ export async function handleDataFileInput<T>(
       range: 1,
       header: headers,
     })
-    if ("std" in sheet[0])
-      sheet.forEach((row) => {
+
+    sheet.forEach((row) => {
+      if ("std" in sheet[0]) {
         row.std = timeConverter(row.std)
         row.sta = timeConverter(row.sta)
-      })
+        row.co_iata = co_iata
+      }
+      row.co_id = co_id
+    })
     setData(sheet as T[])
   }
 }

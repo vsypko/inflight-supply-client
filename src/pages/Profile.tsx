@@ -8,10 +8,12 @@ import {
   useUserUrlUpdateMutation,
 } from "../store/auth/auth.api"
 import DropdownCountries from "../components/CountriesDropdown"
-import { Country, User } from "../types/user.types"
+import { useCompany } from "../hooks/useCompany"
 
 export default function Profile() {
   const { user } = useAuth()
+  const { company } = useCompany()
+
   const { updateUserUrl, setUser } = useActions()
   const [userUrlUpdateQuery] = useUserUrlUpdateMutation()
   const [userUrlRemoveQuery] = useUserUrlRemoveMutation()
@@ -38,7 +40,6 @@ export default function Profile() {
   async function handleSave(e: FormEvent) {
     e.preventDefault()
     await userProfileUpdateQuery(user).unwrap()
-    // setUser(user)
   }
 
   return (
@@ -167,13 +168,16 @@ export default function Profile() {
                 <span>Company</span>
               </div>
               <div className="flex justify-between">
-                {/* <span className="text-slate-800 dark:text-slate-200">{company?.name}</span> */}
+                <span className="text-slate-800 dark:text-slate-200">
+                  {company ? company.name : "The company is undefined"}
+                </span>
                 <div className="flex justify-end items-center">
-                  {/* <img src={`data:image/png;base64, ${company?.country}`} alt="" className="py-1" />
-                  <span className="text-slate-800 dark:text-slate-200 ml-2">{company?.country}</span> */}
+                  <img src={`data:image/png;base64, ${company?.flag}`} alt="" className="py-1" />
+                  <span className="text-slate-800 dark:text-slate-200 ml-2">{company?.country}</span>
                 </div>
               </div>
             </div>
+
             <div className="flex flex-col mt-4 border-0 border-b-2 border-slate-400 dark:border-slate-600 justify-between">
               <div className="w-full scale-90 text-slate-600 dark:text-slate-400 origin-[0]">
                 <i className="fas fa-user-shield mr-2"></i>

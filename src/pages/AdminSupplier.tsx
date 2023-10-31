@@ -15,6 +15,7 @@ import Chart from "../components/Chart"
 import SaveRemove from "../components/SaveRemove"
 import { imageSave } from "../services/imagefile.loader"
 import { imageClear } from "../services/image.utils"
+import { useCompany } from "../hooks/useCompany"
 
 export default function AdminSupplier() {
   const [newItems, setNewItems] = useState<Item[]>([])
@@ -23,8 +24,8 @@ export default function AdminSupplier() {
   const [errorMsg, setErrorMsg] = useState("")
   const [canvasRef, setCanvasRef] = useState<RefObject<HTMLCanvasElement> | null>(null)
 
-  const { company } = useAuth()
-  const { data, error } = useGetCompanyDataQuery({ type: "supplies", id: company!.id })
+  const { company } = useCompany()
+  const { data, error } = useGetCompanyDataQuery({ type: "supplies", id: company.id })
 
   const initialItem: Item = {
     id: 0,
@@ -35,7 +36,7 @@ export default function AdminSupplier() {
     area: "",
     description: "",
     img_url: "",
-    co_id: company!.id,
+    co_id: company.id,
   }
 
   const headers = Object.keys(initialItem).slice(1, 7) as Array<keyof Item>

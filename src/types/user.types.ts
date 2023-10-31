@@ -14,6 +14,7 @@ export interface User {
   country: string | undefined
   phonecode: number | undefined
   flag: string | undefined
+  currency: string | undefined
   company_id: number | undefined
   token: string | undefined
 }

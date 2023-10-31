@@ -1,5 +1,4 @@
 import { useAuth } from "../hooks/useAuth"
-import { useGetUsersQuery } from "../store/users/users.api"
 import { LoadingSpinner } from "../components/LoadingSpinner"
 import { ChangeEvent, useEffect, useState, KeyboardEvent, useRef } from "react"
 import { useSearchCompanyQuery } from "../store/company/company.api"
@@ -7,8 +6,6 @@ import { useDebounce } from "../hooks/debounce"
 import SearchDropdown from "../components/SearchDropdown"
 import CountriesDropdown from "../components/CountriesDropdown"
 import { useActions } from "../hooks/actions"
-import { Country } from "../types/user.types"
-import { Company } from "../types/company.types"
 import { useCompany } from "../hooks/useCompany"
 
 export default function Account() {
@@ -17,8 +14,6 @@ export default function Account() {
   const { setUser, setCompany } = useActions()
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    //clear the company data if the name field is empty----------------------------------------------------------------
-    // if (event.target.name === "name" && event.target.value === "") setUserCompany(company ? company : null)
     setCompany({ ...company, [event.target.name]: event.target.value })
   }
 
@@ -36,7 +31,7 @@ export default function Account() {
   useEffect(() => {
     if (data) {
       setErrorMsg("")
-      setOpenCompaniesDropdown(debounced.length >= 3 && data.companies.length! > 0)
+      setOpenCompaniesDropdown(debounced.length >= 3 && data.companies.length > 1)
     }
 
     if (error) {
@@ -92,7 +87,6 @@ export default function Account() {
                 name="category"
                 id="airline"
                 className="appearance-none w-5 h-5 hover:cursor-pointer border-2 border-gray-400 opacity-75 hover:opacity-100 checked:opacity-100 rounded-full checked:bg-teal-500 checked:border-slate-600 dark:checked:border-slate-300 peer"
-                // className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
               <label
                 htmlFor="airline"
@@ -120,7 +114,7 @@ export default function Account() {
             </div>
           </div>
           <div className="flex relative text-xl md:text-2xl items-end text-slate-500">
-            <label htmlFor="name" className="capitalize w-1/3 md:w-1/2 mt-4 block">
+            <label htmlFor="name" className="capitalize w-1/2 mt-4 block">
               Company name:
             </label>
             <input
@@ -129,11 +123,9 @@ export default function Account() {
               name="name"
               type="text"
               autoFocus
-              // onBlur={() => setOpenCompaniesDropdown(false)}
               value={company.name ?? ""}
               onChange={onChange}
-              onClick={() => setOpenCompaniesDropdown((prev) => !prev)}
-              className="w-2/3 md:w-1/2 font-bold text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
+              className="w-1/2 font-bold text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
             />
             {openCompaniesDropdown && (
               <div className="absolute z-10 top-20 md:top-12 md:left-1/2 w-1/2 rounded-3xl max-h-80 overflow-y-scroll shadow-md shadow-slate-700 bg-slate-100 dark:bg-slate-800">
@@ -149,7 +141,7 @@ export default function Account() {
           </div>
 
           <div className="flex relative text-xl md:text-2xl items-end text-slate-500">
-            <label htmlFor="reg_number" className="capitalize w-1/3 md:w-1/2 mt-4 block">
+            <label htmlFor="reg_number" className="capitalize w-1/2 mt-4 block">
               Registration number:
             </label>
             <input
@@ -159,7 +151,7 @@ export default function Account() {
               type="text"
               onChange={onChange}
               value={company.reg_number ?? ""}
-              className="w-2/3 md:w-1/2 font-bold text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
+              className="w-1/2 font-bold text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
             />
             <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/2 md:left-1/2 border-slate-500 bottom-0 peer-focus:w-1/2 md:peer-focus:w-1/2 peer-focus:border-b" />
           </div>
@@ -231,7 +223,7 @@ export default function Account() {
           </div>
 
           <div className="flex items-end relative text-xl md:text-2xl text-slate-500">
-            <label htmlFor="role" className="w-1/2 md:w-1/2 mt-4">
+            <label htmlFor="role" className="w-1/2 mt-4">
               Your competency:
             </label>
 
@@ -247,7 +239,7 @@ export default function Account() {
             <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/2 md:left-1/2 border-slate-500 bottom-0 peer-focus:w-1/2 md:peer-focus:w-1/2 peer-focus:border-b" />
           </div>
 
-          {company.name !== "" && (
+          {/* {company.name !== "" && (
             <div className="mt-4 text-slate-500">
               Such company
               <span className="font-bold text-slate-600 dark:text-slate-400">{" '" + company.name + "' "}</span>
@@ -256,7 +248,7 @@ export default function Account() {
               an admin.
               <br /> Would you like to submit a registration request?
             </div>
-          )}
+          )} */}
         </div>
       </div>
       {isError && <div className="text-red-500">{errorMsg}</div>}

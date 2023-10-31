@@ -16,11 +16,12 @@ export default function DropdownMenu({ open, setOpen, close }: UserDropownProps)
     close(false)
   }
   const [logout, { error }] = useLazyLogoutQuery()
-  const { signOut } = useActions()
+  const { signOut, removeCompanyFromState } = useActions()
   const { user } = useAuth()
 
   async function logOutHandler() {
     signOut()
+    removeCompanyFromState()
     logout("")
     selectionHandler()
   }
@@ -38,14 +39,14 @@ export default function DropdownMenu({ open, setOpen, close }: UserDropownProps)
     >
       <ul>
         <li onClick={selectionHandler}>
-          <NavLink to={`/profile/${user!.id}`} className={itemStyle}>
+          <NavLink to={`/profile/${user.id}`} className={itemStyle}>
             <i className="fas fa-user-pen mr-4" />
             <span>PROFILE</span>
           </NavLink>
         </li>
 
         <li onClick={selectionHandler}>
-          <NavLink to={`/account/${user!.id}`} className={itemStyle}>
+          <NavLink to={`/account/${user.id}`} className={itemStyle}>
             <i className="fas fa-address-card mr-4" />
             <span>ACCOUNT</span>
           </NavLink>

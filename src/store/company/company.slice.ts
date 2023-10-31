@@ -29,12 +29,13 @@ export const companySlice = createSlice({
   reducers: {
     setCompany(state, { payload: company }: PayloadAction<Company>): void {
       state.company = company
-      // state.user.firstname = data.firstname ? data.firstname : state.user.firstname
-      // state.user.lastname = data.lastname ? data.lastname : state.user.lastname
+    },
+    removeCompanyFromState(state) {
+      state.company = initialState.company
     },
   },
 })
 
 export const companyActions = companySlice.actions
 export const companyReducer = companySlice.reducer
-export const { setCompany } = companySlice.actions
+export const { setCompany, removeCompanyFromState } = companySlice.actions

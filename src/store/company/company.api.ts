@@ -12,7 +12,7 @@ export const companyApi = api.injectEndpoints({
       }),
     }),
 
-    getCompanyData: builder.query<any[], { type: string; id: number; date: string }>({
+    getCompanyData: builder.query<any[], { type: string; id?: number; date?: string }>({
       query: (data) => ({
         url: `company/${data.type}`,
         params: {
@@ -23,7 +23,7 @@ export const companyApi = api.injectEndpoints({
       providesTags: ["Data"],
     }),
 
-    insertCompanyData: builder.mutation<{ data: string; id: number }, { type: string; values: string }>({
+    insertCompanyData: builder.mutation<{ data: string; id: number }, { type: string; values: any }>({
       query: (data) => ({
         url: `company/${data.type}`,
         method: "POST",

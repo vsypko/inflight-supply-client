@@ -1,25 +1,21 @@
 import { ChangeEvent, MutableRefObject, useEffect, useRef, useState } from "react"
-import { useAuth } from "../hooks/useAuth"
 import { handleDataFileInput } from "../services/datafile.loader"
 import { useGetCompanyDataQuery, useInsertCompanyDataMutation } from "../store/company/company.api"
 import { LoadingSpinner } from "./LoadingSpinner"
-import { IFlight } from "../types/company.types"
+import { Flight } from "../types/company.types"
 import Chart from "./Chart"
 import SaveRemove from "./SaveRemove"
 import Dialog from "./Dialog"
+import { useCompany } from "../hooks/useCompany"
 
 export default function FlightsEditor() {
-  const { company } = useAuth()
+  const { company } = useCompany()
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
-  const [newFlights, setNewFlights] = useState<IFlight[]>([])
-  const [errorMsg, setErrorMsg] = useState("")
-  const [result, setResult] = useState("")
-  const [insertCompanyData, { data: response, isError, isSuccess, isLoading }] = useInsertCompanyDataMutation()
-  const { data, error } = useGetCompanyDataQuery({ type: "flights", id: company!.id, date })
+  const { data, error } = useGetCompanyDataQuery({ type: "flights", id: company.id, date })
 
-  const initialFlights = {
+  const emptyRow = {
     id: 0,
-    date: "",
+    date: new Date().toISOString().slice(0, 10),
     flight: 0,
     type: "",
     reg: "",
@@ -28,17 +24,26 @@ export default function FlightsEditor() {
     std: "",
     sta: "",
     seats: 0,
-    co_id: company!.id,
-    co_iata: company!.iata!,
+    co_id: company.id,
+    co_iata: company.iata,
   }
 
-  const headers = Object.keys(initialFlights).slice(1, 10) as Array<keyof IFlight>
+  const headers = Object.keys(emptyRow).slice(1, 10)
 
   useEffect(() => {
     setErrorMsg("")
     if (error != null && typeof error === "object" && "data" in error) setErrorMsg(error.data as string)
     if (error != null && typeof error === "object" && "error" in error) setErrorMsg(error.error as string)
   }, [error])
+
+  const [insertCompanyData, { data: response, isError, isSuccess, isLoading }] = useInsertCompanyDataMutation()
+
+  const [newFlights, setNewFlights] = useState<Flight[]>([])
+  const [row, setRow] = useState<Flight>(emptyRow)
+
+  const [errorMsg, setErrorMsg] = useState("")
+  const [dialogRef, setDialogRef] = useState<HTMLDialogElement | null>(null)
+  const [result, setResult] = useState("")
 
   function handleDecreaseDate() {
     setDate(
@@ -56,12 +61,8 @@ export default function FlightsEditor() {
     )
   }
 
-  const [editRow, setEditRow] = useState<IFlight>(initialFlights)
-  const [dialogRef, setDialogRef] = useState<HTMLDialogElement | null>(null)
-
-  const handleEditFlight = (row: IFlight) => {
-    setEditRow(row)
-    if (row.date === "") setEditRow((prev) => ({ ...prev, date }))
+  const handleEdit = (row: Flight) => {
+    setRow(row)
     setErrorMsg("")
     setResult("")
     dialogRef?.showModal()
@@ -69,20 +70,12 @@ export default function FlightsEditor() {
 
   async function handleUploadFile(e: ChangeEvent<HTMLInputElement>) {
     setErrorMsg("")
-    await handleDataFileInput(e, headers, setNewFlights)
+    await handleDataFileInput(e, headers, setNewFlights, company.id, company.iata)
   }
 
   async function handleInsertFlights() {
     try {
-      const values = newFlights
-        .map(
-          (row) =>
-            `('${row.date}'::date, ${row.flight}, '${row.type}', '${row.reg}', '${row.from}', '${row.to}', '${
-              row.std
-            }'::time, '${row.sta}'::time, ${row.seats}, ${company!.id}, '${company!.iata}')`,
-        )
-        .join(",")
-      await insertCompanyData({ type: "flights", values }).unwrap()
+      await insertCompanyData({ type: "flights", values: newFlights }).unwrap()
       setNewFlights([])
     } catch (err) {
       setNewFlights([])
@@ -93,12 +86,14 @@ export default function FlightsEditor() {
 
   return (
     <>
-      <Dialog<IFlight>
-        row={editRow}
-        setRow={setEditRow}
+      <Dialog
+        headers={headers}
+        row={row}
+        setRow={setRow}
         setDialogRef={setDialogRef}
         setErrorMsg={setErrorMsg}
         setResult={setResult}
+        type="flights"
       />
       <div className="max-w-max max-h-max">
         {errorMsg && <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>}
@@ -143,7 +138,7 @@ export default function FlightsEditor() {
 
               <div className="mb-2 lg:mb-1">
                 <button
-                  onClick={() => handleEditFlight(initialFlights)}
+                  onClick={() => handleEdit(emptyRow)}
                   type="button"
                   className="px-3 py-1 rounded-full active:scale-90 cursor-pointer hover:bg-slate-300  dark:hover:bg-slate-700 opacity-75 hover:opacity-100"
                 >
@@ -182,9 +177,9 @@ export default function FlightsEditor() {
 
           {/* Table with flights from xlsx or from DB --------------------------------------------------------------*/}
 
-          {newFlights.length !== 0 && !isLoading && <Chart headers={headers} data={newFlights} />}
+          {newFlights.length !== 0 && !isLoading && <Chart<Flight> headers={headers} rows={newFlights} />}
           {data && !newFlights.length && !isLoading && (
-            <Chart headers={headers} data={data} handleEdit={handleEditFlight} />
+            <Chart<Flight> headers={headers} rows={data} handleEdit={handleEdit} />
           )}
 
           {/* Queries result info -------------------------------------------------------*/}

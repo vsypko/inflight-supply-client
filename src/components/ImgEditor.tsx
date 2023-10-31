@@ -2,6 +2,7 @@ import { ChangeEvent, Dispatch, RefObject, SetStateAction, useEffect, useRef } f
 import { imageClear, imageUtils } from "../services/image.utils"
 import { imageSave, imgFileInput } from "../services/imagefile.loader"
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit"
+import { v4 as uuid } from "uuid"
 
 interface IProps {
   path: string
@@ -57,7 +58,7 @@ export default function ImgEditor({ imgEditorProps }: { imgEditorProps: IProps }
 
   async function handleImageSave() {
     setImgLoaded(false)
-    const imgUrl = crypto.randomUUID()
+    const imgUrl = uuid()
     try {
       if (!canvasRef.current) return
       await imageSave(canvasRef.current, maxView, imgUpdateQuery, imgUrl, id)

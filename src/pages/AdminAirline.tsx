@@ -3,9 +3,10 @@ import { useAppSelector } from "../hooks/redux"
 import { useAuth } from "../hooks/useAuth"
 import FlightsEditor from "../components/FlightsEditor"
 import FleetEditor from "../components/FleetEditor"
+import { useCompany } from "../hooks/useCompany"
 
 export default function AdminAirline() {
-  const { company } = useAuth()
+  const { company } = useCompany()
   const [action, setAction] = useState("fleet")
 
   return (
@@ -19,13 +20,13 @@ export default function AdminAirline() {
           <div className="flex justify-between m-3">
             <h1>Country:</h1>
             <div className="flex">
-              <span className="font-bold mr-2">{company?.country.title_case}</span>
-              <img src={`data:image/png;base64, ${company?.country.flag}`} alt="" className="py-1" />
+              <span className="font-bold mr-2">{company.country}</span>
+              <img src={`data:image/png;base64, ${company.flag}`} alt="" className="py-1" />
             </div>
           </div>
           <div className="flex justify-between m-3">
             <h1>IATA code:</h1>
-            <span className="font-bold">{company?.iata}</span>
+            <span className="font-bold">{company.iata}</span>
           </div>
 
           <div className="flex md:flex-col mt-4 justify-around md:space-y-10">
