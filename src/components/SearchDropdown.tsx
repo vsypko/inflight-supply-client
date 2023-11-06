@@ -4,7 +4,7 @@ import { ActionCreatorWithPayload } from "@reduxjs/toolkit"
 interface DropdownProps {
   items: any[] | undefined
   setOpen: Dispatch<SetStateAction<boolean>>
-  selector: ActionCreatorWithPayload<any, string>
+  selector: ActionCreatorWithPayload<any, string> | Dispatch<React.SetStateAction<any>>
   dataView: string[]
 }
 

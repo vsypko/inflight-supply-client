@@ -1,7 +1,7 @@
 import { useEffect, useState, KeyboardEvent } from "react"
 import { LoadingSpinner } from "./LoadingSpinner"
 import { useSearchAirportQuery } from "../store/airport/airport.api"
-import Dropdown from "./SearchDropdown"
+import SearchDropdown from "./SearchDropdown"
 import { useDebounce } from "../hooks/debounce"
 import { useActions } from "../hooks/actions"
 import { useAirport } from "../hooks/useAirport"
@@ -71,7 +71,7 @@ export default function AirportSelector() {
 
           {dropdownOpen && (
             <div className="absolute z-10 top-10 left-1 right-5 rounded-b-3xl max-h-80 overflow-y-scroll shadow-md shadow-slate-700 bg-slate-100 dark:bg-slate-800">
-              <Dropdown
+              <SearchDropdown
                 items={data?.airports}
                 setOpen={setDropdownOpen}
                 selector={selectAirport}

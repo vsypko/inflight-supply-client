@@ -14,11 +14,11 @@ export default function AdminAirline() {
       <div className="block md:flex p-2 m-1 max-h-max">
         <div className="w-full md:w-1/4 md:text-2xl">
           <div className="flex justify-between m-3">
-            <h1>Company:</h1>
-            <span className="font-bold">{company?.name}</span>
+            <div>Company:</div>
+            <div className="font-bold">{company.name}</div>
           </div>
           <div className="flex justify-between m-3">
-            <h1>Country:</h1>
+            <div>Country:</div>
             <div className="flex">
               <span className="font-bold mr-2">{company.country}</span>
               <img src={`data:image/png;base64, ${company.flag}`} alt="" className="py-1" />

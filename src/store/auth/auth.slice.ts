@@ -17,6 +17,7 @@ const initialState: AuthState = {
     img_url_data: "",
     country_iso: "",
     country: "",
+    currency: "",
     phonecode: undefined,
     flag: "",
     company_id: undefined,

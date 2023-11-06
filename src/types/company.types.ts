@@ -69,7 +69,7 @@ export interface Item {
   category: string
   area: string
   description: string
-  img_url: string
+  img_url: string | undefined
   co_id: number | undefined
 }
 
