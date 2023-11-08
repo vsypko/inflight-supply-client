@@ -174,24 +174,6 @@ export default function SupplierItems() {
   }, [imgLoaded, row.id, row.img_url])
 
   return (
-    // <div className="w-full">
-    //   <div className="block md:flex p-2 m-1 max-h-max">
-    //     <div className="w-full md:w-1/3 md:text-2xl mt-6">
-    //       <div className="flex justify-between p-3">
-    //         <h1>Company:</h1>
-    //         <span className="font-bold">{company.name}</span>
-    //       </div>
-    //       <div className="flex justify-between p-3">
-    //         <h1>Country:</h1>
-    //         <div className="flex">
-    //           <span className="font-bold">{company.country}</span>
-    //           <img src={`data:image/png;base64, ${company.flag}`} alt="" className="py-1" />
-    //         </div>
-    //       </div>
-    //       <div className="p-3 flex w-full justify-between"> Airports, where services are provided </div>
-    //       {/* <div className="border rounded-full w-11/12 px-2">Selected airports</div> */}
-    //     </div>
-    //     <div className="flex text-xl w-2/3 justify-center">
     <div className="block max-w-max relative">
       {errorMsg && <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>}
       {!newItems.length && !isLoading && (
@@ -233,11 +215,11 @@ export default function SupplierItems() {
 
       {/* Chart render in case of loading from database ------------------------------------------------------------------------*/}
       {supplies && !newItems.length && !isLoading && (
-        <Chart
+        <Chart<Item>
           headers={headers}
           rows={supplies}
           height="max-h-[185px]"
-          mdheight="md:max-h-[400px]"
+          mdheight="md:max-h-[570px]"
           handleEdit={handleEditItem}
         />
       )}

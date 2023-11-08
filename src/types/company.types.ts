@@ -29,6 +29,17 @@ export interface Schedule {
   flight: string
 }
 
+export interface Place {
+  id: number
+  airport_id: number
+  name: string
+  iata: string
+  municipality: string
+  country: string
+  country_iso: string
+  company_id: number
+}
+
 export interface Row {
   id: number | undefined
   date?: string | undefined

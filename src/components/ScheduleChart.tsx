@@ -2,7 +2,7 @@ import { Schedule } from "../types/company.types"
 
 export default function ScheduleChart({ headers, schedule }: { headers: string[]; schedule: Schedule[] | undefined }) {
   return (
-    <div className="flex rounded-xl w-full max-h-[336px] overflow-scroll my-4 mb-16">
+    <div className="flex rounded-xl w-full max-h-[336px] overflow-scroll mt-4 mb-16">
       <table className="table-fixed w-full tracking-widest">
         <thead className="text-lg z-10 h-12">
           <tr>

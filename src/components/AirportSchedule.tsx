@@ -44,7 +44,7 @@ export default function AirportSchedule() {
       {from?.length === 0 && to?.length === 0 && <PlaneModel />}
       {!isLoading && (
         <div className="w-full md:w-2/3 flex flex-col mt-2 md:px-10">
-          <div className="flex mb-2 lg:mb-1 text-xl justify-center z-10">
+          <div className="flex text-xl justify-center z-10">
             <button
               type="button"
               className="h-8 w-8 rounded-full opacity-75 hover:opacity-100 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-90"

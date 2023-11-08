@@ -24,7 +24,7 @@ const initialState: CompanyState = {
 }
 
 export const companySlice = createSlice({
-  name: "auth",
+  name: "company",
   initialState,
   reducers: {
     setCompany(state, { payload: company }: PayloadAction<Company>): void {

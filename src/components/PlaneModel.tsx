@@ -5,7 +5,7 @@ import { Model } from "../components/B757"
 
 export default function PlaneModel() {
   return (
-    <div className="absolute w-full h-[calc(100vh-80px)] hidden md:flex">
+    <div className="absolute left-5 right-5 h-[calc(100vh-80px)] hidden md:flex">
       <Canvas camera={{ fov: 45 }} gl={{ preserveDrawingBuffer: true }}>
         <ambientLight intensity={0.5} />
         <Suspense fallback={null}>

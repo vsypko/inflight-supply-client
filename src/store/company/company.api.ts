@@ -46,12 +46,13 @@ export const companyApi = api.injectEndpoints({
       invalidatesTags: ["Data"],
     }),
 
-    deleteCompanyData: builder.mutation<{ data: string }, { type: string; id: number }>({
+    deleteCompanyData: builder.mutation<{ data: string }, { type: string; id: number; co_id?: number }>({
       query: (data) => ({
         url: `company/${data.type}`,
         method: "DELETE",
         params: {
           id: data.id,
+          co_id: data.co_id,
         },
       }),
       invalidatesTags: ["Data"],

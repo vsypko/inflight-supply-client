@@ -7,6 +7,7 @@ import SearchDropdown from "../components/SearchDropdown"
 import CountriesDropdown from "../components/CountriesDropdown"
 import { useActions } from "../hooks/actions"
 import { useCompany } from "../hooks/useCompany"
+import { User } from "../types/user.types"
 
 export default function Account() {
   const { user } = useAuth()
@@ -19,7 +20,7 @@ export default function Account() {
 
   const [openCompaniesDropdown, setOpenCompaniesDropdown] = useState(false)
   const [openCountriesDropdown, setOpenCountriesDropdown] = useState(false)
-  const debounced = useDebounce(company.name ? company.name : "", 700)
+  const debounced = useDebounce(company?.name ? company?.name : "", 700)
 
   const { data, isLoading, isError, error } = useSearchCompanyQuery(debounced, {
     skip: debounced.length < 3,
@@ -29,16 +30,17 @@ export default function Account() {
   const [errorMsg, setErrorMsg] = useState("")
 
   useEffect(() => {
-    if (data) {
+    if (data && data.total_count !== 0) {
       setErrorMsg("")
       setOpenCompaniesDropdown(debounced.length >= 3 && data.companies.length > 1)
     }
-
     if (error) {
       if (error != null && typeof error === "object" && "data" in error) setErrorMsg(error.data as string)
       if (error != null && typeof error === "object" && "error" in error) setErrorMsg(error.error as string)
     }
   }, [data, error])
+
+  function companyCreate() {}
 
   return (
     <div className="w-full">
@@ -82,7 +84,7 @@ export default function Account() {
               <input
                 type="radio"
                 value="airline"
-                checked={company.category === "airline"}
+                checked={company?.category === "airline" ? true : false}
                 onChange={onChange}
                 name="category"
                 id="airline"
@@ -99,7 +101,7 @@ export default function Account() {
               <input
                 type="radio"
                 value="supplier"
-                checked={company.category === "supplier"}
+                checked={company?.category === "supplier" ? true : false}
                 onChange={onChange}
                 name="category"
                 id="supplier"
@@ -123,12 +125,13 @@ export default function Account() {
               name="name"
               type="text"
               autoFocus
-              value={company.name ?? ""}
+              value={company?.name ?? ""}
               onChange={onChange}
-              className="w-1/2 font-bold text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
+              placeholder="Enter the company name or select from the dropdown list..."
+              className="w-1/2 font-bold outline-none placeholder:text-base placeholder:font-normal text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:placeholder:opacity-0 hover:opacity-100 focus:opacity-100 peer"
             />
             {openCompaniesDropdown && (
-              <div className="absolute z-10 top-20 md:top-12 md:left-1/2 w-1/2 rounded-3xl max-h-80 overflow-y-scroll shadow-md shadow-slate-700 bg-slate-100 dark:bg-slate-800">
+              <div className="absolute z-10 top-12 left-1/2 w-1/2 rounded-3xl max-h-80 overflow-y-scroll shadow-md shadow-slate-700 bg-slate-100 dark:bg-slate-800">
                 <SearchDropdown
                   items={data?.companies}
                   setOpen={setOpenCompaniesDropdown}
@@ -150,13 +153,14 @@ export default function Account() {
               name="reg_number"
               type="text"
               onChange={onChange}
-              value={company.reg_number ?? ""}
-              className="w-1/2 font-bold text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
+              value={company?.reg_number ?? ""}
+              placeholder="Company registration number..."
+              className="w-1/2 font-bold outline-none placeholder:text-base placeholder:font-normal text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:placeholder:opacity-0 hover:opacity-100 focus:opacity-100 peer"
             />
             <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/2 md:left-1/2 border-slate-500 bottom-0 peer-focus:w-1/2 md:peer-focus:w-1/2 peer-focus:border-b" />
           </div>
 
-          {company.category === "airline" && (
+          {company?.category === "airline" && (
             <div className="w-full text-slate-500">
               <div className="flex items-end relative text-xl md:text-2xl">
                 <label htmlFor="iata" className="w-1/2 mt-4">
@@ -168,8 +172,9 @@ export default function Account() {
                   name="iata"
                   type="text"
                   onChange={onChange}
-                  value={company.iata ?? ""}
-                  className="w-1/2 font-bold text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
+                  value={company?.iata ?? ""}
+                  placeholder="2-character IATA code..."
+                  className="w-1/2 font-bold outline-none placeholder:text-base placeholder:font-normal text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:placeholder:opacity-0 hover:opacity-100 focus:opacity-100 peer"
                 />
                 <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/2 md:left-1/2 border-slate-500 bottom-0 peer-focus:w-1/2 md:peer-focus:w-1/2 peer-focus:border-b" />
               </div>
@@ -183,32 +188,37 @@ export default function Account() {
                   name="icao"
                   type="text"
                   onChange={onChange}
-                  value={company.icao ?? ""}
-                  className="w-1/2 font-bold text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
+                  value={company?.icao ?? ""}
+                  placeholder="3-character ICAO code..."
+                  className="w-1/2 font-bold outline-none placeholder:text-base placeholder:font-normal text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:placeholder:opacity-0 hover:opacity-100 focus:opacity-100 peer"
                 />
                 <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/2 md:left-1/2 border-slate-500 bottom-0 peer-focus:w-1/2 md:peer-focus:w-1/2 peer-focus:border-b" />
               </div>
             </div>
           )}
 
-          <div className="flex items-end w-full text-xl md:text-2xl text-slate-500">
-            <span className="flex w-1/2 mt-4 mr-2">Company registration country:</span>
-            <div className="flex w-1/2 mt-4 relative">
+          <div className="flex items-end w-full text-xl md:text-2xl">
+            <span className="flex w-1/2 mt-4 text-slate-500">Company registration country:</span>
+            <div className="flex w-1/2 relative">
               <button
                 type="button"
-                className="items-end group text-slate-600 dark:text-slate-200"
+                className="items-end group text-slate-600 dark:text-slate-200 outline-none"
                 onClick={() => setOpenCountriesDropdown((prev) => !prev)}
               >
                 <div className="flex items-center">
-                  <img src={`data:image/png;base64, ${company.flag}`} alt="" className="mr-4" />
-                  <span className="mr-4 font-bold">{company.country}</span>
+                  <img src={`data:image/png;base64, ${company?.flag}`} alt="" />
+                  <span className={`mr-4 ${company?.country ? "font-bold ml-4" : "font-normal text-base opacity-60"}`}>
+                    {company?.country ? company?.country : "Find and select from the dropdown list..."}
+                  </span>
                   <i
-                    className={`fa-solid fa-chevron-down transition-all group-hover:opacity-100 ${
+                    className={`fa-solid fa-chevron-down transition-all group-hover:opacity-100 group-focus:opacity-100 ${
                       openCountriesDropdown ? "rotate-180 opacity-100" : "rotate-0 opacity-0"
-                    }`}
+                    } ${company?.country && !openCountriesDropdown ? "rotate-0 opacity-0" : "rotate-0 opacity-60"}`}
                   />
                 </div>
+                <div className="absolute w-0 transition-all duration-300 ease-in-out border-slate-500 bottom-0 group-focus:w-full md:group-focus:w-full group-focus:border-b" />
               </button>
+
               {openCountriesDropdown && (
                 <CountriesDropdown
                   style="absolute w-full md:w-1/2 block z-10 top-8 rounded-2xl overflow-y-scroll shadow-md dark:shadow-slate-600 bg-slate-200 dark:bg-slate-800"
@@ -222,35 +232,60 @@ export default function Account() {
             </div>
           </div>
 
-          <div className="flex items-end relative text-xl md:text-2xl text-slate-500">
-            <label htmlFor="role" className="w-1/2 mt-4">
-              Your competency:
-            </label>
+          {company && company.category && company.name && company.reg_number && company.country_iso && (
+            <>
+              <div className="flex items-end relative text-xl md:text-2xl text-slate-500">
+                <label htmlFor="role" className="w-1/2 mt-4">
+                  Your competency:
+                </label>
+                <select
+                  name="role"
+                  id="role"
+                  defaultValue={user.role}
+                  onChange={(e) => setUser({ ...user, role: e.target.value })}
+                  className="outline-none font-bold appearance-none bg-transparent text-slate-600 dark:text-slate-200 opacity-90 hover:opacity-100 focus:opacity-100 peer"
+                >
+                  <option disabled={data && data?.total_count !== 0} value="admin" className="text-lg">
+                    admin
+                  </option>
+                  <option disabled={!data || data?.total_count === 0} value="supervisor" className="text-lg">
+                    supervisor
+                  </option>
+                  <option disabled={!data || data?.total_count === 0} value="staff" className="text-lg">
+                    staff
+                  </option>
+                  <option disabled={!data || data?.total_count === 0} value="user" className="text-lg">
+                    user
+                  </option>
+                </select>
+                <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/2 md:left-1/2 border-slate-500 bottom-0 peer-focus:w-1/2 md:peer-focus:w-1/2 peer-focus:border-b" />
+              </div>
 
-            <input
-              autoComplete="off"
-              id="role"
-              name="role"
-              type="text"
-              onChange={(e) => setUser({ ...user, role: e.target.value })}
-              value={user.role ?? ""}
-              className="w-1/2 md:w-1/2 font-bold text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:outline-none hover:opacity-100 focus:opacity-100 mt-4 ml-2 peer"
-            />
-            <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/2 md:left-1/2 border-slate-500 bottom-0 peer-focus:w-1/2 md:peer-focus:w-1/2 peer-focus:border-b" />
-          </div>
-
-          {/* {company.name !== "" && (
-            <div className="mt-4 text-slate-500">
-              Such company
-              <span className="font-bold text-slate-600 dark:text-slate-400">{" '" + company.name + "' "}</span>
-              has not yet been registered.
-              <br /> It can be registered with the approval of a super admin and your competency will be registered as
-              an admin.
-              <br /> Would you like to submit a registration request?
-            </div>
-          )} */}
+              <div className="w-full flex mt-4">
+                <div className="w-1/2 justify-end"></div>
+                <button
+                  disabled={user.role === "admin"}
+                  className="px-4 py-1 text-base rounded-full bg-teal-400 dark:bg-teal-700 opacity-70 hover:opacity-100 active:scale-90"
+                >
+                  {data?.total_count === 0 && (
+                    <div className="flex items-center">
+                      <i className="fas fa-plus mr-2" />
+                      <span>CREATE</span>
+                    </div>
+                  )}
+                  {data?.total_count !== 0 && (
+                    <div className="flex items-center">
+                      <i className="fas fa-download mr-2" />
+                      <span>SAVE</span>
+                    </div>
+                  )}
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
+
       {isError && <div className="text-red-500">{errorMsg}</div>}
       {isLoading && (
         <div className="mt-28">

@@ -23,7 +23,7 @@ export default function Chart<T>({
   return (
     <div className={`rounded-md ${height} ${mdheight} max-w-max shadow-md overflow-auto dark:shadow-slate-600`}>
       <table className="text-left table-auto">
-        <thead className="sticky top-0 text-lg dark:bg-slate-600 bg-slate-300 z-10">
+        <thead className="sticky top-0 text-lg dark:bg-slate-600 bg-slate-300">
           <tr>
             {headers.map((header) => (
               <th key={header as string} className="px-6 capitalize">
