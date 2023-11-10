@@ -12,7 +12,7 @@ import Account from "../pages/Account"
 import { useAuth } from "../hooks/useAuth"
 import { User } from "../types/user.types"
 
-const TSXRouter = (user: User) => {
+const router = (user: User) => {
   return createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<RootLayout />}>
@@ -31,5 +31,5 @@ const TSXRouter = (user: User) => {
 
 export default function AppRouter() {
   const { user } = useAuth()
-  return <RouterProvider router={TSXRouter(user)} />
+  return <RouterProvider router={router(user)} />
 }

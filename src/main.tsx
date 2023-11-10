@@ -17,8 +17,7 @@ else document.documentElement.classList.remove("dark")
 const body = document.getElementsByTagName("body")[0]
 body.setAttribute("class", "bg-slate-200 dark:bg-slate-900")
 const main = document.getElementById("root")
-
-const root = createRoot(main as HTMLElement)
+const root = createRoot(main!)
 root.render(
   <StrictMode>
     <Provider store={store}>

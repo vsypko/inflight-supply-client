@@ -1,5 +1,5 @@
 import { IAirportResponse } from "../../types/airport.types"
-import { ISchedule } from "../../types/company.types"
+import { Schedule } from "../../types/company.types"
 import { api } from "../api"
 
 export const airportApi = api.injectEndpoints({
@@ -21,7 +21,7 @@ export const airportApi = api.injectEndpoints({
       }),
     }),
     airportSchedule: builder.query<
-      { scheduleFrom: ISchedule[]; scheduleTo: ISchedule[] },
+      { scheduleFrom: Schedule[]; scheduleTo: Schedule[] },
       { airport: string | null; date: string }
     >({
       query: (data) => ({

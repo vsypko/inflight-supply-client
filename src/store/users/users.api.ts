@@ -1,4 +1,4 @@
-import { ICountry, IUsersResponse } from "../../types/user.types"
+import { IUsersResponse } from "../../types/user.types"
 import { api } from "../api"
 
 export const usersApi = api.injectEndpoints({

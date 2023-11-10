@@ -77,7 +77,7 @@ export default function Profile() {
                 autoFocus
                 type="text"
                 name="firstname"
-                value={user.firstname}
+                value={user.firstname ?? ""}
                 id="firstname"
                 onChange={onChange}
                 className="block mt-6 w-full text-slate-800 dark:text-slate-100 bg-transparent appearance-none border-0 border-b-2 border-slate-400 dark:border-slate-600 focus:border-slate-700 dark:focus:border-slate-400 focus:outline-none focus:ring-0 peer"
@@ -95,7 +95,7 @@ export default function Profile() {
               <input
                 type="text"
                 name="lastname"
-                value={user.lastname}
+                value={user.lastname ?? ""}
                 id="lastname"
                 onChange={onChange}
                 className="block mt-6 w-full text-slate-800 dark:text-slate-100 bg-transparent appearance-none border-0 border-b-2 border-slate-400 dark:border-slate-600 focus:border-slate-700 dark:focus:border-slate-400 focus:outline-none focus:ring-0 peer"
@@ -147,7 +147,7 @@ export default function Profile() {
                 type="tel"
                 name="phone"
                 id="phone"
-                value={user.phone}
+                value={user.phone ?? ""}
                 onChange={onChange}
                 // pattern="[0-9]{2}-[0-9]{3}-[0-9]{4}"
                 className="block mt-6 ml-8 w-full text-slate-800 dark:text-slate-100 bg-transparent appearance-none focus:border-slate-700 dark:focus:border-slate-400 focus:outline-none focus:ring-0 peer"

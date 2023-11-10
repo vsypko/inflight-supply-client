@@ -19,7 +19,7 @@ export function Model(props: JSX.IntrinsicElements["group"]) {
   const { nodes, materials } = useGLTF("/B757.glb") as GLTFResult
 
   return (
-    <group {...props} dispose={null} rotation={[0, Math.PI, 0]} position={[5, 0, 0]}>
+    <group {...props} dispose={null} rotation={[0, Math.PI, 0]}>
       <mesh
         geometry={nodes["blades_turbine_003_turbine-01_accent_yellow_0"].geometry}
         material={materials.PaletteMaterial001}

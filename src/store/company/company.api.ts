@@ -3,11 +3,29 @@ import { api } from "../api"
 
 export const companyApi = api.injectEndpoints({
   endpoints: (builder) => ({
+    createCompany: builder.mutation({
+      query: (data) => ({
+        method: "POST",
+        url: "company",
+        body: data,
+      }),
+    }),
+
     searchCompany: builder.query<ICompanyResponse, string>({
       query: (search) => ({
         url: "company",
         params: {
           q: search,
+        },
+      }),
+    }),
+
+    getCompaniesForAirport: builder.query({
+      query: (data) => ({
+        url: "company/airport",
+        params: {
+          type: data.type,
+          airport: data.airport,
         },
       }),
     }),
@@ -82,7 +100,9 @@ export const companyApi = api.injectEndpoints({
 })
 
 export const {
+  useCreateCompanyMutation,
   useSearchCompanyQuery,
+  useGetCompaniesForAirportQuery,
   useGetCompanyDataQuery,
   useLazyGetCompanyDataQuery,
   useInsertCompanyDataMutation,

@@ -1,22 +1,18 @@
 import { useAuth } from "../hooks/useAuth"
 import { LoadingSpinner } from "../components/LoadingSpinner"
 import { ChangeEvent, useEffect, useState, KeyboardEvent, useRef } from "react"
-import { useSearchCompanyQuery } from "../store/company/company.api"
+import { useSearchCompanyQuery, useCreateCompanyMutation } from "../store/company/company.api"
 import { useDebounce } from "../hooks/debounce"
 import SearchDropdown from "../components/SearchDropdown"
 import CountriesDropdown from "../components/CountriesDropdown"
 import { useActions } from "../hooks/actions"
 import { useCompany } from "../hooks/useCompany"
-import { User } from "../types/user.types"
 
 export default function Account() {
   const { user } = useAuth()
   const { company } = useCompany()
   const { setUser, setCompany } = useActions()
-
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setCompany({ ...company, [event.target.name]: event.target.value })
-  }
+  const [createCompanyQuery] = useCreateCompanyMutation()
 
   const [openCompaniesDropdown, setOpenCompaniesDropdown] = useState(false)
   const [openCountriesDropdown, setOpenCountriesDropdown] = useState(false)
@@ -29,10 +25,20 @@ export default function Account() {
 
   const [errorMsg, setErrorMsg] = useState("")
 
+  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setCompany({ ...company, [event.target.name]: event.target.value })
+  }
+
+  useEffect(() => {
+    if (company?.category === "supplier") setCompany({ ...company, iata: undefined, icao: undefined })
+  }, [company?.category])
+
   useEffect(() => {
     if (data && data.total_count !== 0) {
       setErrorMsg("")
-      setOpenCompaniesDropdown(debounced.length >= 3 && data.companies.length > 1)
+      setOpenCompaniesDropdown(
+        debounced.length >= 3 && data.companies.length > 0 && data.companies.every((co) => co.name !== company.name),
+      )
     }
     if (error) {
       if (error != null && typeof error === "object" && "data" in error) setErrorMsg(error.data as string)
@@ -40,7 +46,20 @@ export default function Account() {
     }
   }, [data, error])
 
-  function companyCreate() {}
+  async function companySave() {
+    let res: {
+      data: string
+      company_id: number
+    }
+    if (user.role === "admin") {
+      const { country, flag, currency, ...newCompany } = company
+      res = await createCompanyQuery({ id: user.id, role: user.role, newCompany }).unwrap()
+    } else {
+      res = await createCompanyQuery({ id: user.id, role: user.role, company_id: company.id }).unwrap()
+    }
+    setUser({ ...user, company_id: res.company_id })
+    setCompany({ ...company, id: res.company_id })
+  }
 
   return (
     <div className="w-full">
@@ -221,7 +240,7 @@ export default function Account() {
 
               {openCountriesDropdown && (
                 <CountriesDropdown
-                  style="absolute w-full md:w-1/2 block z-10 top-8 rounded-2xl overflow-y-scroll shadow-md dark:shadow-slate-600 bg-slate-200 dark:bg-slate-800"
+                  style="absolute text-lg w-full md:w-1/2 block z-10 top-8 rounded-2xl overflow-y-scroll shadow-md dark:shadow-slate-600 bg-slate-200 dark:bg-slate-800"
                   state={company}
                   setCountry={setCompany}
                   setOpen={setOpenCountriesDropdown}
@@ -261,26 +280,33 @@ export default function Account() {
                 <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/2 md:left-1/2 border-slate-500 bottom-0 peer-focus:w-1/2 md:peer-focus:w-1/2 peer-focus:border-b" />
               </div>
 
-              <div className="w-full flex mt-4">
-                <div className="w-1/2 justify-end"></div>
-                <button
-                  disabled={user.role === "admin"}
-                  className="px-4 py-1 text-base rounded-full bg-teal-400 dark:bg-teal-700 opacity-70 hover:opacity-100 active:scale-90"
-                >
-                  {data?.total_count === 0 && (
-                    <div className="flex items-center">
-                      <i className="fas fa-plus mr-2" />
-                      <span>CREATE</span>
-                    </div>
-                  )}
-                  {data?.total_count !== 0 && (
-                    <div className="flex items-center">
-                      <i className="fas fa-download mr-2" />
-                      <span>SAVE</span>
-                    </div>
-                  )}
-                </button>
-              </div>
+              {user.role !== "user" && (
+                <div className="w-full flex mt-4">
+                  <div className="w-1/2 justify-end"></div>
+                  <button
+                    onClick={companySave}
+                    className="px-4 py-1 text-base rounded-full bg-teal-400 dark:bg-teal-700 opacity-70 hover:opacity-100 active:scale-90"
+                  >
+                    {data?.total_count === 0 && (
+                      <div className="flex items-center">
+                        <i className="fas fa-plus mr-2" />
+                        <span>CREATE</span>
+                      </div>
+                    )}
+                    {data?.total_count !== 0 && (
+                      <div className="flex items-center">
+                        <i className="fas fa-download mr-2" />
+                        <span>SAVE</span>
+                      </div>
+                    )}
+                  </button>
+                </div>
+              )}
+              {user.role === "user" && (
+                <div className="w-full flex mt-4 justify-end">
+                  <span className="w-1/2 text-lg opacity-70">Change your role to create an account...</span>
+                </div>
+              )}
             </>
           )}
         </div>

@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction } from "react"
-import { IFleet, IFlight } from "../types/company.types"
+import { Fleet, Flight } from "../types/company.types"
 import { Item } from "../types/company.types"
 
 export default function SeveRemove({
   setNew,
   handleSave,
 }: {
-  setNew: Dispatch<SetStateAction<IFlight[]>> | Dispatch<SetStateAction<IFleet[]>> | Dispatch<SetStateAction<Item[]>>
+  setNew: Dispatch<SetStateAction<Flight[]>> | Dispatch<SetStateAction<Fleet[]>> | Dispatch<SetStateAction<Item[]>>
   handleSave: () => Promise<void>
 }) {
   return (

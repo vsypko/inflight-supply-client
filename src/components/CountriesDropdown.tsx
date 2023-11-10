@@ -45,15 +45,24 @@ export default function CountriesDropdown({
   }
 
   const selectionHandler = (item: Country) => {
-    setCountry({
-      ...state,
-      country_iso: item.iso,
-      country: item.title_case,
-      flag: item.flag,
-      phonecode: item.phonecode,
-      currency: item.currency,
-    })
     setOpen((prev) => !prev)
+    if (dialcode)
+      setCountry({
+        ...state,
+        country_iso: item.iso,
+        country: item.title_case,
+        flag: item.flag,
+        phonecode: item.phonecode,
+        currency: item.currency,
+      })
+    if (!dialcode)
+      setCountry({
+        ...state,
+        country_iso: item.iso,
+        country: item.title_case,
+        flag: item.flag,
+        currency: item.currency,
+      })
   }
 
   return (
