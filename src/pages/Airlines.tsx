@@ -1,52 +1,140 @@
-import { useState, DragEvent, MouseEvent, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useAirport } from "../hooks/useAirport"
 import { useAuth } from "../hooks/useAuth"
-import DragableBox from "../components/DragableBox"
-import DropArea from "../components/DropArea"
-import { useGetCompaniesForAirportQuery } from "../store/company/company.api"
+import { Company, Item } from "../types/company.types"
+import { useGetCompaniesForAirportQuery, useLazyGetCompanyDataQuery } from "../store/company/company.api"
+import SearchDropdown from "../components/SearchDropdown"
+import { useCompany } from "../hooks/useCompany"
 
 export default function Airlines() {
   const { airport } = useAirport()
   const { user } = useAuth()
-  const [pos, setPos] = useState({ x: 700, y: 300, dx: 0, dy: 0 })
+  const { company } = useCompany()
+  const [selectedSupplier, setSelectedSupplier] = useState<Company | undefined>(undefined)
+  const [selectedItem, setSelectedItem] = useState<Item | undefined>(undefined)
   const {
     data: suppliers,
     isLoading,
     error,
   } = useGetCompaniesForAirportQuery({ type: "supplier", airport: airport.id })
+  const [getCompanyItems, { data: items, isFetching, error: err }] = useLazyGetCompanyDataQuery()
 
   useEffect(() => {
-    console.log(suppliers)
-  }, [suppliers])
-
+    if (selectedSupplier && selectedSupplier.id) {
+      getCompanyItems({ type: "supplies", id: selectedSupplier.id }).unwrap()
+    }
+  }, [selectedSupplier])
   return (
-    <DropArea setPos={setPos}>
-      <div className="w-full py-4 text-center text-3xl font-bold mt-14">INFLIGHT SUPPLY ORDERS</div>
-      {!airport.name && (
-        <div>
-          <div>AIRPORT NOT SELECTED</div>
-          <div>Select an airport on the AIRPORTS tab</div>
-        </div>
-      )}
-      {airport.name && (
-        <div>
-          <div className="flex text-2xl font-bold">
-            <span className="uppercase">{airport.name}</span>
-            <span className="ml-6">{airport.iata}</span>
-          </div>
-        </div>
-      )}
-      <div className="flex flex-col">
-        <span>No one supplier selected</span>
-        <span>Choose a supplier for the selected airport:</span>
-        <span>Enter into Standard Inflight Catering Agreement (SICA 2022) with them</span>
+    <div className="w-full text-xl px-2">
+      <div className="w-full text-center text-2xl md:text-3xl font-bold">INFLIGHT SUPPLY ORDERS</div>
+      <div className="uppercase font-semibold">
+        {airport.name ? airport.name + " - " + airport.iata : "AIRPORT NOT SELECTED"}
       </div>
-      <DragableBox pos={pos} setPos={setPos}>
-        <img src={`data:image/png;base64, ${user.flag}`} alt="" className="pr-2" draggable={false} />
-        <span>
-          +{user?.country_iso === "ZZ" ? "" : user.phonecode}-{user?.phone}
-        </span>
-      </DragableBox>
-    </DropArea>
+      {!airport.name && <span>Select an airport on the AIRPORTS tab</span>}
+      {airport.name && (!suppliers || !suppliers.length) && (
+        <span>There are no registered suppliers for this airport</span>
+      )}
+      <div className="md:flex">
+        <div className="w-full md:w-1/3 md:text-2xl">
+          {suppliers && suppliers.length > 0 && (
+            <div className="w-full text-start">
+              <span>Select supplier:</span>
+              <div className="bg-slate-300 dark:bg-slate-800 rounded-3xl shadow-md dark:shadow-slate-600">
+                <ul>
+                  {suppliers.map((supplier: Company, index: number) => (
+                    <li
+                      key={supplier.id}
+                      onClick={() => {
+                        setSelectedSupplier(supplier)
+                        setSelectedItem(undefined)
+                      }}
+                      className={`flex w-full px-4 justify-between rounded-full p-2 text-xl hover:bg-teal-500 dark:hover:bg-teal-700 cursor-pointer ${
+                        selectedSupplier &&
+                        selectedSupplier.id === supplier.id &&
+                        "bg-teal-400 dark:bg-teal-600 font-semibold"
+                      }`}
+                    >
+                      <span>{supplier.name}</span>
+                      <span>{supplier.country_iso}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+          {company.category === "airline" && items && items.length && (
+            <div className="md:flex w-full justify-between items-center text-slate-900 dark:text-slate-100">
+              <div className="w-full md:w-2/3 text-base mt-4 mr-4 text-justify">
+                By clicking the "Set Supplier" button, you will request the selected supplier a catering service at the
+                selected airport under the Standard In-flight Catering Agreement (SICA 2022)!
+              </div>
+              <div className="f-full md:w-1/3 m-4 font-semibold">
+                <button className="flex w-full py-2 px-4 justify-between items-center bg-teal-500 rounded-full opacity-80 hover:opacity-100 active:scale-90 active:shadow-none shadow-md dark:shadow-slate-600">
+                  <i className="fas fa-file-signature" />
+                  <span>Set Supplier</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="w-full md:w-1/3 py-2 md:px-4">
+          {items && items.length > 0 && (
+            <ul className="w-full max-h-[880px] overflow-y-scroll snap-y bg-slate-300 dark:bg-slate-800 rounded-3xl shadow-md dark:shadow-slate-600">
+              {items.map((item: Item) => (
+                <li
+                  key={item.id}
+                  onClick={() => {
+                    setSelectedItem(item)
+                  }}
+                  className={`w-full p-2 px-4 flex snap-start justify-between rounded-full text-xl hover:bg-teal-600 cursor-pointer ${
+                    selectedItem && selectedItem.id === item.id && "bg-teal-400 dark:bg-teal-600 font-semibold"
+                  }`}
+                >
+                  <div className="flex items-center">
+                    <img
+                      src={"http://localhost:3000/api/company/items/img/" + item.img_url}
+                      alt=""
+                      className="rounded-full max-h-[30px] mr-2"
+                    />
+                    <span>{item.title}</span>
+                  </div>
+
+                  <span>{"$" + " " + item.price.toFixed(2)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <div className="w-full md:w-1/3">
+          {selectedItem && (
+            <div className="rounded-3xl bg-slate-300 dark:bg-slate-800 shadow-md dark:shadow-slate-600">
+              <div className="flex justify-center">
+                <span>Category:</span>
+                <div className="font-semibold ml-4">{selectedItem.category}</div>
+              </div>
+              <div className="md:flex md:items-center">
+                <div className="flex w-full justify-center md:max-w-[300px]">
+                  <img
+                    src={"http://localhost:3000/api/company/items/img/" + selectedItem.img_url}
+                    alt=""
+                    className="hover:scale-125 transition-all"
+                  />
+                </div>
+
+                <div className="p-4">
+                  <div>Title: {selectedItem.title}</div>
+                  <div>Code: {selectedItem.code}</div>
+                  <div>Area: {selectedItem.area}</div>
+                </div>
+              </div>
+              <div className="p-4">
+                <div>Description:</div>
+                <div className="text-base">{selectedItem.description}</div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   )
 }

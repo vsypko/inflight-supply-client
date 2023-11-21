@@ -61,7 +61,7 @@ export default function SupplierAirports() {
   return (
     <div className="w-full">
       {errorMsg && <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>}
-      <div className="rounded-2xl shadow-lg dark:bg-slate-800 bg-slate-100 px-4 max-h-[400px] overflow-auto">
+      <div className="rounded-2xl shadow-md dark:shadow-slate-600 dark:bg-slate-800 bg-slate-100 px-4 max-h-[400px] overflow-auto">
         {places?.map((place, index) => (
           <div className="flex text-base" key={place.id}>
             <div className="flex w-11/12 my-2">

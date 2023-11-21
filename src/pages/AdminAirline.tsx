@@ -11,9 +11,9 @@ export default function AdminAirline() {
 
   return (
     <div className="w-full">
-      <div className="block md:flex p-2 m-1 max-h-max">
+      <div className="block md:flex p-4 max-h-max">
         <div className="w-full md:w-1/4 md:text-2xl">
-          <div className="flex justify-between m-3">
+          <div className="flex justify-between">
             <div>Company:</div>
             <div className="font-bold">{company.name}</div>
           </div>

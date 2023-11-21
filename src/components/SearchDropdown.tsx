@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, KeyboardEvent, MouseEvent, useState, useRef, useEffect } from "react"
+import { Dispatch, SetStateAction } from "react"
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit"
 
 interface DropdownProps {

@@ -13,7 +13,7 @@ export default function Chart<T>({
   mdheight?: string
   handleEdit?: (row: T) => void
 }): JSX.Element {
-  const [selected, setSelected] = useState<number>(-1)
+  const [selected, setSelected] = useState(-1)
 
   const handleClick = (row: T, index: number) => {
     if (handleEdit) handleEdit(row)

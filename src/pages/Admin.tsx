@@ -1,6 +1,6 @@
 import AdminAirline from "./AdminAirline"
 import AdminSupplier from "./AdminSupplier"
-import SuperAdmin from "../components/SuperAdmin"
+import SuperAdmin from "./SuperAdmin"
 import { useAuth } from "../hooks/useAuth"
 import { useCompany } from "../hooks/useCompany"
 

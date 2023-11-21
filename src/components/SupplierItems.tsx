@@ -174,7 +174,7 @@ export default function SupplierItems() {
   }, [imgLoaded, row.id, row.img_url])
 
   return (
-    <div className="block max-w-max relative">
+    <div className="flex flex-col max-w-max relative">
       {errorMsg && <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>}
       {!newItems.length && !isLoading && (
         <div className="flex text-lg justify-between items-center">
@@ -182,14 +182,14 @@ export default function SupplierItems() {
             <button
               onClick={() => handleEditItem(emptyRow)}
               type="button"
-              className="px-2.5 py-1 rounded-full active:scale-90 cursor-pointer hover:bg-slate-300  dark:hover:bg-slate-800 opacity-75 hover:opacity-100"
+              className="px-2.5 pb-1 rounded-full active:scale-90 cursor-pointer hover:bg-slate-300  dark:hover:bg-slate-800 opacity-75 hover:opacity-100"
             >
               <i className="fas fa-plus mr-2" />
               <span>Add Item</span>
             </button>
           </div>
 
-          <div className="mb-2 lg:mb-1">
+          <div className="mb-2 md:mb-1">
             <label
               htmlFor="xlsxFileInput"
               className="px-2.5 py-1.5 rounded-full active:scale-90 cursor-pointer hover:bg-slate-300  dark:hover:bg-slate-800 opacity-75 hover:opacity-100"

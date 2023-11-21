@@ -67,10 +67,11 @@ export default function AirportSelector() {
             type="text"
             className="bg-transparent rounded-full outline-none ml-7 w-full text-xl h-10"
             id="airport"
+            autoComplete="off"
           />
 
           {dropdownOpen && (
-            <div className="absolute z-10 top-10 left-1 right-5 rounded-b-3xl max-h-80 overflow-y-scroll shadow-md shadow-slate-700 bg-slate-100 dark:bg-slate-800">
+            <div className="absolute z-20 top-10 left-1 right-5 rounded-b-3xl max-h-80 overflow-y-scroll shadow-md shadow-slate-700 bg-slate-100 dark:bg-slate-800">
               <SearchDropdown
                 items={data?.airports}
                 setOpen={setDropdownOpen}
