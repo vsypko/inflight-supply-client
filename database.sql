@@ -131,3 +131,13 @@ CREATE TABLE places(
   ap_id integer REFERENCES airports (id),
   co_id integer REFERENCES companies (id)
 );
+
+CREATE TABLE contracts(
+id SERIAL PRIMARY KEY,
+signed_at TIMESTAMPTZ DEFAULT Now(),
+airline integer,
+supplier integer,
+airport integer,
+airline_signatory integer,
+supplier_signatory integer
+);

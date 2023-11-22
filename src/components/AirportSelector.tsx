@@ -71,7 +71,7 @@ export default function AirportSelector() {
           />
 
           {dropdownOpen && (
-            <div className="absolute z-20 top-10 left-1 right-5 rounded-b-3xl max-h-80 overflow-y-scroll shadow-md shadow-slate-700 bg-slate-100 dark:bg-slate-800">
+            <div className="absolute z-20 top-10 left-1 right-5 rounded-b-3xl max-h-[360px] overflow-y-scroll snap-y shadow-md shadow-slate-700 bg-slate-100 dark:bg-slate-800">
               <SearchDropdown
                 items={data?.airports}
                 setOpen={setDropdownOpen}

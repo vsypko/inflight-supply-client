@@ -24,6 +24,11 @@ export default function Airlines() {
       getCompanyItems({ type: "supplies", id: selectedSupplier.id }).unwrap()
     }
   }, [selectedSupplier])
+
+  function setContract() {
+    console.log(airport.id, company.category, company.id, selectedSupplier?.id, user.id)
+  }
+
   return (
     <div className="w-full text-xl px-2">
       <div className="w-full text-center text-2xl md:text-3xl font-bold">INFLIGHT SUPPLY ORDERS</div>
@@ -39,7 +44,7 @@ export default function Airlines() {
           {suppliers && suppliers.length > 0 && (
             <div className="w-full text-start">
               <span>Select supplier:</span>
-              <div className="bg-slate-300 dark:bg-slate-800 rounded-3xl shadow-md dark:shadow-slate-600">
+              <div className="mt-2 bg-slate-300 dark:bg-slate-800 rounded-3xl shadow-md dark:shadow-slate-600">
                 <ul>
                   {suppliers.map((supplier: Company, index: number) => (
                     <li
@@ -65,13 +70,16 @@ export default function Airlines() {
           {company.category === "airline" && items && items.length && (
             <div className="md:flex w-full justify-between items-center text-slate-900 dark:text-slate-100">
               <div className="w-full md:w-2/3 text-base mt-4 mr-4 text-justify">
-                By clicking the "Set Supplier" button, you will request the selected supplier a catering service at the
+                By clicking the "Set Contarct" button, you will request the selected supplier a catering service at the
                 selected airport under the Standard In-flight Catering Agreement (SICA 2022)!
               </div>
               <div className="f-full md:w-1/3 m-4 font-semibold">
-                <button className="flex w-full py-2 px-4 justify-between items-center bg-teal-500 rounded-full opacity-80 hover:opacity-100 active:scale-90 active:shadow-none shadow-md dark:shadow-slate-600">
+                <button
+                  onClick={setContract}
+                  className="flex w-full py-2 px-4 justify-between items-center bg-teal-500 rounded-full opacity-80 hover:opacity-100 active:scale-90 active:shadow-none shadow-md dark:shadow-slate-600"
+                >
                   <i className="fas fa-file-signature" />
-                  <span>Set Supplier</span>
+                  <span>Set Contract</span>
                 </button>
               </div>
             </div>

@@ -20,7 +20,7 @@ export default function SearchDropdown({ items, setOpen, selector, dataView }: D
         items.map((item) => (
           <li
             key={item.id}
-            className="flex justify-between px-3 py-2 rounded-full text-lg hover:bg-teal-600 hover:text-slate-200 cursor-pointer transition-colors"
+            className="flex snap-start justify-between px-3 py-2 rounded-full text-lg hover:bg-teal-600 hover:text-slate-200 cursor-pointer transition-colors"
             onClick={() => selectionHandler(item)}
           >
             {dataView.map((i) => (
