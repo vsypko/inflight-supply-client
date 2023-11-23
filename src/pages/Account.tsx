@@ -34,7 +34,7 @@ export default function Account() {
   }, [company?.category])
 
   useEffect(() => {
-    if (data && data.total_count !== 0) {
+    if (data && data.total_count > 0) {
       setErrorMsg("")
       setOpenCompaniesDropdown(
         debounced.length >= 3 && data.companies.length > 0 && data.companies.every((co) => co.name !== company.name),

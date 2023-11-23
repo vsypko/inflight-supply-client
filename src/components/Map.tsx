@@ -57,5 +57,5 @@ export default function Map() {
     }
   }, [airport, mapContainer])
 
-  return <div ref={mapContainer} className="w-full h-[500px] border border-slate-600 mt-4 rounded-lg" />
+  return <div ref={mapContainer} className="w-full h-[600px] border border-slate-600 mt-4 rounded-lg shadow-xl" />
 }

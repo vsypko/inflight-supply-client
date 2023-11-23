@@ -12,19 +12,19 @@ export default function AdminAirline() {
   return (
     <div className="w-full">
       <div className="block md:flex p-4 max-h-max">
-        <div className="w-full md:w-1/4 md:text-2xl">
-          <div className="flex justify-between">
+        <div className="w-full md:w-1/4 md:text-2xl ml-3">
+          <div className="flex justify-between p-2">
             <div>Company:</div>
             <div className="font-bold">{company.name}</div>
           </div>
-          <div className="flex justify-between m-3">
+          <div className="flex w-full p-2">
             <div>Country:</div>
-            <div className="flex">
-              <span className="font-bold mr-2">{company.country}</span>
+            <div className="flex w-full justify-end">
+              <span className="font-bold mr-3">{company.country}</span>
               <img src={`data:image/png;base64, ${company.flag}`} alt="" className="py-1" />
             </div>
           </div>
-          <div className="flex justify-between m-3">
+          <div className="flex justify-between p-2">
             <h1>IATA code:</h1>
             <span className="font-bold">{company.iata}</span>
           </div>
@@ -66,7 +66,7 @@ export default function AdminAirline() {
           </div>
         </div>
 
-        <div className="w-full md:flex justify-center">
+        <div className="w-3/4 md:flex justify-center">
           {action === "fleet" && <FleetEditor />}
           {action === "flights" && <FlightsEditor />}
         </div>

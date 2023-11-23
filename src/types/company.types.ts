@@ -88,3 +88,10 @@ export interface ICompanyResponse {
   total_count: number
   companies: Company[]
 }
+
+export interface IContract {
+  id: number
+  airport: number
+  airline: number
+  supplier: number
+}

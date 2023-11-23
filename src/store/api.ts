@@ -48,6 +48,6 @@ export const api = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithReauth,
   refetchOnFocus: true,
-  tagTypes: ["Data"],
+  tagTypes: ["Data", "Contract"],
   endpoints: () => ({}),
 })
