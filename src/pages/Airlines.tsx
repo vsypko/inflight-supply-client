@@ -10,8 +10,8 @@ export default function Airlines() {
   const { airport } = useAirport()
   const { user } = useAuth()
   const { company } = useCompany()
-  const { data: contract } = useGetContractsQuery(
-    { airport: airport.id, airline: company.id },
+  const { data: contracts } = useGetContractsQuery(
+    { airport: airport.id, company: company.id, category: company.category },
     {
       skip: !airport.id || !company.id,
       refetchOnFocus: true,
@@ -26,13 +26,14 @@ export default function Airlines() {
       </div>
       {!airport.name && <span>Select an airport on the AIRPORTS tab</span>}
 
-      {contract && (
+      {contracts && contracts.length > 0 && (
         <div>
-          {contract && !contract.sighned_at && <div>{`The contract with ${contract.supplier} is pending...`}</div>}
+          {contracts[0].signed_at && <div>Contract:XXXXXXX</div>}
+          {!contracts[0].sighned_at && <div>{`The contract with ${contracts[0].supplier} is pending...`}</div>}
         </div>
       )}
 
-      {!contract && <SupplierSelector />}
+      {!contracts || (contracts.length === 0 && <SupplierSelector />)}
     </div>
   )
 }

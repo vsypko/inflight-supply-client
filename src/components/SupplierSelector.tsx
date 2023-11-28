@@ -16,6 +16,16 @@ export default function SupplierSelector() {
     error,
   } = useGetCompaniesForAirportQuery({ type: "supplier", airport: airport.id })
 
+  const [getCompanyItems, { data: items, isFetching, error: err }] = useLazyGetCompanyDataQuery()
+  const [selectedSupplier, setSelectedSupplier] = useState<Company | undefined>(undefined)
+  const [selectedItem, setSelectedItem] = useState<Item | undefined>(undefined)
+
+  useEffect(() => {
+    if (selectedSupplier && selectedSupplier.id) {
+      getCompanyItems({ type: "supplies", id: selectedSupplier.id }).unwrap()
+    }
+  }, [selectedSupplier])
+
   const [createContract, { data: newContract }] = useCreateContractMutation()
 
   async function setContract() {
@@ -26,16 +36,6 @@ export default function SupplierSelector() {
       airline_signatory: user.id,
     }).unwrap()
   }
-
-  const [getCompanyItems, { data: items, isFetching, error: err }] = useLazyGetCompanyDataQuery()
-  const [selectedSupplier, setSelectedSupplier] = useState<Company | undefined>(undefined)
-  const [selectedItem, setSelectedItem] = useState<Item | undefined>(undefined)
-
-  useEffect(() => {
-    if (selectedSupplier && selectedSupplier.id) {
-      getCompanyItems({ type: "supplies", id: selectedSupplier.id }).unwrap()
-    }
-  }, [selectedSupplier])
 
   return (
     <div className="md:flex">

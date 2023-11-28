@@ -16,7 +16,8 @@ export const contractApi = api.injectEndpoints({
         url: "contract",
         params: {
           ap: data.airport,
-          ar: data.airline,
+          co: data.company,
+          cat: data.category,
         },
       }),
       providesTags: ["Contract"],

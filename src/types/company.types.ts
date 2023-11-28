@@ -91,7 +91,10 @@ export interface ICompanyResponse {
 
 export interface IContract {
   id: number
-  airport: number
+  signed_at: string
   airline: number
   supplier: number
+  airport: number
+  airline_signatory: number
+  supplier_signatory: number
 }
