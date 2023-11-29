@@ -13,7 +13,7 @@ export default function Airlines() {
   const { data: contracts } = useGetContractsQuery(
     { airport: airport.id, company: company.id, category: company.category },
     {
-      skip: !airport.id || !company.id,
+      skip: !airport.id || !company.id || company.category === "supplier",
       refetchOnFocus: true,
     },
   )
@@ -29,7 +29,7 @@ export default function Airlines() {
       {contracts && contracts.length > 0 && (
         <div>
           {contracts[0].signed_at && <div>Contract:XXXXXXX</div>}
-          {!contracts[0].sighned_at && <div>{`The contract with ${contracts[0].supplier} is pending...`}</div>}
+          {!contracts[0].sighned_at && <div>{`The contract with ${contracts[0].name} is pending...`}</div>}
         </div>
       )}
 

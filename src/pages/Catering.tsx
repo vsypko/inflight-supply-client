@@ -11,7 +11,7 @@ export default function Catering() {
   const { data: contracts } = useGetContractsQuery(
     { airport: airport.id, company: company.id, category: company.category },
     {
-      skip: !airport.id || !company.id,
+      skip: !airport.id || !company.id || company.category === "airline",
       refetchOnFocus: true,
     },
   )
@@ -24,13 +24,23 @@ export default function Catering() {
       {!airport.name && <span>Select an airport on the AIRPORTS tab</span>}
 
       {contracts && contracts.length > 0 && (
-        <div>
+        <div className="max-w-max">
           {contracts.map((contract: IContract) => (
-            <div key={contract.id}>
+            <div key={contract.id} className="p-4">
               {!contract.signed_at && (
-                <div>{`The contract with ${contract.airline} is awaiting approval and signing.`}</div>
+                <div>{`The contract with ${contract.name} (${contract.iata}) is awaiting approval and signing.`}</div>
               )}
-              {contract.signed_at && <div>{`The contract with ${contract.airline} is in force.`}</div>}
+              {contract.signed_at && <div>{`The contract with ${contract.name} is in force.`}</div>}
+              <div className="text-slate-200 flex w-full justify-end">
+                <button className="flex max-w-max py-2 px-4 justify-between items-center bg-red-700 rounded-full opacity-80 hover:opacity-100 active:scale-90 active:shadow-none shadow-md dark:shadow-slate-600">
+                  <i className="fas fa-file-circle-xmark pr-4" />
+                  <span>Reject</span>
+                </button>
+                <button className="flex max-w-max py-2 px-4 mx-2 justify-between items-center bg-teal-800 rounded-full opacity-80 hover:opacity-100 active:scale-90 active:shadow-none shadow-md dark:shadow-slate-600">
+                  <i className="fas fa-file-circle-check pr-4" />
+                  <span>Accept</span>
+                </button>
+              </div>
             </div>
           ))}
         </div>

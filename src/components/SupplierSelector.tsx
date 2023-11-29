@@ -75,10 +75,10 @@ export default function SupplierSelector() {
               By clicking the "Set Contarct" button, you will request the selected supplier a catering service at the
               selected airport under the Standard In-flight Catering Agreement (SICA 2022)!
             </div>
-            <div className="f-full md:w-1/3 m-4 font-semibold">
+            <div className="f-full md:w-1/3 m-4 font-semibold text-slate-200">
               <button
                 onClick={setContract}
-                className="flex w-full py-2 px-4 justify-between items-center bg-teal-500 rounded-full opacity-80 hover:opacity-100 active:scale-90 active:shadow-none shadow-md dark:shadow-slate-600"
+                className="flex w-full py-2 px-4 justify-between items-center bg-teal-800 rounded-full opacity-80 hover:opacity-100 active:scale-90 active:shadow-none shadow-md dark:shadow-slate-600"
               >
                 <i className="fas fa-file-signature" />
                 <span>Set Contract</span>
