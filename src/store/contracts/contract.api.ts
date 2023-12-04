@@ -22,8 +22,29 @@ export const contractApi = api.injectEndpoints({
       }),
       providesTags: ["Contract"],
     }),
+
+    signContract: builder.mutation({
+      query: (data) => ({
+        method: "PATCH",
+        url: "contract",
+        body: data,
+      }),
+      invalidatesTags: ["Contract"],
+    }),
+
+    rejectContract: builder.mutation({
+      query: (data) => ({
+        method: "DELETE",
+        url: "contract",
+        params: {
+          q: data.id,
+        },
+      }),
+      invalidatesTags: ["Contract"],
+    }),
   }),
   overrideExisting: true,
 })
 
-export const { useCreateContractMutation, useGetContractsQuery } = contractApi
+export const { useCreateContractMutation, useGetContractsQuery, useSignContractMutation, useRejectContractMutation } =
+  contractApi

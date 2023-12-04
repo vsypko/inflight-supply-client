@@ -1,6 +1,6 @@
 import { useAirport } from "../hooks/useAirport"
 import { useAuth } from "../hooks/useAuth"
-import { IContract } from "../types/company.types"
+import { Contract } from "../types/company.types"
 
 import { useCompany } from "../hooks/useCompany"
 import { useGetContractsQuery } from "../store/contracts/contract.api"
@@ -28,11 +28,16 @@ export default function Airlines() {
 
       {contracts && contracts.length > 0 && (
         <div>
-          {contracts[0].signed_at && <div>Contract:XXXXXXX</div>}
-          {!contracts[0].sighned_at && <div>{`The contract with ${contracts[0].name} is pending...`}</div>}
+          {contracts[0].signed_at && (
+            <div>
+              {`The contract with ${contracts[0].name} is in force from 
+                      ${new Date(contracts[0].signed_at).toDateString()} 
+                    `}
+            </div>
+          )}
+          {!contracts[0].signed_at && <div>{`The contract with ${contracts[0].name} is pending...`}</div>}
         </div>
       )}
-
       {!contracts || (contracts.length === 0 && <SupplierSelector />)}
     </div>
   )

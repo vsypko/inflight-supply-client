@@ -344,8 +344,5 @@ export default function SupplierItems() {
         </>
       )}
     </div>
-    // </div>
-    //   </div>
-    // </div>
   )
 }

@@ -89,7 +89,7 @@ export interface ICompanyResponse {
   companies: Company[]
 }
 
-export interface IContract {
+export interface Contract {
   id: number
   signed_at: string
   airline: number
