@@ -26,7 +26,10 @@ export default function Chart<T>({
         <thead className="sticky top-0 text-lg dark:bg-slate-600 bg-slate-300">
           <tr>
             {headers.map((header) => (
-              <th key={header as string} className="px-6 capitalize">
+              <th
+                key={header as string}
+                className={`px-6 ${header.length < 4 && header !== "to" ? "uppercase" : "capitalize"}`}
+              >
                 {header as string}
               </th>
             ))}

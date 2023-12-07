@@ -7,6 +7,7 @@ import Chart from "./Chart"
 import SaveRemove from "./SaveRemove"
 import Dialog from "./Dialog"
 import { useCompany } from "../hooks/useCompany"
+import DateInput from "./DateInput"
 
 export default function FlightsEditor() {
   const { company } = useCompany()
@@ -44,22 +45,6 @@ export default function FlightsEditor() {
   const [errorMsg, setErrorMsg] = useState("")
   const [dialogRef, setDialogRef] = useState<HTMLDialogElement | null>(null)
   const [result, setResult] = useState("")
-
-  function handleDecreaseDate() {
-    setDate(
-      new Date(new Date(date).getFullYear(), new Date(date).getMonth(), new Date(date).getUTCDate() - 0)
-        .toISOString()
-        .slice(0, 10),
-    )
-  }
-
-  function handleIncreaseDate() {
-    setDate(
-      new Date(new Date(date).getFullYear(), new Date(date).getMonth(), new Date(date).getUTCDate() + 2)
-        .toISOString()
-        .slice(0, 10),
-    )
-  }
 
   const handleEdit = (row: Flight) => {
     setRow(row)
@@ -108,31 +93,7 @@ export default function FlightsEditor() {
         <div className="w-full">
           {!newFlights.length && !isLoading && (
             <div className="flex flex-col lg:flex-row text-lg justify-between items-center">
-              <div className="mb-2 lg:mb-1">
-                <button
-                  type="button"
-                  className="h-8 w-8 rounded-full opacity-75 hover:opacity-100 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-90"
-                  onClick={handleDecreaseDate}
-                >
-                  <i className="fas fa-chevron-left" />
-                </button>
-                <label className="mx-2">
-                  <input
-                    name="date"
-                    type="date"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    className="bg-transparent"
-                  />
-                </label>
-                <button
-                  type="button"
-                  className="h-8 w-8 rounded-full opacity-75 hover:opacity-100 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-90"
-                  onClick={handleIncreaseDate}
-                >
-                  <i className="fas fa-chevron-right" />
-                </button>
-              </div>
+              <DateInput date={date} setDate={setDate} />
 
               {/* Add new flight button ----------------------------------------------------------------- */}
 

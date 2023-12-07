@@ -42,9 +42,26 @@ export const contractApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Contract"],
     }),
+
+    getScheduledFlights: builder.query({
+      query: (data) => ({
+        url: "contract/flights",
+        params: {
+          ap: data.airport,
+          co: data.company,
+          dt: data.date,
+        },
+      }),
+      providesTags: ["Contract"],
+    }),
   }),
   overrideExisting: true,
 })
 
-export const { useCreateContractMutation, useGetContractsQuery, useSignContractMutation, useRejectContractMutation } =
-  contractApi
+export const {
+  useCreateContractMutation,
+  useGetContractsQuery,
+  useSignContractMutation,
+  useRejectContractMutation,
+  useGetScheduledFlightsQuery,
+} = contractApi

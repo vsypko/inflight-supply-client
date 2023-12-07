@@ -125,7 +125,7 @@ export default function Dialog<T extends Fleet | Flight>(props: Props<T>): JSX.E
                 className="absolute top-4 text-md text-slate-400 dark:text-slate-400 duration-300 transform -translate-y-9 scale-90  origin-[0] peer-focus:left-0 peer-focus:text-slate-500 dark:peer-focus:text-slate-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-7 peer-focus:scale-75 peer-focus:-translate-y-11"
               >
                 <i className={`${type === "fleet" ? FLEET_EDITOR_ICONS[index] : FLIGHT_EDITOR_ICONS[index]} mr-2`} />
-                <span className="capitalize">{header}</span>
+                <span className={`${header.length < 4 ? "uppercase" : "capitalize"}`}>{header}</span>
               </label>
             </div>
           ))}

@@ -19,6 +19,9 @@ export interface Fleet {
   type: string
   reg: string
   seats: number
+  fc: number
+  bc: number
+  yc: number
   co_id: number | undefined
 }
 
@@ -51,6 +54,9 @@ export interface Row {
   std?: string | undefined
   sta?: string | undefined
   seats?: number | undefined
+  fc?: number | undefined
+  bc?: number | undefined
+  yc?: number | undefined
   co_id?: number | undefined
   co_iata?: string | undefined
   name?: string | undefined
