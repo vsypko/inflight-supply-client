@@ -17,12 +17,14 @@ export default function FleetEditor() {
     type: "",
     reg: "",
     seats: 0,
+    pc: 0,
+    cc: 0,
     fc: 0,
     bc: 0,
     yc: 0,
     co_id: company.id,
   }
-  const headers = Object.keys(emptyRow).slice(1, 8)
+  const headers = Object.keys(emptyRow).slice(1, 10)
 
   useEffect(() => {
     setErrorMsg("")

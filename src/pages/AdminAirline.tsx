@@ -11,7 +11,7 @@ export default function AdminAirline() {
 
   return (
     <div className="w-full">
-      <div className="block md:flex p-4 max-h-max">
+      <div className="block md:flex p-2 max-h-max">
         <div className="w-full md:w-1/4 md:text-2xl ml-3">
           <div className="flex justify-between p-2">
             <div>Company:</div>
@@ -37,7 +37,10 @@ export default function AdminAirline() {
                   action === "fleet" ? "opacity-100" : "opacity-50"
                 }`}
               >
-                <i className="fas fa-plane-circle-check text-2xl py-2.5 px-3 rounded-full bg-orange-500 mr-2" />
+                <div className="w-14 h-14 rounded-full bg-orange-500 items-center flex justify-center text-3xl">
+                  <i className="fas fa-plane-circle-check" />
+                </div>
+
                 <h1 className="p-1 font-semibold">Fleet</h1>
               </button>
             </div>
@@ -48,7 +51,10 @@ export default function AdminAirline() {
                   action === "flights" ? "opacity-100" : "opacity-50"
                 }`}
               >
-                <i className="far fa-calendar-days text-2xl py-2.5 px-4 rounded-full bg-lime-600 mr-2" />
+                <div className="w-14 h-14 rounded-full bg-lime-600 items-center flex justify-center text-3xl">
+                  <i className="far fa-calendar-days" />
+                </div>
+
                 <h1 className="p-1 font-semibold">Flights</h1>
               </button>
             </div>
@@ -59,14 +65,17 @@ export default function AdminAirline() {
                   action === "staff" ? "opacity-100" : "opacity-50"
                 }`}
               >
-                <i className="fas fa-user-group text-2xl py-2.5 px-3  rounded-full bg-sky-700 mr-2" />
+                <div className="w-14 h-14 rounded-full bg-sky-700 items-center flex justify-center text-3xl">
+                  <i className="fas fa-user-group" />
+                </div>
+
                 <h1 className="p-1 font-semibold">Users</h1>
               </button>
             </div>
           </div>
         </div>
 
-        <div className="w-3/4 md:flex justify-center">
+        <div className="w-full md:flex justify-center">
           {action === "fleet" && <FleetEditor />}
           {action === "flights" && <FlightsEditor />}
         </div>

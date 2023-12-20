@@ -19,6 +19,8 @@ export interface Fleet {
   type: string
   reg: string
   seats: number
+  pc: number
+  cc: number
   fc: number
   bc: number
   yc: number
