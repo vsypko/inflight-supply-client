@@ -9,6 +9,7 @@ import { PointerEvent, useEffect, useState } from "react"
 import DateInput from "../components/DateInput"
 import { useGetFlightsQuery } from "../store/orders/orders.api"
 import { ctrlSelection, selectAll, shiftSelection } from "../services/flights.selector"
+import SupplyDiagram from "../components/SupplyDiagram"
 
 export default function Airlines() {
   const { airport } = useAirport()
@@ -79,78 +80,84 @@ export default function Airlines() {
       {contracts && contracts.length > 0 && (
         <div className="">
           {contracts[0].signed_at && (
-            <div className="">
-              <div>
-                {`The contract with ${contracts[0].name} is in force from 
+            <div className="flex w-full">
+              <div className="w-1/4">
+                <div>
+                  {`The contract with ${contracts[0].name} is in force from 
                       ${new Date(contracts[0].signed_at).toDateString()} 
                     `}
-              </div>
-              <div className="flex w-1/4 justify-between items-center transition-all duration-500">
-                <DateInput date={dateFrom} setDate={setDateFrom} />
-                <DateInput date={dateTo} setDate={setDateTo} />
-              </div>
-              <div className="px-2 flex items-center">
-                {flights && flights.length !== 0 && (
-                  <div className="w-1/4">
-                    <div className="max-w-max">
-                      <button
-                        type="button"
-                        onClick={handleSelectAll}
-                        className={`w-12 h-12 rounded-full ${
-                          filteredFlights.length === selectedFlights.length
-                            ? "bg-teal-600 dark:bg-teal-500"
-                            : "text-slate-300 dark:text-slate-700 group-hover:bg-transparent group-hover:text-slate-200 dark:group-hover:text-slate-900"
-                        } dark:border-teal-500 group`}
-                      >
-                        <i className="fas fa-plane-circle-check group-hover:text-teal-600"></i>
-                      </button>
+                </div>
+                <div className="flex justify-between items-center transition-all duration-500">
+                  <DateInput date={dateFrom} setDate={setDateFrom} />
+                  <DateInput date={dateTo} setDate={setDateTo} />
+                </div>
+                <div className="px-2 flex items-center">
+                  {flights && flights.length !== 0 && (
+                    <div className="">
+                      <div className="max-w-max">
+                        <button
+                          type="button"
+                          onClick={handleSelectAll}
+                          className={`w-12 h-12 rounded-full ${
+                            filteredFlights.length === selectedFlights.length
+                              ? "bg-teal-600 dark:bg-teal-500"
+                              : "text-slate-300 dark:text-slate-700 group-hover:bg-transparent group-hover:text-slate-200 dark:group-hover:text-slate-900"
+                          } dark:border-teal-500 group`}
+                        >
+                          <i className="fas fa-plane-circle-check group-hover:text-teal-600"></i>
+                        </button>
 
-                      <label htmlFor="airportFilter" className="mx-4">
-                        Filter by airport:
-                      </label>
-                      <select
-                        id="airportFilter"
-                        className="appearance-none bg-transparent"
-                        onChange={(e) => setSelectdedDestination(e.target.value)}
-                      >
-                        <option value={""}>--All airports-- </option>
-                        {destinations &&
-                          destinations.map((destination: string) => (
-                            <option key={destination} value={destination}>
-                              {destination}
-                            </option>
-                          ))}
-                      </select>
+                        <label htmlFor="airportFilter" className="mx-4">
+                          Filter by airport:
+                        </label>
+                        <select
+                          id="airportFilter"
+                          className="appearance-none bg-transparent"
+                          onChange={(e) => setSelectdedDestination(e.target.value)}
+                        >
+                          <option value={""}>--All airports-- </option>
+                          {destinations &&
+                            destinations.map((destination: string) => (
+                              <option key={destination} value={destination}>
+                                {destination}
+                              </option>
+                            ))}
+                        </select>
+                      </div>
                     </div>
-                  </div>
-                )}
-                <div className="ml-6 justify-center w-1/4 flex">Loading rulls</div>
-                <div className="ml-6 justify-center w-1/4 flex">Loading data</div>
-                <div className="ml-6 justify-center w-1/4 flex">Order</div>
-              </div>
-              {flights && flights.length > 0 && (
-                <ul className="ml-3">
-                  {filteredFlights.map((flight: Flight, index: number) => (
-                    <li
-                      key={flight.id}
-                      onPointerDown={(e) => handleSelect(e, index)}
-                      className="flex items-center hover:bg-teal-400 dark:hover:bg-teal-700 cursor-pointer rounded-full px-2 max-w-max group"
-                    >
-                      <i
-                        className={`fas fa-plane mr-2 ${
-                          selectedFlights.includes(index)
-                            ? "text-teal-600 dark:text-teal-500"
-                            : "text-slate-300 dark:text-slate-700 group-hover:bg-transparent group-hover:text-slate-200 dark:group-hover:text-slate-900"
-                        }`}
-                      />
+                  )}
+                </div>
+                {flights && flights.length > 0 && (
+                  <ul className="ml-3">
+                    {filteredFlights.map((flight: Flight, index: number) => (
+                      <li
+                        key={flight.id}
+                        onPointerDown={(e) => handleSelect(e, index)}
+                        className="flex items-center hover:bg-teal-400 dark:hover:bg-teal-700 cursor-pointer rounded-full px-2 max-w-max group"
+                      >
+                        <i
+                          className={`fas fa-plane mr-2 ${
+                            selectedFlights.includes(index)
+                              ? "text-teal-600 dark:text-teal-500"
+                              : "text-slate-300 dark:text-slate-700 group-hover:bg-transparent group-hover:text-slate-200 dark:group-hover:text-slate-900"
+                          }`}
+                        />
 
-                      <span>{flight.date + "___"}</span>
-                      <span>{flight.flight + "___"}</span>
-                      <span>{flight.to}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
+                        <span>{flight.date + "___"}</span>
+                        <span>{flight.flight + "___"}</span>
+                        <span>{flight.to}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="px-2 w-2/4 justify-center">
+                <h1 className="w-full text-center">Loading Schema</h1>
+                <SupplyDiagram supplierId={contracts[0].supplier} />
+              </div>
+
+              <div className="justify-center w-1/4 flex">Order</div>
             </div>
           )}
           {!contracts[0].signed_at && <div>{`The contract with ${contracts[0].name} is pending...`}</div>}
