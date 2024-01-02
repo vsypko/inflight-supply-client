@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, SetStateAction } from "react"
+import { ChangeEvent, Dispatch, SetStateAction, MouseEvent } from "react"
 import { Item } from "../types/company.types"
 
 interface ISupplyItem {
@@ -21,7 +21,11 @@ export default function SupplyItem({
   selectedSupplyItem: ISupplyItem | undefined
   setSelectedSupplyItem: Dispatch<SetStateAction<ISupplyItem | undefined>>
 }) {
-  function handleSelectionSupplyItem(output: ISupplyItem) {
+  function autoFocus(element: HTMLElement | null, selected: boolean) {
+    if (element && selected) element.focus()
+  }
+
+  function handleSelectionSupplyItem(e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>, output: ISupplyItem) {
     setSelectedItem(output.item)
     setSelectedSupplyItem(output)
   }
@@ -37,7 +41,7 @@ export default function SupplyItem({
       {supplyItems.map((output: ISupplyItem, index) => (
         <li
           key={index}
-          onClick={() => handleSelectionSupplyItem(output)}
+          onClick={(e) => handleSelectionSupplyItem(e, output)}
           className={`grid grid-flow-col grid-cols-12 gap-1 cursor-pointer rounded-full hover:bg-slate-400 dark:hover:bg-slate-700 w-full items-center group ${
             selectedItem === output.item && "bg-slate-300 dark:bg-slate-800"
           }`}
@@ -50,6 +54,7 @@ export default function SupplyItem({
           <span className="col-span-1 text-center">{output.item?.code}</span>
           <span className="col-span-5">{output.item?.title}</span>
           <input
+            ref={(element) => autoFocus(element, selectedItem === output.item)}
             type="number"
             name="percent"
             value={output.percent}

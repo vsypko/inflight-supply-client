@@ -1,6 +1,6 @@
 import { useAirport } from "../hooks/useAirport"
 import { useAuth } from "../hooks/useAuth"
-import { Contract, Flight } from "../types/company.types"
+import { Flight } from "../types/company.types"
 
 import { useCompany } from "../hooks/useCompany"
 import { useGetContractsQuery } from "../store/contracts/contract.api"
@@ -133,7 +133,9 @@ export default function Airlines() {
                       <li
                         key={flight.id}
                         onPointerDown={(e) => handleSelect(e, index)}
-                        className="flex items-center hover:bg-teal-400 dark:hover:bg-teal-700 cursor-pointer rounded-full px-2 max-w-max group"
+                        className={`flex items-center hover:bg-teal-400 dark:hover:bg-teal-700 cursor-pointer rounded-full px-2 max-w-max group ${
+                          selectedFlights.includes(index) && "bg-slate-800"
+                        }`}
                       >
                         <i
                           className={`fas fa-plane mr-2 ${
@@ -157,7 +159,22 @@ export default function Airlines() {
                 <SupplyDiagram supplierId={contracts[0].supplier} />
               </div>
 
-              <div className="justify-center w-1/4 flex">Order</div>
+              {selectedFlights.length === 1 && (
+                <div className="w-1/4 flex flex-col items-center">
+                  <h1>ORDER</h1>
+                  <span>
+                    {"flight " +
+                      company.iata +
+                      " " +
+                      filteredFlights[selectedFlights[0]].flight +
+                      " to " +
+                      filteredFlights[selectedFlights[0]].to}
+                  </span>
+                  <span>
+                    {filteredFlights[selectedFlights[0]].date + " " + filteredFlights[selectedFlights[0]].std}
+                  </span>
+                </div>
+              )}
             </div>
           )}
           {!contracts[0].signed_at && <div>{`The contract with ${contracts[0].name} is pending...`}</div>}
