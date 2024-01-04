@@ -110,3 +110,11 @@ export interface Contract {
   iata: string
   country_iso: string
 }
+export interface Lading {
+  item: Item
+  persent: number
+}
+
+export interface Order {
+  leg: Flight
+}

@@ -10,6 +10,7 @@ import DateInput from "../components/DateInput"
 import { useGetFlightsQuery } from "../store/orders/orders.api"
 import { ctrlSelection, selectAll, shiftSelection } from "../services/flights.selector"
 import SupplyDiagram from "../components/SupplyDiagram"
+import Orders from "../components/Orders"
 
 export default function Airlines() {
   const { airport } = useAirport()
@@ -72,109 +73,103 @@ export default function Airlines() {
   return (
     <div className="w-full text-xl px-2">
       <div className="w-full text-center text-2xl md:text-3xl font-bold">INFLIGHT SUPPLY ORDERS</div>
-      <div className="uppercase font-semibold">
-        {airport.name ? airport.name + " - " + airport.iata : "AIRPORT NOT SELECTED"}
+      <div
+        className={`${
+          airport.name ? "uppercase" : "normal-case"
+        }  font-semibold text-amber-600 flex justify-between mx-6`}
+      >
+        {airport.name
+          ? airport.name + " - " + airport.iata
+          : "AIRPORT NOT SELECTED: Select an airport on the AIRPORTS tab"}
+        {contracts && contracts[0].signed_at && (
+          <div className="text-teal-500 normal-case">
+            {`The contract with ${contracts[0].name} is in force from 
+                      ${new Date(contracts[0].signed_at).toDateString()} 
+                    `}
+          </div>
+        )}
       </div>
-      {!airport.name && <span>Select an airport on the AIRPORTS tab</span>}
 
       {contracts && contracts.length > 0 && (
         <div className="">
           {contracts[0].signed_at && (
-            <div className="flex w-full">
-              <div className="w-1/4">
-                <div>
-                  {`The contract with ${contracts[0].name} is in force from 
-                      ${new Date(contracts[0].signed_at).toDateString()} 
-                    `}
-                </div>
-                <div className="flex justify-between items-center transition-all duration-500">
-                  <DateInput date={dateFrom} setDate={setDateFrom} />
-                  <DateInput date={dateTo} setDate={setDateTo} />
-                </div>
-                <div className="px-2 flex items-center">
-                  {flights && flights.length !== 0 && (
-                    <div className="">
-                      <div className="max-w-max">
-                        <button
-                          type="button"
-                          onClick={handleSelectAll}
-                          className={`w-12 h-12 rounded-full ${
-                            filteredFlights.length === selectedFlights.length
-                              ? "bg-teal-600 dark:bg-teal-500"
-                              : "text-slate-300 dark:text-slate-700 group-hover:bg-transparent group-hover:text-slate-200 dark:group-hover:text-slate-900"
-                          } dark:border-teal-500 group`}
-                        >
-                          <i className="fas fa-plane-circle-check group-hover:text-teal-600"></i>
-                        </button>
+            <div className="w-full">
+              <div className="w-full md:flex">
+                <div className="w-full md:w-1/4">
+                  <div className="flex w-full justify-between items-center transition-all duration-500 text-base">
+                    <DateInput date={dateFrom} setDate={setDateFrom} />
+                    <DateInput date={dateTo} setDate={setDateTo} />
+                  </div>
 
-                        <label htmlFor="airportFilter" className="mx-4">
-                          Filter by airport:
-                        </label>
-                        <select
-                          id="airportFilter"
-                          className="appearance-none bg-transparent"
-                          onChange={(e) => setSelectdedDestination(e.target.value)}
-                        >
-                          <option value={""}>--All airports-- </option>
-                          {destinations &&
-                            destinations.map((destination: string) => (
-                              <option key={destination} value={destination}>
-                                {destination}
-                              </option>
-                            ))}
-                        </select>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                {flights && flights.length > 0 && (
-                  <ul className="ml-3">
-                    {filteredFlights.map((flight: Flight, index: number) => (
-                      <li
-                        key={flight.id}
-                        onPointerDown={(e) => handleSelect(e, index)}
-                        className={`flex items-center hover:bg-teal-400 dark:hover:bg-teal-700 cursor-pointer rounded-full px-2 max-w-max group ${
-                          selectedFlights.includes(index) && "bg-slate-800"
+                  {flights && flights.length !== 0 && (
+                    <div className="flex w-full justify-between my-2">
+                      <button
+                        type="button"
+                        onClick={handleSelectAll}
+                        className={`w-6 h-6 rounded-full ${
+                          filteredFlights.length === selectedFlights.length
+                            ? "text-teal-600 dark:text-teal-500"
+                            : "text-slate-400 dark:text-slate-600 hover:text-teal-600 dark:hover:text-teal-500"
                         }`}
                       >
-                        <i
-                          className={`fas fa-plane mr-2 ${
-                            selectedFlights.includes(index)
-                              ? "text-teal-600 dark:text-teal-500"
-                              : "text-slate-300 dark:text-slate-700 group-hover:bg-transparent group-hover:text-slate-200 dark:group-hover:text-slate-900"
-                          }`}
-                        />
+                        <i className="fas fa-plane-circle-check"></i>
+                      </button>
 
-                        <span>{flight.date + "___"}</span>
-                        <span>{flight.flight + "___"}</span>
-                        <span>{flight.to}</span>
-                      </li>
-                    ))}
-                  </ul>
+                      <select
+                        id="airportFilter"
+                        className="rounded-full cursor-pointer bg-slate-300 dark:bg-slate-800 px-2 text-base"
+                        onChange={(e) => setSelectdedDestination(e.target.value)}
+                      >
+                        <option value={""}>all airports</option>
+                        {destinations &&
+                          destinations.map((destination: string) => (
+                            <option key={destination} value={destination}>
+                              {destination}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+                  )}
+
+                  {flights && flights.length > 0 && (
+                    <ul className="text-base space-y-1 max-h-[644px] overflow-y-auto snap-y">
+                      {filteredFlights.map((flight: Flight, index: number) => (
+                        <li
+                          key={flight.id}
+                          onPointerDown={(e) => handleSelect(e, index)}
+                          className={`grid grid-cols-10 gap-1 snap-start hover:bg-teal-500 dark:hover:bg-teal-700 cursor-pointer rounded-full group ${
+                            selectedFlights.includes(index) && "bg-slate-300 dark:bg-slate-800"
+                          }`}
+                        >
+                          <i
+                            className={`grid items-center fas fa-plane col-span-1 place-items-center ${
+                              selectedFlights.includes(index)
+                                ? "text-teal-600 dark:text-teal-500"
+                                : "text-slate-400 dark:text-slate-600 group-hover:bg-transparent group-hover:text-slate-200 dark:group-hover:text-slate-900"
+                            }`}
+                          />
+
+                          <span className="grid col-span-3 place-items-center">{flight.date}</span>
+                          <span className="grid col-span-2">{flight.std}</span>
+                          <span className="grid col-span-2 place-items-center">{flight.flight}</span>
+                          <span className="grid col-span-2 place-items-center">{flight.to}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+
+                <div className="w-full md:w-2/4 justify-center">
+                  <h1 className="w-full text-center">Loading Schema</h1>
+                  <SupplyDiagram supplierId={contracts[0].supplier} />
+                </div>
+
+                {selectedFlights.length === 1 && (
+                  <div className="w-full md:w-1/4 flex flex-col items-center text-base">
+                    <Orders order={{ leg: filteredFlights[selectedFlights[0]] }} />
+                  </div>
                 )}
               </div>
-
-              <div className="px-2 w-2/4 justify-center">
-                <h1 className="w-full text-center">Loading Schema</h1>
-                <SupplyDiagram supplierId={contracts[0].supplier} />
-              </div>
-
-              {selectedFlights.length === 1 && (
-                <div className="w-1/4 flex flex-col items-center">
-                  <h1>ORDER</h1>
-                  <span>
-                    {"flight " +
-                      company.iata +
-                      " " +
-                      filteredFlights[selectedFlights[0]].flight +
-                      " to " +
-                      filteredFlights[selectedFlights[0]].to}
-                  </span>
-                  <span>
-                    {filteredFlights[selectedFlights[0]].date + " " + filteredFlights[selectedFlights[0]].std}
-                  </span>
-                </div>
-              )}
             </div>
           )}
           {!contracts[0].signed_at && <div>{`The contract with ${contracts[0].name} is pending...`}</div>}

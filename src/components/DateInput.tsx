@@ -17,15 +17,15 @@ export default function DateInput({ date, setDate }: { date: string; setDate: Di
     )
   }
   return (
-    <div className="flex text-xl justify-center z-10">
+    <div className="flex justify-center items-center z-10">
       <button
         type="button"
-        className="h-8 w-8 rounded-full opacity-75 hover:opacity-100 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-90"
+        className="h-6 w-6 rounded-full opacity-75 hover:opacity-100 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-90"
         onClick={handleDecreaseDate}
       >
         <i className="fas fa-chevron-left" />
       </button>
-      <label className="mx-2">
+      <label className="">
         <input
           name="date"
           type="date"
@@ -36,7 +36,7 @@ export default function DateInput({ date, setDate }: { date: string; setDate: Di
       </label>
       <button
         type="button"
-        className="h-8 w-8 rounded-full opacity-75 hover:opacity-100 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-90"
+        className="h-6 w-6 rounded-full opacity-75 hover:opacity-100 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-90"
         onClick={handleIncreaseDate}
       >
         <i className="fas fa-chevron-right" />

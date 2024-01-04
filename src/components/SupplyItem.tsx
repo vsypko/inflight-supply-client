@@ -5,6 +5,7 @@ interface ISupplyItem {
   item: Item
   quantity: number
   percent: number
+  section: string
 }
 export default function SupplyItem({
   selectedItem,
@@ -37,12 +38,12 @@ export default function SupplyItem({
   }
 
   return (
-    <ul className="w-full">
+    <ul className="">
       {supplyItems.map((output: ISupplyItem, index) => (
         <li
           key={index}
           onClick={(e) => handleSelectionSupplyItem(e, output)}
-          className={`grid grid-flow-col grid-cols-12 gap-1 cursor-pointer rounded-full hover:bg-slate-400 dark:hover:bg-slate-700 w-full items-center group ${
+          className={`w-full items-center group grid grid-cols-12 gap-1 cursor-pointer rounded-full hover:bg-slate-400 dark:hover:bg-slate-700 ${
             selectedItem === output.item && "bg-slate-300 dark:bg-slate-800"
           }`}
         >
