@@ -82,7 +82,7 @@ export default function Airlines() {
           ? airport.name + " - " + airport.iata
           : "AIRPORT NOT SELECTED: Select an airport on the AIRPORTS tab"}
         {contracts && contracts[0].signed_at && (
-          <div className="text-teal-500 normal-case">
+          <div className="text-teal-600 normal-case">
             {`The contract with ${contracts[0].name} is in force from 
                       ${new Date(contracts[0].signed_at).toDateString()} 
                     `}
@@ -159,7 +159,7 @@ export default function Airlines() {
                   )}
                 </div>
 
-                <div className="w-full md:w-2/4 justify-center">
+                <div className="w-full md:w-1/2 justify-center">
                   <h1 className="w-full text-center">Loading Schema</h1>
                   <SupplyDiagram supplierId={contracts[0].supplier} />
                 </div>
