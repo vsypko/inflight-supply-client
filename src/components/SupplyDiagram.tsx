@@ -13,7 +13,7 @@ const sections = ["PC & CC", "FC", "BC", "YC"]
 
 export default function SupplyDiagram({ supplierId }: { supplierId: number }) {
   const [selectedItem, setSelectedItem] = useState<Item>()
-  const [selectedSection, setSelectedSection] = useState("PC & CC")
+  const [selectedSection, setSelectedSection] = useState(sections[0])
   const [supplyItems, setSupplyItems] = useState<ISupplyItem[]>([])
   const [selectedSupplyItem, setSelectedSupplyItem] = useState<ISupplyItem | undefined>(undefined)
   const { data: supplies } = useGetCompanyDataQuery({ type: "supplies", id: supplierId })
