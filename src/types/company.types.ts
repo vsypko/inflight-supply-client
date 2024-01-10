@@ -115,6 +115,6 @@ export interface Lading {
   persent: number
 }
 
-export interface Order {
+export interface IOrder {
   leg: Flight
 }
