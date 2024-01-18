@@ -116,5 +116,21 @@ export interface Lading {
 }
 
 export interface IOrder {
+  // id: number | undefined
   leg: Flight
+  // date: string | undefined
+  // crew: number | undefined
+  // fc: number | undefined
+  // bc: number | undefined
+  // yc: number | undefined
+  // totalAmount: number | undefined
+}
+
+export interface IOrderItem {
+  id: number | undefined
+  orderId: number | undefined
+  item: Item
+  qty: number
+  percent: number | undefined
+  section: string
 }

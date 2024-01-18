@@ -1,15 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useGetCompanyDataQuery } from '../store/company/company.api'
-import { Flight, Item } from '../types/company.types'
+import { Flight, IOrder, IOrderItem, Item } from '../types/company.types'
 import OrderedItem from './OrderedItem'
 
-interface IOrderedItem {
-  item: Item
-  quantity: number
-  percent: number
-  section: string
-}
-const sections = ['PC & CC', 'FC', 'BC', 'YC', 'Inventory']
+const sections: (keyof IOrder)[] = ['crew', 'fc', 'bc', 'yc']
 
 export default function Orders({
   supplierId,
@@ -24,12 +18,14 @@ export default function Orders({
   })
 
   const [selectedItem, setSelectedItem] = useState<Item>()
-  const [selectedSection, setSelectedSection] = useState(sections[0])
-  const [orderedItems, setOrderedItems] = useState<IOrderedItem[]>([])
+  const [selectedSection, setSelectedSection] = useState<keyof IOrder | string>(
+    sections[0]
+  )
+  const [orderedItems, setOrderedItems] = useState<IOrderItem[]>([])
   const [selectedOrderedItem, setSelectedOrderedItem] = useState<
-    IOrderedItem | undefined
+    IOrderItem | undefined
   >(undefined)
-
+  const [order, setOrder] = useState<IOrder>()
   function handleItemsSelection(item: Item) {
     setSelectedItem(item)
     //add a supply item only if the same item does not exist in the selected section----------------------------------------
@@ -45,7 +41,14 @@ export default function Orders({
       //add ordered item and set it initial values to 0---------------------------------------------------------------------
       setOrderedItems([
         ...orderedItems,
-        { item, quantity: 0, percent: 0, section: selectedSection },
+        {
+          id: undefined,
+          orderId: order && order.id ? order.id : undefined,
+          item,
+          qty: 0,
+          percent: 0,
+          section: selectedSection,
+        },
       ])
     }
     //set selected just chosen item if exists-------------------------------------------------------------------------------
@@ -62,6 +65,11 @@ export default function Orders({
     console.log(orderedItems)
   }
 
+  function handlePersonsNumber(qty: number) {
+    setOrder({ ...order, [selectedSection as keyof IOrder]: qty ? qty : 0 })
+    console.log(qty, order[selectedSection as keyof IOrder])
+  }
+
   return (
     <div className="w-full md:flex">
       <ul className="w-full md:w-1/3 max-h-[644px] grid grid-cols-3 gap-y-1 overflow-y-scroll snap-y px-2">
@@ -69,7 +77,7 @@ export default function Orders({
           <li
             key={item.id}
             className={`justify-center text-sm text-center cursor-pointer snap-start group max-h-min ${
-              selectedSection !== 'Inventory'
+              selectedSection !== 'inventory'
                 ? item.category === 'Inventory'
                   ? 'hidden'
                   : 'flex'
@@ -115,8 +123,18 @@ export default function Orders({
               {section}
             </button>
           ))}
+          <button
+            onClick={() => handleSelectionSection('inventory')}
+            className={`col-span-1 rounded-full border border-teal-600 active:scale-90 transition-all ${
+              selectedSection === 'inventory'
+                ? ' scale-x-110 bg-teal-600 hover:bg-teal-600'
+                : 'hover:bg-slate-300 dark:hover:bg-slate-800'
+            }`}
+          >
+            {'inventory'}
+          </button>
         </div>
-        <div className="w-full flex mx-2 px-2">
+        <div className="w-full flex m-2">
           <span className={`${flight ? 'text-slate-100' : 'text-slate-500'}`}>
             {flight && selectedSection !== 'Inventory'
               ? 'Enter ' +
@@ -128,6 +146,18 @@ export default function Orders({
               ? 'Enter Inventory'
               : 'No flight selected'}
           </span>
+          {flight && (
+            <input
+              type="number"
+              value={
+                order && order[selectedSection as keyof IOrder]
+                  ? order[selectedSection as keyof IOrder]
+                  : 0
+              }
+              className="appearance-none outline-none bg-transparent border border-slate-700"
+              onChange={(e) => handlePersonsNumber(e.target.valueAsNumber)}
+            />
+          )}
         </div>
         {selectedItem && (
           <div className="w-full text-base mx-2">

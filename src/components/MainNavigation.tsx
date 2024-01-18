@@ -21,10 +21,26 @@ if (
 //---------------------------------------------------------------------------------------------
 
 const mainMenu = [
-  { title: 'AIRPORTS', to: '/', icon: 'fas fa-home' },
-  { title: 'AIRLINES', to: '/airlines', icon: 'fas fa-plane' },
-  { title: 'PROVIDERS', to: '/catering', icon: 'fas fa-utensils' },
-  { title: 'MESSAGES', to: '/messages', icon: 'fas fa-envelope-open-text' },
+  {
+    title: 'AIRPORTS',
+    to: '/',
+    icon: 'fas fa-home group-[.isactive]:text-emerald-600',
+  },
+  {
+    title: 'AIRLINES',
+    to: '/airlines',
+    icon: 'fas fa-plane group-[.isactive]:text-sky-600',
+  },
+  {
+    title: 'PROVIDERS',
+    to: '/catering',
+    icon: 'fas fa-utensils group-[.isactive]:text-amber-600',
+  },
+  {
+    title: 'MESSAGES',
+    to: '/messages',
+    icon: 'fas fa-envelope-open-text group-[.isactive]:text-blue-700',
+  },
 ]
 
 export default function MainNavigation() {
@@ -80,9 +96,9 @@ export default function MainNavigation() {
               <NavLink
                 key={item.title}
                 className={({ isActive }) =>
-                  `h-full flex hover:opacity-100 my-6 md:my-0 md:items-center md:mx-6 ${
+                  `h-full flex hover:opacity-100 my-6 md:my-0 md:items-center md:mx-6 group ${
                     isActive
-                      ? 'md:border-b-2 border-slate-700 dark:border-slate-100 opacity-100'
+                      ? 'md:border-b-2 border-slate-700 dark:border-slate-100 opacity-100 isactive'
                       : 'opacity-75'
                   }`
                 }
@@ -104,16 +120,16 @@ export default function MainNavigation() {
             {user.role && user.role !== 'user' && (
               <NavLink
                 className={({ isActive }) =>
-                  `h-full flex hover:opacity-100 my-6 md:my-0 md:items-center md:mx-6 ${
+                  `h-full flex hover:opacity-100 my-6 md:my-0 md:items-center md:mx-6 group ${
                     isActive
-                      ? 'md:border-b-2 border-slate-700 dark:border-slate-100 opacity-100'
+                      ? 'md:border-b-2 border-slate-700 dark:border-slate-100 opacity-100 isactive'
                       : 'opacity-75'
                   }`
                 }
                 to={`/admin/${user.role}`}
                 onClick={() => setNavDropdownOpen(false)}
               >
-                <i className="fas fa-screwdriver-wrench"></i>
+                <i className="fas fa-screwdriver-wrench group-[.isactive]:text-gray-500"></i>
                 <span className="mx-2">ADMIN</span>
               </NavLink>
             )}
@@ -124,7 +140,11 @@ export default function MainNavigation() {
               onClick={toogleThemeHandler}
               className="opacity-75 hover:opacity-100 flex items-center md:mx-6 my-6 md:my-0"
             >
-              <i className={`fas ${darkMode ? 'fa-sun' : 'fa-moon'}`}></i>
+              <i
+                className={`fas ${
+                  darkMode ? 'fa-sun text-yellow-500' : 'fa-moon text-cyan-600'
+                }`}
+              ></i>
               <span className="mx-2">MODE</span>
             </button>
           </div>
@@ -135,15 +155,17 @@ export default function MainNavigation() {
             {!user.id && (
               <NavLink
                 className={({ isActive }) =>
-                  `w-full flex items-center md:justify-end md:px-6 hover:opacity-100 ${
-                    isActive ? 'opacity-100' : 'opacity-75'
+                  `w-full flex items-center md:justify-end md:px-6 hover:opacity-100 group ${
+                    isActive ? 'opacity-100 isactive' : 'opacity-75'
                   }`
                 }
                 to="/auth"
                 onClick={() => setNavDropdownOpen(false)}
               >
-                <i className="fas fa-user"></i>
-                <span className="mx-2">AUTH</span>
+                <i className="fas fa-user group-[.isactive]:text-orange-600"></i>
+                <span className="mx-2 group-[.isactive]:text-orange-600 group-[.isactive]:font-bold">
+                  AUTH
+                </span>
               </NavLink>
             )}
 
