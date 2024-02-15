@@ -1,20 +1,24 @@
-import { Dispatch, SetStateAction } from "react"
+import { Dispatch, SetStateAction } from 'react'
 
-export default function DateInput({ date, setDate }: { date: string; setDate: Dispatch<SetStateAction<string>> }) {
+export default function DateInput({
+  date,
+  setDate,
+}: {
+  date: Date | null
+  setDate: Dispatch<SetStateAction<Date | null>>
+}) {
   function handleDecreaseDate() {
-    setDate(
-      new Date(new Date(date).getFullYear(), new Date(date).getMonth(), new Date(date).getUTCDate() - 0)
-        .toISOString()
-        .slice(0, 10),
-    )
+    if (date)
+      setDate(
+        new Date(date?.getFullYear(), date.getMonth(), date.getUTCDate() - 0)
+      )
   }
 
   function handleIncreaseDate() {
-    setDate(
-      new Date(new Date(date).getFullYear(), new Date(date).getMonth(), new Date(date).getUTCDate() + 2)
-        .toISOString()
-        .slice(0, 10),
-    )
+    if (date)
+      setDate(
+        new Date(date.getFullYear(), date.getMonth(), date.getUTCDate() + 2)
+      )
   }
   return (
     <div className="flex justify-center items-center z-10">
@@ -29,8 +33,8 @@ export default function DateInput({ date, setDate }: { date: string; setDate: Di
         <input
           name="date"
           type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
+          value={date?.toISOString().slice(0, 10)}
+          onChange={(e) => setDate(e.target.valueAsDate)}
           className="bg-transparent"
         />
       </label>

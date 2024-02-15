@@ -1,31 +1,44 @@
 import { useEffect, useState } from 'react'
 import { useGetCompanyDataQuery } from '../store/company/company.api'
-import { Flight, IOrder, IOrderItem, Item } from '../types/company.types'
+import { FlightSelected, IOrderItem, Item } from '../types/company.types'
 import OrderedItem from './OrderedItem'
+import { useOrder } from '../hooks/useOrder'
 
-const sections: (keyof IOrder)[] = ['crew', 'fc', 'bc', 'yc']
-
-export default function Orders({
-  supplierId,
-  flight,
-}: {
-  supplierId: number
-  flight?: Flight
-}) {
-  const { data: supplies } = useGetCompanyDataQuery({
-    type: 'supplies',
-    id: supplierId,
-  })
-
+export default function Orders() {
+  const { order, selectedFlights } = useOrder()
+  let allSections = ['crew', 'fc', 'bc', 'yc', 'inventory']
+  const [sections, setSections] = useState(allSections)
   const [selectedItem, setSelectedItem] = useState<Item>()
-  const [selectedSection, setSelectedSection] = useState<keyof IOrder | string>(
-    sections[0]
-  )
+  const [selectedSection, setSelectedSection] = useState('')
   const [orderedItems, setOrderedItems] = useState<IOrderItem[]>([])
   const [selectedOrderedItem, setSelectedOrderedItem] = useState<
     IOrderItem | undefined
   >(undefined)
-  const [order, setOrder] = useState<IOrder>()
+  // const [order, setOrder] = useState<IOrder>()
+  const { data: supplies } = useGetCompanyDataQuery(
+    {
+      type: 'supplies',
+      id: order.contract?.supplier,
+    },
+    {
+      skip: !order.contract?.supplier,
+      refetchOnFocus: true,
+    }
+  )
+
+  useEffect(() => {
+    if (selectedFlights) {
+      allSections = allSections.filter((section: string) =>
+        selectedFlights.some(
+          (selectedItem: FlightSelected) =>
+            selectedItem[section as keyof FlightSelected] !== 0
+        )
+      )
+      setSections(allSections)
+      setSelectedSection(allSections[0])
+    }
+  }, [selectedFlights])
+
   function handleItemsSelection(item: Item) {
     setSelectedItem(item)
     //add a supply item only if the same item does not exist in the selected section----------------------------------------
@@ -46,7 +59,7 @@ export default function Orders({
           orderId: order && order.id ? order.id : undefined,
           item,
           qty: 0,
-          percent: 0,
+          amount: 0,
           section: selectedSection,
         },
       ])
@@ -62,21 +75,82 @@ export default function Orders({
   }
 
   function saveSchema() {
-    console.log(orderedItems)
-  }
-
-  function handlePersonsNumber(qty: number) {
-    setOrder({ ...order, [selectedSection as keyof IOrder]: qty ? qty : 0 })
-    console.log(qty, order[selectedSection as keyof IOrder])
+    console.log(selectedFlights, orderedItems)
   }
 
   return (
     <div className="w-full md:flex">
-      <ul className="w-full md:w-1/3 max-h-[644px] grid grid-cols-3 gap-y-1 overflow-y-scroll snap-y px-2">
+      <div className="w-full md:w-2/3 text-base md:px-6">
+        <div
+          className={`w-full grid gap-2 ${
+            sections.length === 5
+              ? 'grid-cols-5'
+              : sections.length === 4
+              ? 'grid-cols-4'
+              : 'grid-cols-3'
+          }`}
+        >
+          {sections &&
+            sections.map((section) => (
+              <div className="flex flex-col">
+                <button
+                  key={section}
+                  onClick={() => handleSelectionSection(section)}
+                  className={`col-span-1 rounded-full transition-all h-10 ${
+                    section === selectedSection
+                      ? 'scale-x-110 bg-teal-600 shadow-md shadow-slate-400 opacity-100 z-10'
+                      : 'opacity-70 hover:opacity-100 dark:bg-slate-800 bg-slate-300 shadow-sm shadow-slate-400 active:scale-90'
+                  }`}
+                >
+                  <div className="flex flex-col">
+                    <span className="uppercase font-bold">{section}</span>
+                    {selectedFlights.length === 1 && (
+                      <span className="text-xs right-3">
+                        {selectedFlights[0][section as keyof FlightSelected]
+                          ? ' capacity: ' +
+                            selectedFlights[0][section as keyof FlightSelected]
+                          : ''}
+                      </span>
+                    )}
+                  </div>
+                </button>
+                {section === selectedSection && (
+                  <span className="text-rose-600 text-xs mt-1">
+                    Total quantity exceeds capacity
+                  </span>
+                )}
+              </div>
+            ))}
+        </div>
+
+        {selectedItem && (
+          <div className="w-full text-base">
+            <OrderedItem
+              selectedSection={selectedSection}
+              selectedItem={selectedItem}
+              setSelectedItem={setSelectedItem}
+              orderedItems={orderedItems}
+              setOrderedItems={setOrderedItems}
+              selectedOrderedItem={selectedOrderedItem}
+              setSelectedOrderedItem={setSelectedOrderedItem}
+            />
+            <div className="flex w-full justify-end mt-4">
+              <button
+                onClick={saveSchema}
+                className="px-4 py-1 text-base rounded-full bg-teal-500 dark:bg-teal-700 opacity-80 hover:opacity-100 active:scale-90"
+              >
+                <i className="fas fa-download mr-2" />
+                <span>SAVE</span>
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+      <ul className="w-full md:w-1/3 max-h-[644px] grid grid-cols-3 gap-y-1 overflow-y-scroll snap-y p-2">
         {supplies?.map((item) => (
           <li
             key={item.id}
-            className={`justify-center text-sm text-center cursor-pointer snap-start group max-h-min ${
+            className={`justify-center text-sm text-center cursor-pointer snap-start group min-h-max ${
               selectedSection !== 'inventory'
                 ? item.category === 'Inventory'
                   ? 'hidden'
@@ -108,80 +182,6 @@ export default function Orders({
           </li>
         ))}
       </ul>
-      <div className="w-full md:w-2/3 text-base md:px-4">
-        <div className="w-full grid grid-cols-5">
-          {sections.map((section) => (
-            <button
-              key={section}
-              onClick={() => handleSelectionSection(section)}
-              className={`col-span-1 rounded-full border border-teal-600 active:scale-90 transition-all ${
-                section === selectedSection
-                  ? ' scale-x-110 bg-teal-600 hover:bg-teal-600'
-                  : 'hover:bg-slate-300 dark:hover:bg-slate-800'
-              }`}
-            >
-              {section}
-            </button>
-          ))}
-          <button
-            onClick={() => handleSelectionSection('inventory')}
-            className={`col-span-1 rounded-full border border-teal-600 active:scale-90 transition-all ${
-              selectedSection === 'inventory'
-                ? ' scale-x-110 bg-teal-600 hover:bg-teal-600'
-                : 'hover:bg-slate-300 dark:hover:bg-slate-800'
-            }`}
-          >
-            {'inventory'}
-          </button>
-        </div>
-        <div className="w-full flex m-2">
-          <span className={`${flight ? 'text-slate-100' : 'text-slate-500'}`}>
-            {flight && selectedSection !== 'Inventory'
-              ? 'Enter ' +
-                selectedSection +
-                ' persons number for flight ' +
-                flight.flight +
-                ':'
-              : selectedSection === 'Inventory'
-              ? 'Enter Inventory'
-              : 'No flight selected'}
-          </span>
-          {flight && (
-            <input
-              type="number"
-              value={
-                order && order[selectedSection as keyof IOrder]
-                  ? order[selectedSection as keyof IOrder]
-                  : 0
-              }
-              className="appearance-none outline-none bg-transparent border border-slate-700"
-              onChange={(e) => handlePersonsNumber(e.target.valueAsNumber)}
-            />
-          )}
-        </div>
-        {selectedItem && (
-          <div className="w-full text-base mx-2">
-            <OrderedItem
-              selectedSection={selectedSection}
-              selectedItem={selectedItem}
-              setSelectedItem={setSelectedItem}
-              orderedItems={orderedItems}
-              setOrderedItems={setOrderedItems}
-              selectedOrderedItem={selectedOrderedItem}
-              setSelectedOrderedItem={setSelectedOrderedItem}
-            />
-            <div className="flex w-full justify-end mt-4">
-              <button
-                onClick={saveSchema}
-                className="px-4 py-1 text-base rounded-full bg-teal-500 dark:bg-teal-700 opacity-80 hover:opacity-100 active:scale-90"
-              >
-                <i className="fas fa-download mr-2" />
-                <span>SAVE</span>
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
     </div>
   )
 }

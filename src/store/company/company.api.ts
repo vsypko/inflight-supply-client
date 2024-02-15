@@ -1,19 +1,19 @@
-import { ICompanyResponse } from "../../types/company.types"
-import { api } from "../api"
+import { ICompanyResponse } from '../../types/company.types'
+import { api } from '../api'
 
 export const companyApi = api.injectEndpoints({
   endpoints: (builder) => ({
     createCompany: builder.mutation({
       query: (data) => ({
-        method: "POST",
-        url: "company",
+        method: 'POST',
+        url: 'company',
         body: data,
       }),
     }),
 
     searchCompany: builder.query<ICompanyResponse, string>({
       query: (search) => ({
-        url: "company",
+        url: 'company',
         params: {
           q: search,
         },
@@ -22,7 +22,7 @@ export const companyApi = api.injectEndpoints({
 
     getCompaniesForAirport: builder.query({
       query: (data) => ({
-        url: "company/airport",
+        url: 'company/airport',
         params: {
           type: data.type,
           airport: data.airport,
@@ -30,7 +30,10 @@ export const companyApi = api.injectEndpoints({
       }),
     }),
 
-    getCompanyData: builder.query<any[], { type: string; id?: number; date?: string }>({
+    getCompanyData: builder.query<
+      any[],
+      { type: string; id?: number; date?: string }
+    >({
       query: (data) => ({
         url: `company/${data.type}`,
         params: {
@@ -38,62 +41,74 @@ export const companyApi = api.injectEndpoints({
           date: data.date,
         },
       }),
-      providesTags: ["Data"],
+      providesTags: ['Data'],
     }),
 
-    insertCompanyData: builder.mutation<{ data: string; id: number }, { type: string; values: any }>({
+    insertCompanyData: builder.mutation<
+      { data: string; id: number },
+      { type: string; values: any }
+    >({
       query: (data) => ({
         url: `company/${data.type}`,
-        method: "POST",
+        method: 'POST',
         body: {
           values: data.values,
         },
       }),
-      invalidatesTags: ["Data"],
+      invalidatesTags: ['Data'],
     }),
 
-    updateCompanyData: builder.mutation<{ data: string }, { type: string; id: number; value: any }>({
+    updateCompanyData: builder.mutation<
+      { data: string },
+      { type: string; id: number; value: any }
+    >({
       query: (data) => ({
         url: `company/${data.type}`,
-        method: "PATCH",
+        method: 'PATCH',
         body: {
           id: data.id,
           value: data.value,
         },
       }),
-      invalidatesTags: ["Data"],
+      invalidatesTags: ['Data'],
     }),
 
-    deleteCompanyData: builder.mutation<{ data: string }, { type: string; id: number; co_id?: number }>({
+    deleteCompanyData: builder.mutation<
+      { data: string },
+      { type: string; id: number; co_id?: number }
+    >({
       query: (data) => ({
         url: `company/${data.type}`,
-        method: "DELETE",
+        method: 'DELETE',
         params: {
           id: data.id,
           co_id: data.co_id,
         },
       }),
-      invalidatesTags: ["Data"],
+      invalidatesTags: ['Data'],
     }),
 
     imgUrlUpdate: builder.mutation({
       query: (data) => ({
-        url: "company/items/img/update",
-        method: "POST",
+        url: 'company/items/img/update',
+        method: 'POST',
         body: data,
       }),
-      invalidatesTags: ["Data"],
+      invalidatesTags: ['Data'],
     }),
 
-    imgUrlRemove: builder.mutation<{ data: string }, { type: string; id: number }>({
+    imgUrlRemove: builder.mutation<
+      { data: string },
+      { type: string; id: number }
+    >({
       query: (data) => ({
         url: `company/items/img/${data.type}`,
-        method: "DELETE",
+        method: 'DELETE',
         params: {
           id: data.id,
         },
       }),
-      invalidatesTags: ["Data"],
+      invalidatesTags: ['Data'],
     }),
   }),
   overrideExisting: true,

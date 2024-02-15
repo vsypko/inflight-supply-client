@@ -1,29 +1,42 @@
-import { ChangeEvent, MutableRefObject, useEffect, useRef, useState } from "react"
-import { handleDataFileInput } from "../services/datafile.loader"
-import { useGetCompanyDataQuery, useInsertCompanyDataMutation } from "../store/company/company.api"
-import { LoadingSpinner } from "./LoadingSpinner"
-import { Flight } from "../types/company.types"
-import Chart from "./Chart"
-import SaveRemove from "./SaveRemove"
-import Dialog from "./Dialog"
-import { useCompany } from "../hooks/useCompany"
-import DateInput from "./DateInput"
+import {
+  ChangeEvent,
+  MutableRefObject,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
+import { handleDataFileInput } from '../services/datafile.loader'
+import {
+  useGetCompanyDataQuery,
+  useInsertCompanyDataMutation,
+} from '../store/company/company.api'
+import { LoadingSpinner } from './LoadingSpinner'
+import { Flight } from '../types/company.types'
+import Chart from './Chart'
+import SaveRemove from './SaveRemove'
+import Dialog from './Dialog'
+import { useCompany } from '../hooks/useCompany'
+import DateInput from './DateInput'
 
 export default function FlightsEditor() {
   const { company } = useCompany()
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
-  const { data, error } = useGetCompanyDataQuery({ type: "flights", id: company.id, date })
+  const [date, setDate] = useState<Date | null>(new Date())
+  const { data, error } = useGetCompanyDataQuery({
+    type: 'flights',
+    id: company.id,
+    date: date?.toISOString().slice(0, 10),
+  })
 
   const emptyRow = {
     id: 0,
     date: new Date().toISOString().slice(0, 10),
     flight: 0,
-    type: "",
-    reg: "",
-    from: "",
-    to: "",
-    std: "",
-    sta: "",
+    type: '',
+    reg: '',
+    from: '',
+    to: '',
+    std: '',
+    sta: '',
     seats: 0,
     co_id: company.id,
     co_iata: company.iata,
@@ -32,40 +45,51 @@ export default function FlightsEditor() {
   const headers = Object.keys(emptyRow).slice(1, 10)
 
   useEffect(() => {
-    setErrorMsg("")
-    if (error != null && typeof error === "object" && "data" in error) setErrorMsg(error.data as string)
-    if (error != null && typeof error === "object" && "error" in error) setErrorMsg(error.error as string)
+    setErrorMsg('')
+    if (error != null && typeof error === 'object' && 'data' in error)
+      setErrorMsg(error.data as string)
+    if (error != null && typeof error === 'object' && 'error' in error)
+      setErrorMsg(error.error as string)
   }, [error])
 
-  const [insertCompanyData, { data: response, isError, isSuccess, isLoading }] = useInsertCompanyDataMutation()
+  const [insertCompanyData, { data: response, isError, isSuccess, isLoading }] =
+    useInsertCompanyDataMutation()
 
   const [newFlights, setNewFlights] = useState<Flight[]>([])
   const [row, setRow] = useState<Flight>(emptyRow)
 
-  const [errorMsg, setErrorMsg] = useState("")
+  const [errorMsg, setErrorMsg] = useState('')
   const [dialogRef, setDialogRef] = useState<HTMLDialogElement | null>(null)
-  const [result, setResult] = useState("")
+  const [result, setResult] = useState('')
 
   const handleEdit = (row: Flight) => {
     setRow(row)
-    setErrorMsg("")
-    setResult("")
+    setErrorMsg('')
+    setResult('')
     dialogRef?.showModal()
   }
 
   async function handleUploadFile(e: ChangeEvent<HTMLInputElement>) {
-    setErrorMsg("")
-    await handleDataFileInput(e, headers, setNewFlights, company.id, company.iata)
+    setErrorMsg('')
+    await handleDataFileInput(
+      e,
+      headers,
+      setNewFlights,
+      company.id,
+      company.iata
+    )
   }
 
   async function handleInsertFlights() {
     try {
-      await insertCompanyData({ type: "flights", values: newFlights }).unwrap()
+      await insertCompanyData({ type: 'flights', values: newFlights }).unwrap()
       setNewFlights([])
     } catch (err) {
       setNewFlights([])
-      if (err != null && typeof err === "object" && "data" in err) setErrorMsg(err.data as string)
-      if (err != null && typeof err === "object" && "error" in err) setErrorMsg(err.error as string)
+      if (err != null && typeof err === 'object' && 'data' in err)
+        setErrorMsg(err.data as string)
+      if (err != null && typeof err === 'object' && 'error' in err)
+        setErrorMsg(err.error as string)
     }
   }
 
@@ -81,7 +105,9 @@ export default function FlightsEditor() {
         type="flights"
       />
       <div className="max-w-max max-h-max">
-        {errorMsg && <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>}
+        {errorMsg && (
+          <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>
+        )}
         {isLoading && (
           <div className="ml-48 mt-12">
             <LoadingSpinner />
@@ -133,19 +159,32 @@ export default function FlightsEditor() {
           {/* Save - Remove buttons for xlsx file upload-------------------------------------------------------- */}
 
           {newFlights.length !== 0 && !isLoading && (
-            <SaveRemove setNew={setNewFlights} handleSave={handleInsertFlights} />
+            <SaveRemove
+              setNew={setNewFlights}
+              handleSave={handleInsertFlights}
+            />
           )}
 
           {/* Table with flights from xlsx or from DB --------------------------------------------------------------*/}
 
-          {newFlights.length !== 0 && !isLoading && <Chart<Flight> headers={headers} rows={newFlights} />}
+          {newFlights.length !== 0 && !isLoading && (
+            <Chart<Flight> headers={headers} rows={newFlights} />
+          )}
           {data && !newFlights.length && !isLoading && (
-            <Chart<Flight> headers={headers} rows={data} handleEdit={handleEdit} />
+            <Chart<Flight>
+              headers={headers}
+              rows={data}
+              handleEdit={handleEdit}
+            />
           )}
 
           {/* Queries result info -------------------------------------------------------*/}
           <div className="flex w-full m-1 h-6">
-            {result && <h5 className="text-teal-500 py-1 whitespace-pre-line result">{result}</h5>}
+            {result && (
+              <h5 className="text-teal-500 py-1 whitespace-pre-line result">
+                {result}
+              </h5>
+            )}
           </div>
         </div>
       </div>

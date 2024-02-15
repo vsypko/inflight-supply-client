@@ -1,12 +1,6 @@
 import { ChangeEvent, Dispatch, SetStateAction, MouseEvent } from 'react'
 import { IOrderItem, Item } from '../types/company.types'
 
-interface IOrderedItem {
-  item: Item
-  quantity: number
-  percent: number
-  section: string
-}
 export default function OrderedItem({
   selectedSection,
   selectedItem,
@@ -20,7 +14,7 @@ export default function OrderedItem({
   selectedItem: Item
   setSelectedItem: Dispatch<SetStateAction<Item | undefined>>
   orderedItems: IOrderItem[]
-  setOrderedItems: Dispatch<React.SetStateAction<IOrderItem[]>>
+  setOrderedItems: Dispatch<SetStateAction<IOrderItem[]>>
   selectedOrderedItem: IOrderItem | undefined
   setSelectedOrderedItem: Dispatch<SetStateAction<IOrderItem | undefined>>
 }) {
@@ -43,6 +37,7 @@ export default function OrderedItem({
   function onChange(event: ChangeEvent<HTMLInputElement>, index: number) {
     const items = [...orderedItems]
     const value = event.target.valueAsNumber ? event.target.valueAsNumber : 0
+
     items[index] = {
       ...items[index],
       [event.target.name]: value,
@@ -51,12 +46,12 @@ export default function OrderedItem({
   }
 
   return (
-    <ul className="">
+    <ul>
       {orderedItems.map((orderedItem: IOrderItem, index) => (
         <li
           key={index}
           onClick={(e) => handleSelectionOrderedItem(e, orderedItem)}
-          className={`w-full pl-2 my-1 items-center group grid grid-cols-12 gap-1 cursor-pointer rounded-full hover:bg-slate-400 dark:hover:bg-slate-700 ${
+          className={`w-full mb-1 px-2 items-center group grid grid-cols-12 gap-1 cursor-pointer rounded-full hover:bg-slate-400 dark:hover:bg-slate-700 ${
             selectedItem.id === orderedItem.item.id &&
             'bg-slate-300 dark:bg-slate-800'
           } ${selectedSection !== orderedItem.section && 'hidden'}`}
@@ -74,19 +69,13 @@ export default function OrderedItem({
             {orderedItem.item?.code}
           </span>
           <span className="col-span-5">{orderedItem.item?.title}</span>
+
           <input
             ref={(element) =>
               onFocus(element, selectedItem.id === orderedItem.item.id)
             }
             type="number"
-            name="percent"
-            value={orderedItem.percent}
-            className="appearance-none outline-none bg-transparent border border-slate-700 col-span-2"
-            onChange={(e) => onChange(e, index)}
-          />
-          <input
-            type="number"
-            name="quantity"
+            name="qty"
             value={orderedItem.qty}
             placeholder=" "
             className="appearance-none outline-none bg-transparent border border-slate-700 col-span-2"

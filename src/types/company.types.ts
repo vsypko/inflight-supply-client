@@ -12,6 +12,24 @@ export interface Flight {
   co_id: number | undefined
   co_iata: string | undefined
 }
+export interface FlightSelected {
+  id: number
+  date: string
+  flight: number
+  type: string
+  reg: string
+  from: string
+  to: string
+  std: string
+  sta: string
+  seats: number
+  co_id: number | undefined
+  co_iata: string | undefined
+  crew: number
+  fc: number
+  bc: number
+  yc: number
+}
 
 export interface Fleet {
   id: number
@@ -19,8 +37,7 @@ export interface Fleet {
   type: string
   reg: string
   seats: number
-  pc: number
-  cc: number
+  crew: number
   fc: number
   bc: number
   yc: number
@@ -116,14 +133,10 @@ export interface Lading {
 }
 
 export interface IOrder {
-  // id: number | undefined
-  leg: Flight
-  // date: string | undefined
-  // crew: number | undefined
-  // fc: number | undefined
-  // bc: number | undefined
-  // yc: number | undefined
-  // totalAmount: number | undefined
+  id: number | undefined
+  flight: FlightSelected | undefined
+  created: Date | undefined
+  contract: Contract | undefined
 }
 
 export interface IOrderItem {
@@ -131,6 +144,6 @@ export interface IOrderItem {
   orderId: number | undefined
   item: Item
   qty: number
-  percent: number | undefined
+  amount: number
   section: string
 }

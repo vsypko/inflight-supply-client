@@ -1,17 +1,22 @@
+import { useEffect } from 'react'
 import { useAirport } from '../hooks/useAirport'
 import { useAuth } from '../hooks/useAuth'
 import { useCompany } from '../hooks/useCompany'
+import { useOrder } from '../hooks/useOrder'
 import { useGetContractsQuery } from '../store/contracts/contract.api'
 import { Contract } from '../types/company.types'
 import FlightsSelector from './FlightsSelector'
 import Order from './Order'
 import Orders from './Orders'
 import SupplierSelector from './SupplierSelector'
+import { useActions } from '../hooks/actions'
 
 export default function AirlineContract() {
   const { airport } = useAirport()
   const { user } = useAuth()
   const { company } = useCompany()
+  const { order } = useOrder()
+  const { setOrder } = useActions()
 
   const { data: contracts } = useGetContractsQuery(
     {
@@ -24,6 +29,11 @@ export default function AirlineContract() {
       refetchOnFocus: true,
     }
   )
+
+  useEffect(() => {
+    if (contracts && contracts[0].signed_at)
+      setOrder({ ...order, contract: contracts[0] })
+  }, [contracts])
 
   return (
     <div className="w-full px-2">
@@ -65,7 +75,7 @@ export default function AirlineContract() {
             <FlightsSelector />
           </div>
           <div className="w-full md:w-3/5">
-            <Orders supplierId={contracts[0].supplier} />
+            <Orders />
           </div>
         </div>
       )}
