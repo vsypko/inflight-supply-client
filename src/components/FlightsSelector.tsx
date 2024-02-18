@@ -154,7 +154,7 @@ export default function FlightsSelector() {
                     : 'hidden'
                 } grid-cols-12 gap-1 snap-start hover:bg-teal-500 dark:hover:bg-teal-700 cursor-pointer rounded-full group ${
                   selectedFlights.some((f) => f.id === flight.id) &&
-                  'bg-slate-300 dark:bg-slate-800'
+                  'bg-gradient-to-r from-slate-100 dark:from-slate-950 to-slate-300 dark:to-slate-800'
                 }`}
               >
                 <i

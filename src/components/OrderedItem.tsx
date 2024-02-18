@@ -51,25 +51,30 @@ export default function OrderedItem({
         <li
           key={index}
           onClick={(e) => handleSelectionOrderedItem(e, orderedItem)}
-          className={`w-full mb-1 px-2 items-center group grid grid-cols-12 gap-1 cursor-pointer rounded-full hover:bg-slate-400 dark:hover:bg-slate-700 ${
+          className={`w-full mb-1 items-center group grid grid-cols-8 cursor-pointer rounded-full hover:bg-gradient-to-r from-transparent hover:to-slate-400 dark:hover:to-slate-700 ${
             selectedItem.id === orderedItem.item.id &&
-            'bg-slate-300 dark:bg-slate-800'
+            'bg-gradient-to-r from-transparent to-slate-300 dark:to-slate-800'
           } ${selectedSection !== orderedItem.section && 'hidden'}`}
         >
-          <img
-            src={
-              import.meta.env.VITE_API_URL +
-              'company/items/img/' +
-              orderedItem.item?.img_url
-            }
-            alt="No image to show"
-            className="rounded-full col-span-1 h-8 w-8"
-          />
-          <span className="col-span-1 text-center">
-            {orderedItem.item?.code}
-          </span>
-          <span className="col-span-5">{orderedItem.item?.title}</span>
+          <div className="col-span-1 place-content-start flex items-center">
+            <img
+              src={
+                import.meta.env.VITE_API_URL +
+                'company/items/img/' +
+                orderedItem.item?.img_url
+              }
+              alt="No image to show"
+              className="rounded-full h-8 w-8"
+            />
+            <span className="w-full text-end pr-2">
+              {orderedItem.item?.code}
+            </span>
+          </div>
 
+          <span className="col-span-3">{orderedItem.item.title}</span>
+          <span className="flex col-span-1 justify-self-end pr-2">
+            {'$ ' + orderedItem.item.price}
+          </span>
           <input
             ref={(element) =>
               onFocus(element, selectedItem.id === orderedItem.item.id)
@@ -78,10 +83,13 @@ export default function OrderedItem({
             name="qty"
             value={orderedItem.qty}
             placeholder=" "
-            className="appearance-none outline-none bg-transparent border border-slate-700 col-span-2"
+            className="col-span-1 text-right appearance-none outline-none bg-transparent border border-slate-700"
             onChange={(e) => onChange(e, index)}
           />
-          <div className="flex w-ful justify-end">
+          <div className="col-span-2 justify-self-end">
+            <span className="pr-2">
+              {'$ ' + (orderedItem.qty * orderedItem.item.price).toFixed(2)}
+            </span>
             <button
               onClick={() =>
                 setOrderedItems(
@@ -90,15 +98,42 @@ export default function OrderedItem({
                   )
                 )
               }
-              className={`w-8 h-8 col-span-1 rounded-full opacity-60 active:scale-90 hover:opacity-100 hover:bg-slate-600 group-hover:visible ${
+              className={`w-8 h-8 rounded-full opacity-70 active:scale-90 hover:opacity-100 hover:bg-slate-600 group-hover:visible ${
                 selectedItem === orderedItem.item ? 'visible' : 'invisible'
               }`}
             >
-              <i className="far fa-trash-can text-rose-600" />
+              <i className="far fa-trash-can text-rose-500 text-lg" />
             </button>
           </div>
         </li>
       ))}
+      {orderedItems.length > 0 &&
+        orderedItems.some((item) => item.section === selectedSection) && (
+          <div className="grid grid-cols-8 border-t border-slate-300">
+            <span className="col-span-5">Total:</span>
+            <span className="col-span-1 justify-self-end">
+              {orderedItems.reduce(
+                (accumulator, current) =>
+                  current.section === selectedSection
+                    ? accumulator + current.qty
+                    : accumulator,
+                0
+              )}
+            </span>
+            <span className="col-span-2 justify-self-end mr-10">
+              {'$ ' +
+                orderedItems
+                  .reduce(
+                    (accumulator, current) =>
+                      current.section === selectedSection
+                        ? accumulator + current.item.price * current.qty
+                        : accumulator,
+                    0
+                  )
+                  .toFixed(2)}
+            </span>
+          </div>
+        )}
     </ul>
   )
 }

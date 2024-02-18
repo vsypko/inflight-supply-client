@@ -92,9 +92,8 @@ export default function Orders() {
         >
           {sections &&
             sections.map((section) => (
-              <div className="flex flex-col">
+              <div key={section} className="flex flex-col">
                 <button
-                  key={section}
                   onClick={() => handleSelectionSection(section)}
                   className={`col-span-1 rounded-full transition-all h-10 ${
                     section === selectedSection
@@ -114,11 +113,22 @@ export default function Orders() {
                     )}
                   </div>
                 </button>
-                {section === selectedSection && (
-                  <span className="text-rose-600 text-xs mt-1">
-                    Total quantity exceeds capacity
-                  </span>
-                )}
+                {/* --- Warning of the current section capacity exceeding!   ------------------ */}
+                {section === selectedSection &&
+                  selectedFlights.length === 1 && (
+                    <span className="text-rose-600 text-xs mt-1 text-center transition-all">
+                      {orderedItems.reduce(
+                        (accumulator, current) =>
+                          current.section === selectedSection
+                            ? accumulator + current.qty
+                            : accumulator,
+                        0
+                      ) >
+                        Number(
+                          selectedFlights[0][section as keyof FlightSelected]
+                        ) && 'Total quantity exceeds capacity!'}
+                    </span>
+                  )}
               </div>
             ))}
         </div>
@@ -134,6 +144,7 @@ export default function Orders() {
               selectedOrderedItem={selectedOrderedItem}
               setSelectedOrderedItem={setSelectedOrderedItem}
             />
+
             <div className="flex w-full justify-end mt-4">
               <button
                 onClick={saveSchema}
