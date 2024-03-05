@@ -15,8 +15,16 @@ export const orderApi = api.injectEndpoints({
       }),
       providesTags: ['Contract'],
     }),
+    setOrder: builder.mutation({
+      query: (data) => ({
+        method: 'POST',
+        url: 'orders',
+        body: data,
+      }),
+      invalidatesTags: ['Contract'],
+    }),
   }),
   overrideExisting: true,
 })
 
-export const { useGetFlightsQuery } = orderApi
+export const { useGetFlightsQuery, useSetOrderMutation } = orderApi

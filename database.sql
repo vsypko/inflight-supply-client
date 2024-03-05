@@ -92,7 +92,8 @@ CREATE TABLE flights(
   sta time,
   seats integer,
   co_id integer,
-  co_iata varchar(2)
+  co_iata varchar(2),
+  order_id uuid
   CONSTRAINT unique_row UNIQUE (date,flight,"from")
 );
 
@@ -140,4 +141,11 @@ supplier integer,
 airport integer,
 airline_signatory integer,
 supplier_signatory integer
+);
+
+CREATE TABLE orders(
+id uuid UNIQUE PRIMARY KEY,
+contract_id integer,
+created TIMESTAMPTZ DEFAULT Now(),
+flights_qty integer
 );

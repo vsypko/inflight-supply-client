@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from 'react'
 
 export default function Now() {
   const [now, setNow] = useState(new Date())
@@ -10,5 +10,5 @@ export default function Now() {
       clearInterval(timer)
     }
   })
-  return <div className="absolute right-0 top-8 md:top-0">{now.toUTCString()}</div>
+  return <span>{now.toUTCString()}</span>
 }

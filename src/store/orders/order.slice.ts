@@ -14,8 +14,8 @@ interface OrderState {
 const initialState: OrderState = {
   order: {
     id: undefined,
-    flight: undefined,
-    created: undefined,
+    // flight: undefined,
+    // created: undefined,
     contract: undefined,
   },
   selectedFlights: [],

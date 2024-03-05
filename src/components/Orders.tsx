@@ -3,6 +3,9 @@ import { useGetCompanyDataQuery } from '../store/company/company.api'
 import { FlightSelected, IOrderItem, Item } from '../types/company.types'
 import OrderedItem from './OrderedItem'
 import { useOrder } from '../hooks/useOrder'
+import { v4 as uuid } from 'uuid'
+import { useSetOrderMutation } from '../store/orders/orders.api'
+import { useActions } from '../hooks/actions'
 
 export default function Orders() {
   const { order, selectedFlights } = useOrder()
@@ -14,7 +17,7 @@ export default function Orders() {
   const [selectedOrderedItem, setSelectedOrderedItem] = useState<
     IOrderItem | undefined
   >(undefined)
-  // const [order, setOrder] = useState<IOrder>()
+
   const { data: supplies } = useGetCompanyDataQuery(
     {
       type: 'supplies',
@@ -25,6 +28,8 @@ export default function Orders() {
       refetchOnFocus: true,
     }
   )
+  const [addOrder] = useSetOrderMutation()
+  const { setOrder } = useActions()
 
   useEffect(() => {
     if (selectedFlights) {
@@ -74,15 +79,32 @@ export default function Orders() {
     setSelectedSection(section)
   }
 
-  function saveSchema() {
-    console.log(selectedFlights, orderedItems)
+  async function saveSchema() {
+    const orderId = uuid()
+    const { flightIds, insertedOrder } = await addOrder({
+      flights: selectedFlights.map((flight) => flight.id),
+      orderId: orderId,
+      contractId: order.contract?.id,
+    }).unwrap()
+    setOrder({ ...order, id: insertedOrder.id })
+    console.log(flightIds, insertedOrder, order)
+
+    // if (
+    //   new Date(
+    //     selectedFlights[0].date + 'T' + selectedFlights[0].std
+    //   ).getTime() -
+    //     new Date().getTime() >
+    //   1000 * 60 * 60 * 24
+    // ) {
+    //   alert(`Orders for ${selectedFlights.length} flights will be saved!`)
+    // }
   }
 
   return (
     <div className="w-full md:flex">
       <div className="w-full md:w-2/3 text-base md:px-6">
         <div
-          className={`w-full grid gap-2 ${
+          className={`w-full grid gap-1 ${
             sections.length === 5
               ? 'grid-cols-5'
               : sections.length === 4
@@ -102,9 +124,11 @@ export default function Orders() {
                   }`}
                 >
                   <div className="flex flex-col">
-                    <span className="uppercase font-bold">{section}</span>
+                    <span className="uppercase font-bold text-xs md:text-base">
+                      {section}
+                    </span>
                     {selectedFlights.length === 1 && (
-                      <span className="text-xs right-3">
+                      <span className="text-[9px] md:text-xs">
                         {selectedFlights[0][section as keyof FlightSelected]
                           ? ' capacity: ' +
                             selectedFlights[0][section as keyof FlightSelected]
@@ -133,8 +157,8 @@ export default function Orders() {
             ))}
         </div>
 
-        {selectedItem && (
-          <div className="w-full text-base">
+        {selectedSection && selectedItem && (
+          <div className="w-full text-base mt-4">
             <OrderedItem
               selectedSection={selectedSection}
               selectedItem={selectedItem}
@@ -157,42 +181,44 @@ export default function Orders() {
           </div>
         )}
       </div>
-      <ul className="w-full md:w-1/3 max-h-[644px] grid grid-cols-3 gap-y-1 overflow-y-scroll snap-y p-2">
-        {supplies?.map((item) => (
-          <li
-            key={item.id}
-            className={`justify-center text-sm text-center cursor-pointer snap-start group min-h-max ${
-              selectedSection !== 'inventory'
-                ? item.category === 'Inventory'
-                  ? 'hidden'
-                  : 'flex'
-                : item.category === 'Inventory'
-                ? 'flex'
-                : 'hidden'
-            }`}
-            onClick={() => handleItemsSelection(item)}
-          >
-            <div
-              className={`group-hover:scale-100 rounded-3xl transition-all border ${
-                selectedItem?.id === item.id
-                  ? 'border-slate-600 dark:border-slate-400 scale-100'
-                  : 'border-slate-300 dark:border-slate-700 scale-95'
+      {selectedSection && (
+        <ul className="w-full md:w-1/3 max-h-[644px] grid grid-cols-3 gap-1 overflow-y-scroll snap-y">
+          {supplies?.map((item) => (
+            <li
+              key={item.id}
+              className={`justify-center text-sm text-center cursor-pointer snap-start group min-h-max ${
+                selectedSection !== 'inventory'
+                  ? item.category === 'Inventory'
+                    ? 'hidden'
+                    : 'flex'
+                  : item.category === 'Inventory'
+                  ? 'flex'
+                  : 'hidden'
               }`}
+              onClick={() => handleItemsSelection(item)}
             >
-              <span className="px-2">{item.title}</span>
-              <img
-                src={
-                  import.meta.env.VITE_API_URL +
-                  'company/items/img/' +
-                  item.img_url
-                }
-                alt="No image to show"
-                className="p-1"
-              />
-            </div>
-          </li>
-        ))}
-      </ul>
+              <div
+                className={`group-hover:scale-100 rounded-3xl transition-all border ${
+                  selectedItem?.id === item.id
+                    ? 'border-slate-600 dark:border-slate-400 scale-100'
+                    : 'border-slate-300 dark:border-slate-700 scale-95'
+                }`}
+              >
+                <span className="px-2">{item.title}</span>
+                <img
+                  src={
+                    import.meta.env.VITE_API_URL +
+                    'company/items/img/' +
+                    item.img_url
+                  }
+                  alt="No image to show"
+                  className="p-1"
+                />
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }

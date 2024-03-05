@@ -51,9 +51,9 @@ export default function OrderedItem({
         <li
           key={index}
           onClick={(e) => handleSelectionOrderedItem(e, orderedItem)}
-          className={`w-full mb-1 items-center group grid grid-cols-8 cursor-pointer rounded-full hover:bg-gradient-to-r from-transparent hover:to-slate-400 dark:hover:to-slate-700 ${
+          className={`w-full mb-1 items-center group grid grid-cols-7 md:grid-cols-8 text-xs md:text-base  cursor-pointer rounded-full hover:bg-gradient-to-r from-transparent hover:to-slate-400 dark:hover:to-slate-700 ${
             selectedItem.id === orderedItem.item.id &&
-            'bg-gradient-to-r from-transparent to-slate-300 dark:to-slate-800'
+            'bg-gradient-to-r from-transparent to-slate-300 dark:to-slate-700'
           } ${selectedSection !== orderedItem.section && 'hidden'}`}
         >
           <div className="col-span-1 place-content-start flex items-center">
@@ -64,16 +64,18 @@ export default function OrderedItem({
                 orderedItem.item?.img_url
               }
               alt="No image to show"
-              className="rounded-full h-8 w-8"
+              className="rounded-full h-6 w-6 md:h-8 md:w-8"
             />
             <span className="w-full text-end pr-2">
               {orderedItem.item?.code}
             </span>
           </div>
 
-          <span className="col-span-3">{orderedItem.item.title}</span>
-          <span className="flex col-span-1 justify-self-end pr-2">
-            {'$ ' + orderedItem.item.price}
+          <span className="col-span-2 md:col-span-3">
+            {orderedItem.item.title}
+          </span>
+          <span className="col-span-1 justify-self-end pr-2">
+            {'$ ' + orderedItem.item.price.toFixed(2)}
           </span>
           <input
             ref={(element) =>
@@ -98,19 +100,19 @@ export default function OrderedItem({
                   )
                 )
               }
-              className={`w-8 h-8 rounded-full opacity-70 active:scale-90 hover:opacity-100 hover:bg-slate-600 group-hover:visible ${
+              className={`h-6 w-6 md:h-8 md:w-8 rounded-full opacity-70 active:scale-90 hover:opacity-100 hover:bg-slate-600 group-hover:visible ${
                 selectedItem === orderedItem.item ? 'visible' : 'invisible'
               }`}
             >
-              <i className="far fa-trash-can text-rose-500 text-lg" />
+              <i className="far fa-trash-can text-rose-500 text-base md:text-lg" />
             </button>
           </div>
         </li>
       ))}
       {orderedItems.length > 0 &&
         orderedItems.some((item) => item.section === selectedSection) && (
-          <div className="grid grid-cols-8 border-t border-slate-300">
-            <span className="col-span-5">Total:</span>
+          <div className="text-xs md:text-base grid grid-cols-7 md:grid-cols-8 border-t border-slate-300">
+            <span className="col-span-4 md:col-span-5">Total:</span>
             <span className="col-span-1 justify-self-end">
               {orderedItems.reduce(
                 (accumulator, current) =>
@@ -120,7 +122,7 @@ export default function OrderedItem({
                 0
               )}
             </span>
-            <span className="col-span-2 justify-self-end mr-10">
+            <span className="col-span-2 justify-self-end mr-8 md:mr-10">
               {'$ ' +
                 orderedItems
                   .reduce(

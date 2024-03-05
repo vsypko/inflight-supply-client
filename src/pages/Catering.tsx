@@ -1,13 +1,13 @@
-import Now from "../components/Now"
-import { useAirport } from "../hooks/useAirport"
-import { useAuth } from "../hooks/useAuth"
-import { useCompany } from "../hooks/useCompany"
+import Now from '../components/Now'
+import { useAirport } from '../hooks/useAirport'
+import { useAuth } from '../hooks/useAuth'
+import { useCompany } from '../hooks/useCompany'
 import {
   useGetContractsQuery,
   useSignContractMutation,
   useRejectContractMutation,
-} from "../store/contracts/contract.api"
-import { Contract } from "../types/company.types"
+} from '../store/contracts/contract.api'
+import { Contract } from '../types/company.types'
 
 export default function Catering() {
   const { airport } = useAirport()
@@ -16,9 +16,9 @@ export default function Catering() {
   const { data: contracts } = useGetContractsQuery(
     { airport: airport.id, company: company.id, category: company.category },
     {
-      skip: !airport.id || !company.id || company.category === "airline",
+      skip: !airport.id || !company.id || company.category === 'airline',
       refetchOnFocus: true,
-    },
+    }
   )
   const [signContractQuery] = useSignContractMutation()
   const [rejectContractQuery] = useRejectContractMutation()
@@ -32,10 +32,17 @@ export default function Catering() {
 
   return (
     <div className="w-full text-xl px-2 relative">
-      <Now />
-      <div className="w-full text-center text-2xl md:text-3xl font-bold">INFLIGHT SUPPLY PROVISION</div>
+      <div className="absolute right-0 top-8 md:top-0">
+        <Now />
+      </div>
+
+      <div className="w-full text-center text-2xl md:text-3xl font-bold">
+        INFLIGHT SUPPLY PROVISION
+      </div>
       <div className="uppercase font-semibold max-w-max mt-8 md:mt-0">
-        {airport.name ? airport.name + " - " + airport.iata : "AIRPORT NOT SELECTED"}
+        {airport.name
+          ? airport.name + ' - ' + airport.iata
+          : 'AIRPORT NOT SELECTED'}
       </div>
       {!airport.name && <span>Select an airport on the AIRPORTS tab</span>}
 
@@ -67,7 +74,7 @@ export default function Catering() {
                       </div>
                     </li>
                   </ul>
-                ),
+                )
             )}
           </div>
 
@@ -79,13 +86,15 @@ export default function Catering() {
                   <ul key={contract.id}>
                     <li className="flex m-2 rounded-full hover:bg-teal-700 hover:text-slate-200 px-2 cursor-pointer py-1">
                       <span>
-                        {`The contract with ${contract.name} is in force from ${new Date(
-                          contract.signed_at,
+                        {`The contract with ${
+                          contract.name
+                        } is in force from ${new Date(
+                          contract.signed_at
                         ).toDateString()}`}
                       </span>
                     </li>
                   </ul>
-                ),
+                )
             )}
           </div>
         </div>

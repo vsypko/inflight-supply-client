@@ -70,9 +70,9 @@ export default function FlightsSelector() {
         filtered.forEach((filteredItem: FlightSelected) => {
           if (
             !selected.length ||
-            selected.some(
+            !selected.some(
               (selectedItem: FlightSelected) =>
-                selectedItem.id !== filteredItem.id
+                selectedItem.id === filteredItem.id
             )
           )
             selected.push(filteredItem)
@@ -106,6 +106,18 @@ export default function FlightsSelector() {
         ...new Set(flights.map((fl: FlightSelected) => fl.to) as string[]),
       ])
   }, [flights])
+
+  useEffect(() => {
+    if (
+      selectedFlights[0] &&
+      (selectedFlights.length === 1 ||
+        selectedFlights.every((fl, i, arr) => fl.order_id === arr[0].order_id))
+    ) {
+      console.log('lazy query order if exists', selectedFlights[0]?.order_id)
+    } else {
+      console.log('diff orders')
+    }
+  }, [selectedFlights])
 
   return (
     <div className="w-full">
@@ -142,7 +154,7 @@ export default function FlightsSelector() {
                 ))}
             </select>
           </div>
-          <ul className="text-base space-y-1 max-h-[644px] overflow-y-auto snap-y">
+          <ul className="text-base space-y-1 max-h-[364px] md:max-h-[644px] overflow-y-auto snap-y font-light">
             {flights.map((flight: FlightSelected, index: number) => (
               <li
                 key={flight.id}
@@ -152,16 +164,31 @@ export default function FlightsSelector() {
                   !selectedDestination
                     ? 'grid'
                     : 'hidden'
-                } grid-cols-12 gap-1 snap-start hover:bg-teal-500 dark:hover:bg-teal-700 cursor-pointer rounded-full group ${
+                } grid-cols-12 gap-1 snap-start hover:bg-teal-400 dark:hover:bg-teal-800 cursor-pointer rounded-full group ${
                   selectedFlights.some((f) => f.id === flight.id) &&
-                  'bg-gradient-to-r from-slate-100 dark:from-slate-950 to-slate-300 dark:to-slate-800'
+                  'bg-gradient-to-r from-slate-100 dark:from-slate-800 to-slate-300 dark:to-slate-600'
+                }
+                ${
+                  new Date(flight.date + 'T' + flight.std).getTime() -
+                    new Date().getTime() >
+                  24 * 60 * 60 * 1000
+                    ? 'text-lime-700 dark:text-lime-300'
+                    : new Date(flight.date + 'T' + flight.std).getTime() -
+                        new Date().getTime() >
+                      0
+                    ? 'text-yellow-600'
+                    : 'text-orange-600'
                 }`}
               >
                 <i
-                  className={`grid items-center fas fa-plane col-span-1 place-items-start pl-1 ${
+                  className={`grid items-center fas col-span-1 place-items-start pl-1 ${
+                    !flight.order_id
+                      ? 'fa-plane-up  text-slate-400 dark:text-slate-600'
+                      : 'fa-plane text-sky-500'
+                  } ${
                     selectedFlights.some((f) => f.id === flight.id)
                       ? 'text-teal-600 dark:text-teal-500'
-                      : 'text-slate-400 dark:text-slate-600 group-hover:bg-transparent group-hover:text-slate-200 dark:group-hover:text-slate-900'
+                      : 'group-hover:bg-transparent group-hover:text-slate-200 dark:group-hover:text-slate-900'
                   }`}
                 />
 

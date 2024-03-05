@@ -10,11 +10,11 @@ export default function Airlines() {
   const { airport } = useAirport()
   const { user } = useAuth()
   const { company } = useCompany()
-  const { data: contracts } = useGetContractsQuery({
-    airport: airport.id,
-    company: company.id,
-    category: company.category,
-  })
+  // const { data: contracts } = useGetContractsQuery({
+  //   airport: airport.id,
+  //   company: company.id,
+  //   category: company.category,
+  // })
 
   if (company.category === 'airline') {
     return <AirlineContract />

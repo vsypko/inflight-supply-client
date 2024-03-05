@@ -8,17 +8,11 @@ export default function DateInput({
   setDate: Dispatch<SetStateAction<Date | null>>
 }) {
   function handleDecreaseDate() {
-    if (date)
-      setDate(
-        new Date(date?.getFullYear(), date.getMonth(), date.getUTCDate() - 0)
-      )
+    if (date) setDate(new Date(date.setDate(date.getDate() - 1)))
   }
 
   function handleIncreaseDate() {
-    if (date)
-      setDate(
-        new Date(date.getFullYear(), date.getMonth(), date.getUTCDate() + 2)
-      )
+    if (date) setDate(new Date(date.setDate(date.getDate() + 1)))
   }
   return (
     <div className="flex justify-center items-center z-10">
