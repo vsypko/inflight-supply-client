@@ -5,6 +5,7 @@ import { api } from './api'
 import { authReducer } from './auth/auth.slice'
 import { companyReducer } from './company/company.slice'
 import { orderReducer } from './orders/order.slice'
+import { contractReducer } from './contracts/contract.slice'
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     airport: airportReducer,
     auth: authReducer,
     company: companyReducer,
+    contract: contractReducer,
     order: orderReducer,
   },
   middleware: (getDefaultMiddleware) =>

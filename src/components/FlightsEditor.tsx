@@ -1,10 +1,4 @@
-import {
-  ChangeEvent,
-  MutableRefObject,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { handleDataFileInput } from '../services/datafile.loader'
 import {
   useGetCompanyDataQuery,
@@ -40,6 +34,7 @@ export default function FlightsEditor() {
     seats: 0,
     co_id: company.id,
     co_iata: company.iata,
+    order_id: '',
   }
 
   const headers = Object.keys(emptyRow).slice(1, 10)

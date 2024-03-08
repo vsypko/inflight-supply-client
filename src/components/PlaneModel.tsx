@@ -1,7 +1,7 @@
-import { Suspense } from "react"
-import { Canvas } from "@react-three/fiber"
-import { OrbitControls, Stage } from "@react-three/drei"
-import { Model } from "../components/B757"
+import { Suspense } from 'react'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls, Stage } from '@react-three/drei'
+import { Model } from '../components/B757'
 
 export default function PlaneModel() {
   return (
@@ -21,7 +21,7 @@ export default function PlaneModel() {
           target="_blank"
           rel="nofollow"
         >
-          {"Boeing 757 Transparent by Arion Digital"}
+          {'Boeing 757 Transparent by Arion Digital'}
         </a>
       </div>
     </div>

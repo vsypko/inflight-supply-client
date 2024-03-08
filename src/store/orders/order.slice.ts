@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import {
+  Contract,
   Flight,
   FlightSelected,
   IOrder,
@@ -7,16 +8,15 @@ import {
 } from '../../types/company.types'
 
 interface OrderState {
+  // contract: Contract | undefined
   order: IOrder
   selectedFlights: FlightSelected[]
 }
 
 const initialState: OrderState = {
+  // contract: undefined,
   order: {
     id: undefined,
-    // flight: undefined,
-    // created: undefined,
-    contract: undefined,
   },
   selectedFlights: [],
 }

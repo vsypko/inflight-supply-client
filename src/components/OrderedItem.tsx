@@ -47,13 +47,13 @@ export default function OrderedItem({
 
   return (
     <ul>
-      {orderedItems.map((orderedItem: IOrderItem, index) => (
+      {orderedItems.map((orderedItem: IOrderItem, index, arr) => (
         <li
           key={index}
           onClick={(e) => handleSelectionOrderedItem(e, orderedItem)}
           className={`w-full mb-1 items-center group grid grid-cols-7 md:grid-cols-8 text-xs md:text-base  cursor-pointer rounded-full hover:bg-gradient-to-r from-transparent hover:to-slate-400 dark:hover:to-slate-700 ${
             selectedItem.id === orderedItem.item.id &&
-            'bg-gradient-to-r from-transparent to-slate-300 dark:to-slate-700'
+            'bg-gradient-to-r from-slate-200 dark:from-slate-900 to-slate-400 dark:to-slate-700'
           } ${selectedSection !== orderedItem.section && 'hidden'}`}
         >
           <div className="col-span-1 place-content-start flex items-center">
@@ -95,9 +95,7 @@ export default function OrderedItem({
             <button
               onClick={() =>
                 setOrderedItems(
-                  orderedItems.filter(
-                    (item) => item.item.id !== orderedItem.item.id
-                  )
+                  arr.filter((item) => item.item.id !== orderedItem.item.id)
                 )
               }
               className={`h-6 w-6 md:h-8 md:w-8 rounded-full opacity-70 active:scale-90 hover:opacity-100 hover:bg-slate-600 group-hover:visible ${

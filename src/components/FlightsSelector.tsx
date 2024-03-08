@@ -40,7 +40,13 @@ export default function FlightsSelector() {
           (selectedItem) => selectedItem.id !== flight.id
         )
       } else {
-        selected.push(flight)
+        if (
+          !flight.order_id ||
+          selected.every(
+            (flt) => !flt.order_id || flt.order_id === flight.order_id
+          )
+        )
+          selected.push(flight)
       }
       setSelectedFlights(selected)
       return
@@ -107,17 +113,14 @@ export default function FlightsSelector() {
       ])
   }, [flights])
 
-  useEffect(() => {
-    if (
-      selectedFlights[0] &&
-      (selectedFlights.length === 1 ||
-        selectedFlights.every((fl, i, arr) => fl.order_id === arr[0].order_id))
-    ) {
-      console.log('lazy query order if exists', selectedFlights[0]?.order_id)
-    } else {
-      console.log('diff orders')
-    }
-  }, [selectedFlights])
+  // useEffect(() => {
+  //   if (selectedFlights.length > 0) {
+  //     const orderInFlight = selectedFlights.find((flight) => flight.order_id)
+  //   if(orderInFlight) setOrder({...order, id:orderedFlight.order_id})
+
+  // }
+
+  // }, [selectedFlights])
 
   return (
     <div className="w-full">
@@ -166,7 +169,7 @@ export default function FlightsSelector() {
                     : 'hidden'
                 } grid-cols-12 gap-1 snap-start hover:bg-teal-400 dark:hover:bg-teal-800 cursor-pointer rounded-full group ${
                   selectedFlights.some((f) => f.id === flight.id) &&
-                  'bg-gradient-to-r from-slate-100 dark:from-slate-800 to-slate-300 dark:to-slate-600'
+                  'bg-gradient-to-r from-slate-400 dark:from-slate-700 to-slate-50 dark:to-slate-950'
                 }
                 ${
                   new Date(flight.date + 'T' + flight.std).getTime() -
@@ -181,14 +184,15 @@ export default function FlightsSelector() {
                 }`}
               >
                 <i
-                  className={`grid items-center fas col-span-1 place-items-start pl-1 ${
+                  className={`grid items-center fas col-span-1 place-items-start pl-1  ${
+                    selectedFlights.some((f) => f.id === flight.id) &&
                     !flight.order_id
-                      ? 'fa-plane-up  text-slate-400 dark:text-slate-600'
-                      : 'fa-plane text-sky-500'
-                  } ${
-                    selectedFlights.some((f) => f.id === flight.id)
-                      ? 'text-teal-600 dark:text-teal-500'
-                      : 'group-hover:bg-transparent group-hover:text-slate-200 dark:group-hover:text-slate-900'
+                      ? 'fa-plane-up text-teal-300 dark:text-teal-600'
+                      : `${
+                          !flight.order_id
+                            ? 'fa-plane-up  text-slate-400 dark:text-slate-600 group-hover:text-slate-500 dark:group-hover:text-slate-900'
+                            : 'fa-plane text-sky-400 dark:text-sky-600'
+                        }`
                   }`}
                 />
 

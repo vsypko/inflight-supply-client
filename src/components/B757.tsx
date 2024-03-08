@@ -1,10 +1,10 @@
-import * as THREE from "three"
-import { useGLTF } from "@react-three/drei"
-import { GLTF } from "three-stdlib"
+import * as THREE from 'three'
+import { useGLTF } from '@react-three/drei'
+import { GLTF } from 'three-stdlib'
 
 type GLTFResult = GLTF & {
   nodes: {
-    ["blades_turbine_003_turbine-01_accent_yellow_0"]: THREE.Mesh
+    ['blades_turbine_003_turbine-01_accent_yellow_0']: THREE.Mesh
     body001_MAIN_0: THREE.Mesh
   }
   materials: {
@@ -13,15 +13,20 @@ type GLTFResult = GLTF & {
   }
 }
 
-type ContextType = Record<string, React.ForwardRefExoticComponent<JSX.IntrinsicElements["mesh"]>>
+type ContextType = Record<
+  string,
+  React.ForwardRefExoticComponent<JSX.IntrinsicElements['mesh']>
+>
 
-export function Model(props: JSX.IntrinsicElements["group"]) {
-  const { nodes, materials } = useGLTF("/B757.glb") as GLTFResult
+export function Model(props: JSX.IntrinsicElements['group']) {
+  const { nodes, materials } = useGLTF('/B757.glb') as GLTFResult
 
   return (
     <group {...props} dispose={null} rotation={[0, Math.PI, 0]}>
       <mesh
-        geometry={nodes["blades_turbine_003_turbine-01_accent_yellow_0"].geometry}
+        geometry={
+          nodes['blades_turbine_003_turbine-01_accent_yellow_0'].geometry
+        }
         material={materials.PaletteMaterial001}
         position={[5.458, 1.243, -2.922]}
         rotation={[-Math.PI / 2, 0, 0]}
@@ -38,4 +43,4 @@ export function Model(props: JSX.IntrinsicElements["group"]) {
   )
 }
 
-useGLTF.preload("/B757.glb")
+useGLTF.preload('/B757.glb')

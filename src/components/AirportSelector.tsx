@@ -1,16 +1,16 @@
-import { useEffect, useState, KeyboardEvent } from "react"
-import { LoadingSpinner } from "./LoadingSpinner"
-import { useSearchAirportQuery } from "../store/airport/airport.api"
-import SearchDropdown from "./SearchDropdown"
-import { useDebounce } from "../hooks/debounce"
-import { useActions } from "../hooks/actions"
-import { useAirport } from "../hooks/useAirport"
-import { initialState } from "../store/airport/airport.slice"
+import { useEffect, useState, KeyboardEvent } from 'react'
+import { LoadingSpinner } from './LoadingSpinner'
+import { useSearchAirportQuery } from '../store/airport/airport.api'
+import SearchDropdown from './SearchDropdown'
+import { useDebounce } from '../hooks/debounce'
+import { useActions } from '../hooks/actions'
+import { useAirport } from '../hooks/useAirport'
+import { initialState } from '../store/airport/airport.slice'
 
 export default function AirportSelector() {
-  const [search, setSearch] = useState("")
+  const [search, setSearch] = useState('')
   const [dropdownOpen, setDropdownOpen] = useState(false)
-  const [errorMsg, setErrorMsg] = useState("")
+  const [errorMsg, setErrorMsg] = useState('')
   const { airport } = useAirport()
   const { selectAirport } = useActions()
 
@@ -22,18 +22,22 @@ export default function AirportSelector() {
   })
 
   const unselectHandler = () => {
-    setSearch("")
+    setSearch('')
     selectAirport(initialState.airport)
   }
 
   useEffect(() => {
     if (data) {
-      setErrorMsg("")
-      setDropdownOpen(debounced.length >= 3 && data?.airports.length! > 0 && !airport.name)
+      setErrorMsg('')
+      setDropdownOpen(
+        debounced.length >= 3 && data?.airports.length! > 0 && !airport.name
+      )
     }
     if (error) {
-      if (error != null && typeof error === "object" && "data" in error) setErrorMsg(error.data as string)
-      if (error != null && typeof error === "object" && "error" in error) setErrorMsg(error.error as string)
+      if (error != null && typeof error === 'object' && 'data' in error)
+        setErrorMsg(error.data as string)
+      if (error != null && typeof error === 'object' && 'error' in error)
+        setErrorMsg(error.error as string)
     }
   }, [data, error])
 
@@ -47,14 +51,14 @@ export default function AirportSelector() {
         >
           <i
             className={`fas fa-magnifying-glass opacity-70 transition-all duration-300 ${
-              airport.name ? "rotate-90 hover:opacity-100" : "rotate-0"
+              airport.name ? 'rotate-90 hover:opacity-100' : 'rotate-0'
             }`}
           />
         </button>
 
         <div
           className={`flex relative ml-5 rounded-r-full bg-slate-300 dark:bg-slate-700 shadow-md shadow-slate-700 transition-all duration-300 ease-out h-10 ${
-            airport.name ? "w-0" : "w-full"
+            airport.name ? 'w-0' : 'w-full'
           }`}
         >
           <input
@@ -65,7 +69,7 @@ export default function AirportSelector() {
             placeholder="Search airport ..."
             autoFocus
             type="text"
-            className="bg-transparent rounded-full outline-none ml-7 w-full text-xl h-10"
+            className="bg-transparent rounded-full outline-none pl-6 w-full h-10 text-xl"
             id="airport"
             autoComplete="off"
           />
@@ -76,7 +80,7 @@ export default function AirportSelector() {
                 items={data?.airports}
                 setOpen={setDropdownOpen}
                 selector={selectAirport}
-                dataView={["name", "iata"]}
+                dataView={['name', 'iata']}
               />
             </div>
           )}
@@ -84,7 +88,7 @@ export default function AirportSelector() {
 
         <div
           className={`flex justify-between items-center text-xl transition-all duration-300 ease-out ${
-            !airport.name ? "w-0 hidden" : "w-full"
+            !airport.name ? 'w-0 hidden' : 'w-full'
           }`}
         >
           <h1 className="uppercase mr-2 ml-8">{airport.name}</h1>

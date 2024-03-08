@@ -6,14 +6,21 @@ import { useOrder } from '../hooks/useOrder'
 import { v4 as uuid } from 'uuid'
 import { useSetOrderMutation } from '../store/orders/orders.api'
 import { useActions } from '../hooks/actions'
+import { useContract } from '../hooks/useContract'
 
 export default function Orders() {
-  const { order, selectedFlights } = useOrder()
   let allSections = ['crew', 'fc', 'bc', 'yc', 'inventory']
+
+  const { order, selectedFlights } = useOrder()
+  const { contract } = useContract()
+  const [addOrder] = useSetOrderMutation()
+  const { setOrder } = useActions()
+
   const [sections, setSections] = useState(allSections)
   const [selectedItem, setSelectedItem] = useState<Item>()
   const [selectedSection, setSelectedSection] = useState('')
   const [orderedItems, setOrderedItems] = useState<IOrderItem[]>([])
+
   const [selectedOrderedItem, setSelectedOrderedItem] = useState<
     IOrderItem | undefined
   >(undefined)
@@ -21,15 +28,13 @@ export default function Orders() {
   const { data: supplies } = useGetCompanyDataQuery(
     {
       type: 'supplies',
-      id: order.contract?.supplier,
+      id: contract?.supplier,
     },
     {
-      skip: !order.contract?.supplier,
+      skip: !contract?.supplier,
       refetchOnFocus: true,
     }
   )
-  const [addOrder] = useSetOrderMutation()
-  const { setOrder } = useActions()
 
   useEffect(() => {
     if (selectedFlights) {
@@ -41,6 +46,8 @@ export default function Orders() {
       )
       setSections(allSections)
       setSelectedSection(allSections[0])
+      const orderInFlight = selectedFlights.find((flight) => flight.order_id)
+      setOrder({ id: orderInFlight?.order_id })
     }
   }, [selectedFlights])
 
@@ -51,7 +58,7 @@ export default function Orders() {
       orderedItems.every(
         (orderedItem) =>
           !(
-            orderedItem.item?.id === item.id &&
+            orderedItem.item.id === item.id &&
             orderedItem.section === selectedSection
           )
       )
@@ -64,7 +71,6 @@ export default function Orders() {
           orderId: order && order.id ? order.id : undefined,
           item,
           qty: 0,
-          amount: 0,
           section: selectedSection,
         },
       ])
@@ -80,14 +86,20 @@ export default function Orders() {
   }
 
   async function saveSchema() {
-    const orderId = uuid()
-    const { flightIds, insertedOrder } = await addOrder({
+    const newOrder = uuid()
+    const { flightIds, insertedOrder, items } = await addOrder({
       flights: selectedFlights.map((flight) => flight.id),
-      orderId: orderId,
-      contractId: order.contract?.id,
+      orderId: order.id ? order.id : newOrder,
+      contractId: contract?.id,
+      items: orderedItems.map((item) => ({
+        item_id: item.item.id,
+        item_price: item.item.price,
+        item_qty: item.qty,
+        item_section: item.section,
+      })),
     }).unwrap()
-    setOrder({ ...order, id: insertedOrder.id })
-    console.log(flightIds, insertedOrder, order)
+    setOrder({ id: insertedOrder.id })
+    console.log(flightIds, insertedOrder, items)
 
     // if (
     //   new Date(
@@ -102,7 +114,12 @@ export default function Orders() {
 
   return (
     <div className="w-full md:flex">
-      <div className="w-full md:w-2/3 text-base md:px-6">
+      <div className="w-full md:w-2/4 text-base md:px-6">
+        {order && order.id && (
+          <div className="md:items-center md:flex font-light tracking-widest text-orange-400">
+            <span>{`Order № ${'...' + order.id.slice(30)}`}</span>
+          </div>
+        )}
         <div
           className={`w-full grid gap-1 ${
             sections.length === 5
@@ -137,7 +154,7 @@ export default function Orders() {
                     )}
                   </div>
                 </button>
-                {/* --- Warning of the current section capacity exceeding!   ------------------ */}
+                {/* --- Warning of the current cabin section capacity exceeding!   ------------------ */}
                 {section === selectedSection &&
                   selectedFlights.length === 1 && (
                     <span className="text-rose-600 text-xs mt-1 text-center transition-all">
@@ -182,7 +199,7 @@ export default function Orders() {
         )}
       </div>
       {selectedSection && (
-        <ul className="w-full md:w-1/3 max-h-[644px] grid grid-cols-3 gap-1 overflow-y-scroll snap-y">
+        <ul className="w-full md:w-1/4 mt-6 max-h-[644px] grid grid-cols-3 gap-1 overflow-y-scroll snap-y">
           {supplies?.map((item) => (
             <li
               key={item.id}

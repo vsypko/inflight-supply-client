@@ -136,7 +136,6 @@ export interface Lading {
 
 export interface IOrder {
   id: string | undefined
-  contract: Contract | undefined
 }
 
 export interface IOrderItem {
@@ -144,6 +143,5 @@ export interface IOrderItem {
   orderId: string | undefined
   item: Item
   qty: number
-  amount: number
   section: string
 }

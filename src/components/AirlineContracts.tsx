@@ -10,13 +10,15 @@ import Order from './Order'
 import Orders from './Orders'
 import SupplierSelector from './SupplierSelector'
 import { useActions } from '../hooks/actions'
+import { useContract } from '../hooks/useContract'
 
 export default function AirlineContract() {
   const { airport } = useAirport()
   const { user } = useAuth()
   const { company } = useCompany()
   const { order } = useOrder()
-  const { setOrder } = useActions()
+  const { contract } = useContract()
+  const { setOrder, setContract } = useActions()
 
   const { data: contracts } = useGetContractsQuery(
     {
@@ -31,8 +33,7 @@ export default function AirlineContract() {
   )
 
   useEffect(() => {
-    if (contracts && contracts[0].signed_at)
-      setOrder({ ...order, contract: contracts[0] })
+    if (contracts && contracts[0].signed_at) setContract(contracts[0])
   }, [contracts])
 
   return (
@@ -48,7 +49,7 @@ export default function AirlineContract() {
             : 'AIRPORT NOT SELECTED: Select an airport on the AIRPORTS tab'}
         </div>
 
-        <div>
+        <div className="">
           {contracts && contracts[0] && contracts[0].signed_at && (
             <div className="normal-case">
               {'The contract with '}
@@ -74,7 +75,7 @@ export default function AirlineContract() {
           <div className="w-full md:w-1/5">
             <FlightsSelector />
           </div>
-          <div className="w-full md:w-3/5">
+          <div className="w-full md:w-4/5">
             <Orders />
           </div>
         </div>

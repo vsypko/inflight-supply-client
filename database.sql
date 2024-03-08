@@ -149,3 +149,11 @@ contract_id integer,
 created TIMESTAMPTZ DEFAULT Now(),
 flights_qty integer
 );
+
+CREATE TABLE ordered_supplies(
+id SERIAL PRIMARY KEY,
+order_id uuid,
+item_id integer,
+item_price numeric(9,2),
+item_qty integer,
+);
