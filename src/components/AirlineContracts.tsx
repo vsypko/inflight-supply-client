@@ -2,23 +2,17 @@ import { useEffect } from 'react'
 import { useAirport } from '../hooks/useAirport'
 import { useAuth } from '../hooks/useAuth'
 import { useCompany } from '../hooks/useCompany'
-import { useOrder } from '../hooks/useOrder'
 import { useGetContractsQuery } from '../store/contracts/contract.api'
-import { Contract } from '../types/company.types'
 import FlightsSelector from './FlightsSelector'
-import Order from './Order'
 import Orders from './Orders'
 import SupplierSelector from './SupplierSelector'
 import { useActions } from '../hooks/actions'
-import { useContract } from '../hooks/useContract'
 
 export default function AirlineContract() {
   const { airport } = useAirport()
   const { user } = useAuth()
   const { company } = useCompany()
-  const { order } = useOrder()
-  const { contract } = useContract()
-  const { setOrder, setContract } = useActions()
+  const { setContract } = useActions()
 
   const { data: contracts } = useGetContractsQuery(
     {
@@ -33,7 +27,8 @@ export default function AirlineContract() {
   )
 
   useEffect(() => {
-    if (contracts && contracts[0].signed_at) setContract(contracts[0])
+    if (contracts && contracts.length > 0 && contracts[0].signed_at)
+      setContract(contracts[0])
   }, [contracts])
 
   return (
@@ -49,18 +44,16 @@ export default function AirlineContract() {
             : 'AIRPORT NOT SELECTED: Select an airport on the AIRPORTS tab'}
         </div>
 
-        <div className="">
-          {contracts && contracts[0] && contracts[0].signed_at && (
-            <div className="normal-case">
-              {'The contract with '}
-              <span className="text-amber-600">{contracts[0].name}</span>
-              {' is in force from '}
-              <span className="text-amber-600">
-                {new Date(contracts[0].signed_at).toDateString()}
-              </span>
-            </div>
-          )}
-        </div>
+        {contracts && contracts.length > 0 && contracts[0].signed_at && (
+          <div className="normal-case">
+            {'The contract with '}
+            <span className="text-amber-600">{contracts[0].name}</span>
+            {' is in force from '}
+            <span className="text-amber-600">
+              {new Date(contracts[0].signed_at).toDateString()}
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="w-full md:flex">

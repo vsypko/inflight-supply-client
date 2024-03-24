@@ -1,23 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import {
-  Contract,
-  Flight,
-  FlightSelected,
-  IOrder,
-  IOrderItem,
-} from '../../types/company.types'
+import { FlightSelected, IOrderItem } from '../../types/company.types'
+import OrderedItem from '../../components/OrderedItem'
 
 interface OrderState {
-  // contract: Contract | undefined
-  order: IOrder
+  orderItems: IOrderItem[]
   selectedFlights: FlightSelected[]
 }
 
 const initialState: OrderState = {
-  // contract: undefined,
-  order: {
-    id: undefined,
-  },
+  orderItems: [],
   selectedFlights: [],
 }
 
@@ -25,8 +16,11 @@ export const orderSlice = createSlice({
   name: 'order',
   initialState,
   reducers: {
-    setOrder(state, { payload: order }: PayloadAction<IOrder>): void {
-      state.order = order
+    setOrderItems(
+      state,
+      { payload: orderItems }: PayloadAction<IOrderItem[]>
+    ): void {
+      state.orderItems = orderItems
     },
     setSelectedFlights(
       state,
@@ -39,4 +33,4 @@ export const orderSlice = createSlice({
 
 export const orderActions = orderSlice.actions
 export const orderReducer = orderSlice.reducer
-export const { setOrder, setSelectedFlights } = orderSlice.actions
+export const { setOrderItems, setSelectedFlights } = orderSlice.actions

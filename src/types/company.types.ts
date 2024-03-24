@@ -30,7 +30,7 @@ export interface FlightSelected {
   fc: number
   bc: number
   yc: number
-  order_id: string
+  ordered: boolean
 }
 
 export interface Fleet {
@@ -129,19 +129,16 @@ export interface Contract {
   iata: string
   country_iso: string
 }
+
 export interface Lading {
   item: Item
   persent: number
 }
 
-export interface IOrder {
-  id: string | undefined
-}
-
 export interface IOrderItem {
   id: number | undefined
-  orderId: string | undefined
   item: Item
+  price: number
   qty: number
   section: string
 }

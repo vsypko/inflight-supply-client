@@ -1,6 +1,6 @@
-// import Map from "../components/Map"
-import AirportSelector from "../components/AirportSelector"
-import AirportSchedule from "../components/AirportSchedule"
+// import Map from '../components/Map'
+import AirportSelector from '../components/AirportSelector'
+import AirportSchedule from '../components/AirportSchedule'
 
 export default function MainPage() {
   return (

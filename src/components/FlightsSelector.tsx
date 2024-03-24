@@ -5,122 +5,79 @@ import { useCompany } from '../hooks/useCompany'
 import { FlightSelected } from '../types/company.types'
 import { useOrder } from '../hooks/useOrder'
 import { useActions } from '../hooks/actions'
-import { useGetFlightsQuery } from '../store/orders/orders.api'
+import {
+  useGetFlightsQuery,
+  useGetOrderQuery,
+  useLazyGetOrderQuery,
+} from '../store/orders/orders.api'
 import DateInput from './DateInput'
+import { selector } from '../services/select.flights'
 
 export default function FlightsSelector() {
   const { airport } = useAirport()
   const { user } = useAuth()
   const { company } = useCompany()
   const { selectedFlights } = useOrder()
-  const { setSelectedFlights } = useActions()
+  const { setOrderItems, setSelectedFlights } = useActions()
 
   const [dateFrom, setDateFrom] = useState<Date | null>(new Date())
   const [dateTo, setDateTo] = useState<Date | null>(new Date())
   const [destinations, setDestinations] = useState<string[]>([])
   const [selectedDestination, setSelectdedDestination] = useState('')
 
-  const { data: flights } = useGetFlightsQuery({
-    airport: airport.iata,
-    company: company.id,
-    datefrom: dateFrom!.toISOString().slice(0, 10),
-    dateto: dateTo!.toISOString().slice(0, 10),
-  })
+  const { data: flights } = useGetFlightsQuery(
+    {
+      airport: airport.iata,
+      company: company.id,
+      datefrom: dateFrom!.toISOString().slice(0, 10),
+      dateto: dateTo!.toISOString().slice(0, 10),
+    },
+    { refetchOnFocus: true }
+  )
+  const [getOrder] = useLazyGetOrderQuery()
 
-  function handleSelect(
+  async function handleSelect(
     e: PointerEvent<HTMLLIElement>,
     flight: FlightSelected
   ) {
     e.preventDefault()
-
     let selected = [...selectedFlights]
-    if (e.ctrlKey) {
-      if (selected.some((selectedItem) => selectedItem.id === flight.id)) {
-        selected = selected.filter(
-          (selectedItem) => selectedItem.id !== flight.id
-        )
-      } else {
-        if (
-          !flight.order_id ||
-          selected.every(
-            (flt) => !flt.order_id || flt.order_id === flight.order_id
-          )
-        )
-          selected.push(flight)
-      }
-      setSelectedFlights(selected)
-      return
+    let filtered = [...flights]
+
+    if (selectedDestination) {
+      filtered = filtered.filter((fltr) => fltr.to === selectedDestination)
     }
-    setSelectedFlights([flight])
+
+    selected = selector(filtered, selected, flight, e)
+    setSelectedFlights(selected)
+    let ordered = selected.filter((slct) => slct.ordered)
+    if (ordered.length === 1) {
+      const items = await getOrder({ id: ordered[0].id }).unwrap()
+      setOrderItems(items.data)
+    } else {
+      setOrderItems([])
+    }
   }
 
+  //----- All flight selection handler ----------------------------------
   function handleSelectAll() {
-    if (flights && selectedDestination) {
-      const filtered = flights.filter(
-        (fl: FlightSelected) => fl.to === selectedDestination
-      )
-      let selected = [...selectedFlights]
-
-      const selectedInFiltered: FlightSelected[] = filtered.filter(
-        (filteredItem: FlightSelected) =>
-          selected.some(
-            (selectedItem: FlightSelected) =>
-              selectedItem.id === filteredItem.id
-          )
-      )
-
-      if (
-        !selectedInFiltered.length ||
-        filtered.length !== selectedInFiltered.length
-      ) {
-        filtered.forEach((filteredItem: FlightSelected) => {
-          if (
-            !selected.length ||
-            !selected.some(
-              (selectedItem: FlightSelected) =>
-                selectedItem.id === filteredItem.id
-            )
-          )
-            selected.push(filteredItem)
-        })
-        setSelectedFlights(selected)
-        return
-      }
-
-      selected = selected.filter(
-        (selectedItem: FlightSelected) =>
-          !filtered.some(
-            (filteredItem: FlightSelected) =>
-              filteredItem.id === selectedItem.id
-          )
-      )
-      setSelectedFlights(selected)
-      return
-    }
-
-    if (flights && flights.length !== selectedFlights.length) {
-      setSelectedFlights(flights)
-      return
-    }
-
-    setSelectedFlights([])
+    let selected = [...selectedFlights]
+    let filtered = [...flights]
+    if (selectedDestination)
+      filtered = filtered.filter((fltr) => fltr.to === selectedDestination)
+    selected = selector(filtered, selected)
+    if (selected.length) setOrderItems([])
+    setSelectedFlights(selected)
   }
 
   useEffect(() => {
     if (flights && flights.length)
       setDestinations([
-        ...new Set(flights.map((fl: FlightSelected) => fl.to) as string[]),
+        ...new Set(
+          flights.map((fl: FlightSelected) => fl.to).sort() as string[]
+        ),
       ])
   }, [flights])
-
-  // useEffect(() => {
-  //   if (selectedFlights.length > 0) {
-  //     const orderInFlight = selectedFlights.find((flight) => flight.order_id)
-  //   if(orderInFlight) setOrder({...order, id:orderedFlight.order_id})
-
-  // }
-
-  // }, [selectedFlights])
 
   return (
     <div className="w-full">
@@ -134,18 +91,18 @@ export default function FlightsSelector() {
             <button
               type="button"
               onClick={handleSelectAll}
-              className={`w-6 h-6 rounded-full ${
+              className={`w-6 h-6 rounded-full group ${
                 flights.length === selectedFlights.length
                   ? 'text-teal-600 dark:text-teal-500'
                   : 'text-slate-400 dark:text-slate-600 hover:text-teal-600 dark:hover:text-teal-500'
               }`}
             >
-              <i className="fas fa-plane-circle-check"></i>
+              <i className="fas fa-plane-circle-check group-active:scale-90 text-lg drop-shadow-[0_2px_2px_rgba(71,85,105,0.9)] group-active:drop-shadow-none"></i>
             </button>
 
             <select
               id="airportFilter"
-              className="rounded-full cursor-pointer bg-slate-300 dark:bg-slate-800 px-2 text-base"
+              className="rounded-full cursor-pointer bg-slate-300 dark:bg-slate-800 px-2 text-base opacity-80 hover:opacity-100 active:scale-90 shadow-sm shadow-slate-600 active:shadow-none transition-all"
               onChange={(e) => setSelectdedDestination(e.target.value)}
             >
               <option value={''}>all airports</option>
@@ -186,10 +143,10 @@ export default function FlightsSelector() {
                 <i
                   className={`grid items-center fas col-span-1 place-items-start pl-1  ${
                     selectedFlights.some((f) => f.id === flight.id) &&
-                    !flight.order_id
+                    !flight.ordered
                       ? 'fa-plane-up text-teal-300 dark:text-teal-600'
                       : `${
-                          !flight.order_id
+                          !flight.ordered
                             ? 'fa-plane-up  text-slate-400 dark:text-slate-600 group-hover:text-slate-500 dark:group-hover:text-slate-900'
                             : 'fa-plane text-sky-400 dark:text-sky-600'
                         }`

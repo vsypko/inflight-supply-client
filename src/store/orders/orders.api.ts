@@ -1,11 +1,11 @@
-import { Flight } from '../../types/company.types'
+import { invalidate } from '@react-three/fiber'
 import { api } from '../api'
 
 export const orderApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getFlights: builder.query({
       query: (data) => ({
-        url: 'orders',
+        url: 'orders/flights',
         params: {
           ap: data.airport,
           co: data.company,
@@ -13,18 +13,41 @@ export const orderApi = api.injectEndpoints({
           dtt: data.dateto,
         },
       }),
-      providesTags: ['Contract'],
+      providesTags: ['Flights'],
     }),
+
+    getOrder: builder.query({
+      query: (data) => ({
+        url: 'orders',
+        params: { q: data.id },
+      }),
+    }),
+
     setOrder: builder.mutation({
       query: (data) => ({
         method: 'POST',
         url: 'orders',
         body: data,
       }),
-      invalidatesTags: ['Contract'],
+      invalidatesTags: ['Flights'],
+    }),
+
+    deleteOrder: builder.mutation({
+      query: (data) => ({
+        method: 'DELETE',
+        url: 'orders',
+        body: data,
+      }),
+      invalidatesTags: ['Flights'],
     }),
   }),
   overrideExisting: true,
 })
 
-export const { useGetFlightsQuery, useSetOrderMutation } = orderApi
+export const {
+  useGetFlightsQuery,
+  useGetOrderQuery,
+  useLazyGetOrderQuery,
+  useSetOrderMutation,
+  useDeleteOrderMutation,
+} = orderApi

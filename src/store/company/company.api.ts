@@ -41,7 +41,7 @@ export const companyApi = api.injectEndpoints({
           date: data.date,
         },
       }),
-      providesTags: ['Data'],
+      providesTags: ['Company'],
     }),
 
     insertCompanyData: builder.mutation<
@@ -55,7 +55,7 @@ export const companyApi = api.injectEndpoints({
           values: data.values,
         },
       }),
-      invalidatesTags: ['Data'],
+      invalidatesTags: ['Company'],
     }),
 
     updateCompanyData: builder.mutation<
@@ -70,7 +70,7 @@ export const companyApi = api.injectEndpoints({
           value: data.value,
         },
       }),
-      invalidatesTags: ['Data'],
+      invalidatesTags: ['Company'],
     }),
 
     deleteCompanyData: builder.mutation<
@@ -85,7 +85,7 @@ export const companyApi = api.injectEndpoints({
           co_id: data.co_id,
         },
       }),
-      invalidatesTags: ['Data'],
+      invalidatesTags: ['Company'],
     }),
 
     imgUrlUpdate: builder.mutation({
@@ -94,7 +94,7 @@ export const companyApi = api.injectEndpoints({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: ['Data'],
+      invalidatesTags: ['Company'],
     }),
 
     imgUrlRemove: builder.mutation<
@@ -108,7 +108,7 @@ export const companyApi = api.injectEndpoints({
           id: data.id,
         },
       }),
-      invalidatesTags: ['Data'],
+      invalidatesTags: ['Company'],
     }),
   }),
   overrideExisting: true,

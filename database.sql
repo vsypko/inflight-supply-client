@@ -93,7 +93,7 @@ CREATE TABLE flights(
   seats integer,
   co_id integer,
   co_iata varchar(2),
-  order_id uuid
+  ordered boolean default false,
   CONSTRAINT unique_row UNIQUE (date,flight,"from")
 );
 
@@ -143,17 +143,18 @@ airline_signatory integer,
 supplier_signatory integer
 );
 
-CREATE TABLE orders(
-id uuid UNIQUE PRIMARY KEY,
-contract_id integer,
-created TIMESTAMPTZ DEFAULT Now(),
-flights_qty integer
-);
+-- CREATE TABLE orders(
+-- id uuid UNIQUE PRIMARY KEY,
+-- contract_id integer,
+-- created TIMESTAMPTZ DEFAULT Now(),
+-- flights_qty integer
+-- );
 
-CREATE TABLE ordered_supplies(
+CREATE TABLE items(
 id SERIAL PRIMARY KEY,
-order_id uuid,
+flight_id integer,
 item_id integer,
 item_price numeric(9,2),
 item_qty integer,
+section varchar(10)
 );
