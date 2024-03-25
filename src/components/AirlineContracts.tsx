@@ -7,6 +7,7 @@ import FlightsSelector from './FlightsSelector'
 import Orders from './Orders'
 import SupplierSelector from './SupplierSelector'
 import { useActions } from '../hooks/actions'
+import Now from '../components/Now'
 
 export default function AirlineContract() {
   const { airport } = useAirport()
@@ -32,7 +33,10 @@ export default function AirlineContract() {
   }, [contracts])
 
   return (
-    <div className="w-full px-2">
+    <div className="w-full px-2 relative">
+      <div className="absolute left-0 top-8 md:top-0 text-sm font-light">
+        <Now />
+      </div>
       <div className="w-full text-center text-2xl md:text-3xl font-bold">
         INFLIGHT SUPPLY ORDERS
       </div>
@@ -73,10 +77,6 @@ export default function AirlineContract() {
           </div>
         </div>
       )}
-
-      {/* <div className="w-full md:w-1/5">
-          <Order order={{ leg: 0 }} />
-        </div> */}
     </div>
   )
 }

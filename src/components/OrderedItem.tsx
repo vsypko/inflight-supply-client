@@ -27,7 +27,7 @@ export default function OrderedItem({
     }
   }
 
-  function handleSelectionOrderedItem(
+  function handleSelectionOrderItem(
     e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>,
     supplyItem: IOrderItem
   ) {
@@ -35,7 +35,10 @@ export default function OrderedItem({
     setSelectedOrderItem(supplyItem)
   }
 
-  function onChange(event: ChangeEvent<HTMLInputElement>, index: number) {
+  function onChangeOrderItemQty(
+    event: ChangeEvent<HTMLInputElement>,
+    index: number
+  ) {
     const items = [...orderItems]
     const value = event.target.valueAsNumber ? event.target.valueAsNumber : 0
 
@@ -46,12 +49,17 @@ export default function OrderedItem({
     setOrderItems(items)
   }
 
+  function handleDeleteOrderItem(item: IOrderItem) {
+    const newOrderItems = orderItems.filter((i) => i.item.id !== item.item.id)
+    setOrderItems(newOrderItems)
+  }
+
   return (
     <ul>
       {orderItems.map((orderItem: IOrderItem, index, arr) => (
         <li
           key={index}
-          onClick={(e) => handleSelectionOrderedItem(e, orderItem)}
+          onClick={(e) => handleSelectionOrderItem(e, orderItem)}
           className={`w-full mb-1 items-center group grid grid-cols-7 md:grid-cols-8 text-xs md:text-base  cursor-pointer rounded-full hover:bg-gradient-to-r from-transparent hover:to-slate-400 dark:hover:to-slate-700 ${
             selectedItem?.id === orderItem.item.id &&
             'bg-gradient-to-r from-slate-200 dark:from-slate-900 to-slate-400 dark:to-slate-700'
@@ -85,18 +93,14 @@ export default function OrderedItem({
             value={orderItem.qty}
             placeholder=" "
             className="col-span-1 text-right appearance-none outline-none bg-transparent border border-slate-700"
-            onChange={(e) => onChange(e, index)}
+            onChange={(e) => onChangeOrderItemQty(e, index)}
           />
           <div className="col-span-2 justify-self-end">
             <span className="pr-2">
               {'$ ' + (orderItem.qty * orderItem.item.price).toFixed(2)}
             </span>
             <button
-              onClick={() =>
-                setOrderItems(
-                  arr.filter((item) => item.item.id !== orderItem.item.id)
-                )
-              }
+              onClick={() => handleDeleteOrderItem(orderItem)}
               className={`h-6 w-6 md:h-8 md:w-8 rounded-full opacity-70 active:scale-90 hover:opacity-100 hover:bg-slate-600 group-hover:visible ${
                 selectedItem === orderItem.item ? 'visible' : 'invisible'
               }`}
