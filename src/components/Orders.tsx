@@ -174,8 +174,8 @@ export default function Orders() {
             selectedOrderItem={selectedOrderItem}
             setSelectedOrderItem={setSelectedOrderItem}
           />
-
-          {orderItems.length > 0 && (
+          {(orderItems.length > 0 ||
+            selectedFlights.some((flight) => flight.ordered)) && (
             <div className="flex w-full justify-end mt-4 gap-2">
               <button
                 onClick={handleOrderDelete}
@@ -184,13 +184,16 @@ export default function Orders() {
                 <i className="far fa-trash-can  mr-2" />
                 <span>DELETE</span>
               </button>
-              <button
-                onClick={handleOrderSubmit}
-                className="px-4 py-1 text-base rounded-full bg-teal-500 dark:bg-teal-700 opacity-80 hover:opacity-100 active:scale-90"
-              >
-                <i className="fas fa-download mr-2" />
-                <span>SAVE</span>
-              </button>
+
+              {orderItems.length > 0 && (
+                <button
+                  onClick={handleOrderSubmit}
+                  className="px-4 py-1 text-base rounded-full bg-teal-500 dark:bg-teal-700 opacity-80 hover:opacity-100 active:scale-90"
+                >
+                  <i className="fas fa-download mr-2" />
+                  <span>SAVE</span>
+                </button>
+              )}
             </div>
           )}
         </div>
