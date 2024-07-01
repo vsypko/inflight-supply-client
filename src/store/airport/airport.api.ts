@@ -1,20 +1,20 @@
-import { IAirportResponse } from "../../types/airport.types"
-import { Schedule } from "../../types/company.types"
-import { api } from "../api"
+import { IAirportResponse } from '../../types/airport.types'
+import { Schedule } from '../../types/company.types'
+import { api } from '../api'
 
 export const airportApi = api.injectEndpoints({
   endpoints: (builder) => ({
     searchAirport: builder.query<IAirportResponse, string>({
       query: (search: string) => ({
-        url: "search/airport",
+        url: 'search/airport',
         params: {
           q: search,
         },
       }),
     }),
-    searchAirportbyCode: builder.query<IAirportResponse, string>({
+    searchAirportByCode: builder.query<IAirportResponse, string>({
       query: (search: string) => ({
-        url: "search/airport/code",
+        url: 'search/airport/code',
         params: {
           q: search,
         },
@@ -25,7 +25,7 @@ export const airportApi = api.injectEndpoints({
       { airport: string | null; date: string }
     >({
       query: (data) => ({
-        url: "search/airport/schedule",
+        url: 'search/airport/schedule',
         params: {
           airport: data.airport,
           date: data.date,
@@ -36,4 +36,8 @@ export const airportApi = api.injectEndpoints({
   overrideExisting: false,
 })
 
-export const { useSearchAirportQuery, useLazySearchAirportbyCodeQuery, useLazyAirportScheduleQuery } = airportApi
+export const {
+  useSearchAirportQuery,
+  useLazySearchAirportByCodeQuery,
+  useLazyAirportScheduleQuery,
+} = airportApi

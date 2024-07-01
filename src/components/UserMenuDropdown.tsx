@@ -36,7 +36,7 @@ export default function DropdownMenu({
   return (
     <div
       onMouseLeave={() => setOpen(false)}
-      className={`absolute top-9 bg-slate-200 dark:bg-slate-800 shadow shadow-slate-900 dark:shadow-slate-600 rounded-xl ${
+      className={`absolute top-10 bg-slate-200 dark:bg-slate-800 shadow shadow-slate-900 dark:shadow-slate-600 rounded-xl ${
         open ? 'flex' : 'hidden'
       }
       `}

@@ -177,7 +177,7 @@ export default function MainNavigation() {
                 onMouseLeave={() => {
                   if (onHeader) setUserDropdownOpen(false)
                 }}
-                className="w-full flex items-center md:justify-end md:px-6 relative -ml-2 md:-ml-0"
+                className="w-full flex items-center md:justify-end md:px-6 relative -ml-2 md:-ml-0 h-full"
               >
                 <button
                   onClick={() => setUserDropdownOpen((prev) => !prev)}

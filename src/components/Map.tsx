@@ -1,5 +1,5 @@
 import mapgl from 'mapbox-gl'
-import { useLazySearchAirportbyCodeQuery } from '../store/airport/airport.api'
+import { useLazySearchAirportByCodeQuery } from '../store/airport/airport.api'
 import { useActions } from '../hooks/actions'
 import { useEffect, useRef } from 'react'
 import { useAirport } from '../hooks/useAirport'
@@ -8,11 +8,11 @@ export default function Map() {
   mapgl.accessToken = import.meta.env.VITE_MAP_TOKEN
   const { airport } = useAirport()
   const mapContainer = useRef<HTMLDivElement | null>(null)
-  const [getAirport, { data, error }] = useLazySearchAirportbyCodeQuery()
+  const [getAirport, { data, error }] = useLazySearchAirportByCodeQuery()
   const { selectAirport } = useActions()
 
   useEffect(() => {
-    if (data) {
+    if (data && data.airports[0]) {
       selectAirport(data.airports[0])
     }
   }, [data])
@@ -37,7 +37,7 @@ export default function Map() {
           type: 'fill-extrusion',
           minzoom: 15,
           paint: {
-            'fill-extrusion-color': '#AAA',
+            'fill-extrusion-color': '#BBD',
             'fill-extrusion-height': [
               'interpolate',
               ['linear'],
@@ -56,7 +56,7 @@ export default function Map() {
               15.05,
               ['get', 'min_height'],
             ],
-            'fill-extrusion-opacity': 0.5,
+            'fill-extrusion-opacity': 0.8,
           },
         })
       })
@@ -68,13 +68,18 @@ export default function Map() {
       })
 
       mapbox.on('click', async (e) => {
-        const features = mapbox
-          .queryRenderedFeatures(e.point)
-          .find((item) => item.sourceLayer === 'airport_label')
+        const features = mapbox.queryRenderedFeatures(e.point)
+        const airportLabel = features.find(
+          (item) => item.sourceLayer === 'airport_label'
+        )
         let airportCode: string = ''
-        if (features?.properties?.ref) airportCode = features.properties.ref
+        if (airportLabel?.properties?.ref)
+          airportCode = airportLabel.properties.ref
+
+        console.log(features)
+
         if (airportCode && airportCode !== airport.iata)
-          await getAirport(airportCode, false).unwrap()
+          await getAirport(airportCode, true).unwrap()
       })
     }
   }, [airport, mapContainer])
