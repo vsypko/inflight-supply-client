@@ -64,10 +64,10 @@ export default function Map() {
         const features = mapbox.queryRenderedFeatures(e.point)
         if (features[0] && features[0].properties?.maki === 'airport') {
           mapbox.getCanvas().style.cursor = 'pointer'
-        } else mapbox.getCanvas().style.cursor = ''
+        } else mapbox.getCanvas().style.cursor = 'default'
       })
 
-      mapbox.on('click', async (e) => {
+      async function selectHandler(e: mapgl.MapMouseEvent & mapgl.EventData) {
         const features = mapbox.queryRenderedFeatures(e.point)
         const airportLabel = features.find(
           (item) => item.sourceLayer === 'airport_label'
@@ -76,11 +76,12 @@ export default function Map() {
         if (airportLabel?.properties?.ref)
           airportCode = airportLabel.properties.ref
 
-        console.log(features)
-
         if (airportCode && airportCode !== airport.iata)
           await getAirport(airportCode, true).unwrap()
-      })
+      }
+
+      mapbox.on('click', async (e) => selectHandler(e))
+      mapbox.on('touch', async (e) => selectHandler(e))
     }
   }, [airport, mapContainer])
 

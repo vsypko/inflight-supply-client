@@ -34,13 +34,12 @@ export default function AirlineContract() {
 
   return (
     <div className="w-full px-2 relative">
-      <div className="absolute left-0 top-8 md:top-0 text-sm font-light">
-        <Now />
-      </div>
-      <div className="w-full text-center text-2xl md:text-3xl font-bold">
+      <div className="w-full text-center text-2xl md:text-3xl font-bold mt-2">
         INFLIGHT SUPPLY ORDERS
       </div>
-
+      <div className="md:absolute left-0 top-8 md:top-0 text-xs md:text-base font-light">
+        <Now />
+      </div>
       <div className="md:flex md:justify-between">
         <div className="font-semibold text-amber-600">
           {airport.name

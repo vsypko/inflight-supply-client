@@ -171,7 +171,7 @@ export default function MainNavigation() {
 
             {/* user avatar and menu ------------------------------------------------------*/}
 
-            {user.id && (
+            {user && user.id && (
               <div
                 onMouseEnter={() => setUserDropdownOpen(true)}
                 onMouseLeave={() => {
@@ -185,20 +185,19 @@ export default function MainNavigation() {
                     userDropdownOpen ? 'opacity-100' : 'opacity-75'
                   }`}
                 >
-                  {user && user.img_url ? (
+                  {user.img_url && (
                     <img
+                      className="w-9 h-9 rounded-full mr-3"
                       use-credentials="true"
                       alt=""
-                      src={
-                        import.meta.env.VITE_API_URL +
-                        'user/geturl/' +
+                      src={`${import.meta.env.VITE_API_URL}user/geturl/${
                         user.img_url
-                      }
-                      className="w-9 h-9 rounded-full mr-3"
+                      }`}
                     />
-                  ) : (
-                    <i className="fas fa-user-gear mr-3" />
                   )}
+
+                  {!user.img_url && <i className="fas fa-user-gear mr-3" />}
+
                   <i
                     className={`fas fa-chevron-down transition-all 
                         ${userDropdownOpen ? 'rotate-180' : 'rotate-0'}`}
@@ -215,7 +214,6 @@ export default function MainNavigation() {
             )}
           </div>
         </div>
-        {/* </div> */}
       </nav>
     </header>
   )
