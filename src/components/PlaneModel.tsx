@@ -1,19 +1,28 @@
-import { Suspense } from 'react'
+import { Suspense, useEffect, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { Environment, OrbitControls, Stage } from '@react-three/drei'
+import { Environment, OrbitControls } from '@react-three/drei'
+
 import { Model } from './B757'
 
 export default function PlaneModel() {
+  // const orbitControlsRef = useRef<any>(null)
+  // useEffect(() => {
+  //   if (orbitControlsRef.current) {
+  //     orbitControlsRef.current.target.set(30, 0, 0)
+  //     // orbitControlsRef.current.autoRotate = true
+  //   }
+  // }, [])
+
   return (
     <div className="absolute left-5 right-5 h-[calc(100vh-80px)] hidden md:flex">
       <Canvas
-        camera={{ fov: 45, near: 0.01, far: 10000, position: [30, 0, 50] }}
+        camera={{ fov: 45, near: 0.01, far: 10000, position: [0, 0, 40] }}
         gl={{ preserveDrawingBuffer: true }}
       >
+        <OrbitControls target={[-4, -5, 0]} />
+        <Environment preset="city" />
         <Suspense fallback={null}>
-          <Environment preset="city" />
-          <Model position={[10, 0, 0]} />
-          <OrbitControls autoRotate autoRotateSpeed={1.0} target={[0, 0, 20]} />
+          <Model position={[0, 0, 0]} />
         </Suspense>
       </Canvas>
       <div className="absolute bottom-4 right-4 font-bold text-slate-500">

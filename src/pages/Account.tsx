@@ -1,12 +1,15 @@
-import { useAuth } from "../hooks/useAuth"
-import { LoadingSpinner } from "../components/LoadingSpinner"
-import { ChangeEvent, useEffect, useState, KeyboardEvent, useRef } from "react"
-import { useSearchCompanyQuery, useCreateCompanyMutation } from "../store/company/company.api"
-import { useDebounce } from "../hooks/debounce"
-import SearchDropdown from "../components/SearchDropdown"
-import CountriesDropdown from "../components/CountriesDropdown"
-import { useActions } from "../hooks/actions"
-import { useCompany } from "../hooks/useCompany"
+import { useAuth } from '../hooks/useAuth'
+import { LoadingSpinner } from '../components/LoadingSpinner'
+import { ChangeEvent, useEffect, useState, KeyboardEvent, useRef } from 'react'
+import {
+  useSearchCompanyQuery,
+  useCreateCompanyMutation,
+} from '../store/company/company.api'
+import { useDebounce } from '../hooks/debounce'
+import SearchDropdown from '../components/SearchDropdown'
+import CountriesDropdown from '../components/CountriesDropdown'
+import { useActions } from '../hooks/actions'
+import { useCompany } from '../hooks/useCompany'
 
 export default function Account() {
   const { user } = useAuth()
@@ -16,49 +19,61 @@ export default function Account() {
 
   const [openCompaniesDropdown, setOpenCompaniesDropdown] = useState(false)
   const [openCountriesDropdown, setOpenCountriesDropdown] = useState(false)
-  const debounced = useDebounce(company?.name ? company?.name : "", 700)
+  const debounced = useDebounce(company?.name ? company?.name : '', 700)
 
   const { data, isLoading, isError, error } = useSearchCompanyQuery(debounced, {
     skip: debounced.length < 3,
     refetchOnFocus: true,
   })
 
-  const [errorMsg, setErrorMsg] = useState("")
+  const [errorMsg, setErrorMsg] = useState('')
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     setCompany({ ...company, [event.target.name]: event.target.value })
   }
 
   useEffect(() => {
-    if (company?.category === "supplier") setCompany({ ...company, iata: undefined, icao: undefined })
+    if (company?.category === 'supplier')
+      setCompany({ ...company, iata: undefined, icao: undefined })
   }, [company?.category])
 
   useEffect(() => {
     if (data && data.total_count > 0) {
-      setErrorMsg("")
+      setErrorMsg('')
       setOpenCompaniesDropdown(
-        debounced.length >= 3 && data.companies.length > 0 && data.companies.every((co) => co.name !== company.name),
+        debounced.length >= 3 &&
+          data.companies.length > 0 &&
+          data.companies.every((co) => co.name !== company.name)
       )
     }
     if (error) {
-      if (error != null && typeof error === "object" && "data" in error) setErrorMsg(error.data as string)
-      if (error != null && typeof error === "object" && "error" in error) setErrorMsg(error.error as string)
+      if (error != null && typeof error === 'object') {
+        if ('data' in error) setErrorMsg(error.data as string)
+        if ('error' in error) setErrorMsg(error.error as string)
+      }
+      console.error('Failed to save company:', error)
     }
   }, [data, error])
 
   async function companySave() {
-    let res: {
-      data: string
-      company_id: number
+    try {
+      const payload = !company.id
+        ? { id: user.id, role: user.role, company }
+        : { id: user.id, role: user.role, company_id: company.id }
+
+      const result = await createCompanyQuery(payload).unwrap()
+
+      if (result.companyId) {
+        setUser({ ...user, company_id: result.companyId })
+        setCompany({ ...company, id: result.companyId })
+      }
+    } catch (error) {
+      if (error != null && typeof error === 'object' && 'data' in error)
+        setErrorMsg(error.data as string)
+      if (error != null && typeof error === 'object' && 'error' in error)
+        setErrorMsg(error.error as string)
+      console.error(error)
     }
-    if (user.role === "admin") {
-      const { country, flag, currency, ...newCompany } = company
-      res = await createCompanyQuery({ id: user.id, role: user.role, newCompany }).unwrap()
-    } else {
-      res = await createCompanyQuery({ id: user.id, role: user.role, company_id: company.id }).unwrap()
-    }
-    setUser({ ...user, company_id: res.company_id })
-    setCompany({ ...company, id: res.company_id })
   }
 
   return (
@@ -72,20 +87,30 @@ export default function Account() {
             <h1 className="mb-4 font-bold text-3xl"> Your profile:</h1>
             <div className="flex mb-3">
               <h1 className="w-32">First name:</h1>
-              <span className="font-bold text-slate-600 dark:text-slate-200">{user.firstname}</span>
+              <span className="font-bold text-slate-600 dark:text-slate-200">
+                {user.firstname}
+              </span>
             </div>
             <div className="flex mb-3">
               <h1 className="w-32">Last name:</h1>
-              <span className="font-bold text-slate-600 dark:text-slate-200">{user.lastname}</span>
+              <span className="font-bold text-slate-600 dark:text-slate-200">
+                {user.lastname}
+              </span>
             </div>
             <div className="flex mb-3">
               <h1 className="w-32">Email:</h1>
-              <span className="font-bold text-slate-600 dark:text-slate-200">{user.email}</span>
+              <span className="font-bold text-slate-600 dark:text-slate-200">
+                {user.email}
+              </span>
             </div>
             <div className="flex">
               <h1 className="w-32">Tel: </h1>
               <div className="flex items-center ">
-                <img src={`data:image/png;base64, ${user.flag}`} alt="" className="pr-2" />
+                <img
+                  src={`data:image/png;base64, ${user.flag}`}
+                  alt=""
+                  className="pr-2"
+                />
                 <span className="font-bold text-slate-600 dark:text-slate-200">
                   +{user.phonecode}-{user.phone}
                 </span>
@@ -96,14 +121,15 @@ export default function Account() {
 
         <div className="w-full md:w-7/12 text-2xl p-2">
           <span className="text-slate-500 text-base md:text-xl">
-            Please enter your company details or select a company from the list for further operations:
+            Please enter your company details or select a company from the list
+            for further operations:
           </span>
           <div className="flex text-xl md:text-2xl items-center mt-4 text-slate-500">
             <div>
               <input
                 type="radio"
                 value="airline"
-                checked={company?.category === "airline" ? true : false}
+                checked={company?.category === 'airline' ? true : false}
                 onChange={onChange}
                 name="category"
                 id="airline"
@@ -120,7 +146,7 @@ export default function Account() {
               <input
                 type="radio"
                 value="supplier"
-                checked={company?.category === "supplier" ? true : false}
+                checked={company?.category === 'supplier' ? true : false}
                 onChange={onChange}
                 name="category"
                 id="supplier"
@@ -144,7 +170,7 @@ export default function Account() {
               name="name"
               type="text"
               autoFocus
-              value={company?.name ?? ""}
+              value={company?.name ?? ''}
               onChange={onChange}
               placeholder="Enter the company name or select from the dropdown list..."
               className="w-1/2 font-bold outline-none placeholder:text-base placeholder:font-normal text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:placeholder:opacity-0 hover:opacity-100 focus:opacity-100 peer"
@@ -155,7 +181,7 @@ export default function Account() {
                   items={data?.companies}
                   setOpen={setOpenCompaniesDropdown}
                   selector={setCompany}
-                  dataView={["name", "category"]}
+                  dataView={['name', 'category']}
                 />
               </div>
             )}
@@ -172,14 +198,14 @@ export default function Account() {
               name="reg_number"
               type="text"
               onChange={onChange}
-              value={company?.reg_number ?? ""}
+              value={company?.reg_number ?? ''}
               placeholder="Company registration number..."
               className="w-1/2 font-bold outline-none placeholder:text-base placeholder:font-normal text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:placeholder:opacity-0 hover:opacity-100 focus:opacity-100 peer"
             />
             <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/2 md:left-1/2 border-slate-500 bottom-0 peer-focus:w-1/2 md:peer-focus:w-1/2 peer-focus:border-b" />
           </div>
 
-          {company?.category === "airline" && (
+          {company?.category === 'airline' && (
             <div className="w-full text-slate-500">
               <div className="flex items-end relative text-xl md:text-2xl">
                 <label htmlFor="iata" className="w-1/2 mt-4">
@@ -191,7 +217,7 @@ export default function Account() {
                   name="iata"
                   type="text"
                   onChange={onChange}
-                  value={company?.iata ?? ""}
+                  value={company?.iata ?? ''}
                   placeholder="2-character IATA code..."
                   className="w-1/2 font-bold outline-none placeholder:text-base placeholder:font-normal text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:placeholder:opacity-0 hover:opacity-100 focus:opacity-100 peer"
                 />
@@ -207,7 +233,7 @@ export default function Account() {
                   name="icao"
                   type="text"
                   onChange={onChange}
-                  value={company?.icao ?? ""}
+                  value={company?.icao ?? ''}
                   placeholder="3-character ICAO code..."
                   className="w-1/2 font-bold outline-none placeholder:text-base placeholder:font-normal text-slate-600 dark:text-slate-200 bg-transparent opacity-90 focus:placeholder:opacity-0 hover:opacity-100 focus:opacity-100 peer"
                 />
@@ -217,7 +243,9 @@ export default function Account() {
           )}
 
           <div className="flex items-end w-full text-xl md:text-2xl">
-            <span className="flex w-1/2 mt-4 text-slate-500">Company registration country:</span>
+            <span className="flex w-1/2 mt-4 text-slate-500">
+              Company registration country:
+            </span>
             <div className="flex w-1/2 relative">
               <button
                 type="button"
@@ -226,13 +254,27 @@ export default function Account() {
               >
                 <div className="flex items-center">
                   <img src={`data:image/png;base64, ${company?.flag}`} alt="" />
-                  <span className={`mr-4 ${company?.country ? "font-bold ml-4" : "font-normal text-base opacity-60"}`}>
-                    {company?.country ? company?.country : "Find and select from the dropdown list..."}
+                  <span
+                    className={`mr-4 ${
+                      company?.country
+                        ? 'font-bold ml-4'
+                        : 'font-normal text-base opacity-60'
+                    }`}
+                  >
+                    {company?.country
+                      ? company?.country
+                      : 'Find and select from the dropdown list...'}
                   </span>
                   <i
                     className={`fa-solid fa-chevron-down transition-all group-hover:opacity-100 group-focus:opacity-100 ${
-                      openCountriesDropdown ? "rotate-180 opacity-100" : "rotate-0 opacity-0"
-                    } ${company?.country && !openCountriesDropdown ? "rotate-0 opacity-0" : "rotate-0 opacity-60"}`}
+                      openCountriesDropdown
+                        ? 'rotate-180 opacity-100'
+                        : 'rotate-0 opacity-0'
+                    } ${
+                      company?.country && !openCountriesDropdown
+                        ? 'rotate-0 opacity-0'
+                        : 'rotate-0 opacity-60'
+                    }`}
                   />
                 </div>
                 <div className="absolute w-0 transition-all duration-300 ease-in-out border-slate-500 bottom-0 group-focus:w-full md:group-focus:w-full group-focus:border-b" />
@@ -251,64 +293,86 @@ export default function Account() {
             </div>
           </div>
 
-          {company && company.category && company.name && company.reg_number && company.country_iso && (
-            <>
-              <div className="flex items-end relative text-xl md:text-2xl text-slate-500">
-                <label htmlFor="role" className="w-1/2 mt-4">
-                  Your competency:
-                </label>
-                <select
-                  name="role"
-                  id="role"
-                  defaultValue={user.role}
-                  onChange={(e) => setUser({ ...user, role: e.target.value })}
-                  className="outline-none font-bold appearance-none bg-transparent text-slate-600 dark:text-slate-200 opacity-90 hover:opacity-100 focus:opacity-100 peer"
-                >
-                  <option disabled={data && data?.total_count !== 0} value="admin" className="text-lg">
-                    admin
-                  </option>
-                  <option disabled={!data || data?.total_count === 0} value="supervisor" className="text-lg">
-                    supervisor
-                  </option>
-                  <option disabled={!data || data?.total_count === 0} value="staff" className="text-lg">
-                    staff
-                  </option>
-                  <option disabled={!data || data?.total_count === 0} value="user" className="text-lg">
-                    user
-                  </option>
-                </select>
-                <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/2 md:left-1/2 border-slate-500 bottom-0 peer-focus:w-1/2 md:peer-focus:w-1/2 peer-focus:border-b" />
-              </div>
-
-              {user.role !== "user" && (
-                <div className="w-full flex mt-4">
-                  <div className="w-1/2 justify-end"></div>
-                  <button
-                    onClick={companySave}
-                    className="px-4 py-1 text-base rounded-full bg-teal-400 dark:bg-teal-700 opacity-70 hover:opacity-100 active:scale-90"
+          {company &&
+            company.category &&
+            company.name &&
+            company.reg_number &&
+            company.country_iso && (
+              <>
+                <div className="flex items-end relative text-xl md:text-2xl text-slate-500">
+                  <label htmlFor="role" className="w-1/2 mt-4">
+                    Your competency:
+                  </label>
+                  <select
+                    name="role"
+                    id="role"
+                    defaultValue={user.role}
+                    onChange={(e) => setUser({ ...user, role: e.target.value })}
+                    className="outline-none font-bold appearance-none bg-transparent text-slate-600 dark:text-slate-200 opacity-90 hover:opacity-100 focus:opacity-100 peer"
                   >
-                    {data?.total_count === 0 && (
-                      <div className="flex items-center">
-                        <i className="fas fa-plus mr-2" />
-                        <span>CREATE</span>
-                      </div>
-                    )}
-                    {data?.total_count !== 0 && (
-                      <div className="flex items-center">
-                        <i className="fas fa-download mr-2" />
-                        <span>SAVE</span>
-                      </div>
-                    )}
-                  </button>
+                    <option
+                      disabled={data && data?.total_count !== 0}
+                      value="admin"
+                      className="text-lg"
+                    >
+                      admin
+                    </option>
+                    <option
+                      disabled={!data || data?.total_count === 0}
+                      value="supervisor"
+                      className="text-lg"
+                    >
+                      supervisor
+                    </option>
+                    <option
+                      disabled={!data || data?.total_count === 0}
+                      value="staff"
+                      className="text-lg"
+                    >
+                      staff
+                    </option>
+                    <option
+                      disabled={!data || data?.total_count === 0}
+                      value="user"
+                      className="text-lg"
+                    >
+                      user
+                    </option>
+                  </select>
+                  <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/2 md:left-1/2 border-slate-500 bottom-0 peer-focus:w-1/2 md:peer-focus:w-1/2 peer-focus:border-b" />
                 </div>
-              )}
-              {user.role === "user" && (
-                <div className="w-full flex mt-4 justify-end">
-                  <span className="w-1/2 text-lg opacity-70">Change your role to create an account...</span>
-                </div>
-              )}
-            </>
-          )}
+
+                {user.role !== 'user' && (
+                  <div className="w-full flex mt-4">
+                    <div className="w-1/2 justify-end"></div>
+                    <button
+                      onClick={companySave}
+                      className="px-4 py-1 text-base rounded-full bg-teal-400 dark:bg-teal-700 opacity-70 hover:opacity-100 active:scale-90"
+                    >
+                      {data?.total_count === 0 && (
+                        <div className="flex items-center">
+                          <i className="fas fa-plus mr-2" />
+                          <span>CREATE</span>
+                        </div>
+                      )}
+                      {data?.total_count !== 0 && (
+                        <div className="flex items-center">
+                          <i className="fas fa-download mr-2" />
+                          <span>SAVE</span>
+                        </div>
+                      )}
+                    </button>
+                  </div>
+                )}
+                {user.role === 'user' && (
+                  <div className="w-full flex mt-4 justify-end">
+                    <span className="w-1/2 text-lg opacity-70">
+                      Change your role to create an account...
+                    </span>
+                  </div>
+                )}
+              </>
+            )}
         </div>
       </div>
 

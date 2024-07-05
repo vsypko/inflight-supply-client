@@ -5,7 +5,7 @@ import { useCompany } from '../hooks/useCompany'
 
 export default function Airlines() {
   const { company } = useCompany()
-  if (company.category === 'airline') {
+  if (company && company.category === 'airline') {
     return <AirlineContract />
   }
   return <div>Airlines, registered for this airport:</div>

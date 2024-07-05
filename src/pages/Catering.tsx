@@ -13,10 +13,11 @@ export default function Catering() {
   const { airport } = useAirport()
   const { user } = useAuth()
   const { company } = useCompany()
+
   const { data: contracts } = useGetContractsQuery(
-    { airport: airport.id, company: company.id, category: company.category },
+    { airport: airport.id, company: company?.id, category: company?.category },
     {
-      skip: !airport.id || !company.id || company.category === 'airline',
+      skip: !airport.id || !company?.id || company?.category === 'airline',
       refetchOnFocus: true,
     }
   )
@@ -26,6 +27,7 @@ export default function Catering() {
   async function handleAccept(id: number) {
     const response = await signContractQuery({ id, user: user.id }).unwrap()
   }
+
   async function handleReject(id: number) {
     const response = await rejectContractQuery({ id }).unwrap()
   }
@@ -39,11 +41,13 @@ export default function Catering() {
       <div className="w-full text-center text-2xl md:text-3xl font-bold">
         INFLIGHT SUPPLY PROVISION
       </div>
+
       <div className="uppercase font-semibold max-w-max mt-8 md:mt-0">
         {airport.name
           ? airport.name + ' - ' + airport.iata
           : 'AIRPORT NOT SELECTED'}
       </div>
+
       {!airport.name && <span>Select an airport on the AIRPORTS tab</span>}
 
       {contracts && contracts.length > 0 && (
