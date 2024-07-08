@@ -18,12 +18,15 @@ export default function AirportSchedule() {
   useEffect(() => {
     setFrom([])
     setTo([])
+
     if (airport.iata) {
       getSchedule({
         airport: airport.iata,
         date: date!.toISOString().slice(0, 10),
       }).unwrap()
+
       if (data?.scheduleFrom) setFrom(data?.scheduleFrom)
+
       if (data?.scheduleTo) setTo(data?.scheduleTo)
     }
   }, [airport, data, date])

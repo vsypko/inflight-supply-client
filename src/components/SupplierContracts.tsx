@@ -9,7 +9,7 @@ import {
 } from '../store/contracts/contract.api'
 import { Contract } from '../types/company.types'
 
-export default function Catering() {
+export default function SupplierContracts() {
   const { airport } = useAirport()
   const { user } = useAuth()
   const { company } = useCompany()

@@ -16,13 +16,13 @@ export default function PlaneModel() {
   return (
     <div className="absolute left-5 right-5 h-[calc(100vh-80px)] hidden md:flex">
       <Canvas
-        camera={{ fov: 45, near: 0.01, far: 10000, position: [0, 0, 40] }}
+        camera={{ fov: 45, near: 0.01, far: 10000, position: [0, 0, 30] }}
         gl={{ preserveDrawingBuffer: true }}
       >
-        <OrbitControls target={[-4, -5, 0]} />
+        <OrbitControls target={[0, 0, 0]} />
         <Environment preset="city" />
         <Suspense fallback={null}>
-          <Model position={[0, 0, 0]} />
+          <Model position={[2, 0, 0]} />
         </Suspense>
       </Canvas>
       <div className="absolute bottom-4 right-4 font-bold text-slate-500">
