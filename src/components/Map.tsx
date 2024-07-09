@@ -1,11 +1,11 @@
-import mapgl from 'mapbox-gl'
+import mapboxgl, { MapMouseEvent, MapTouchEvent } from 'mapbox-gl'
 import { useLazySearchAirportByCodeQuery } from '../store/airport/airport.api'
 import { useActions } from '../hooks/actions'
 import { useEffect, useRef } from 'react'
 import { useAirport } from '../hooks/useAirport'
 
 export default function Map() {
-  mapgl.accessToken = import.meta.env.VITE_MAP_TOKEN
+  mapboxgl.accessToken = import.meta.env.VITE_MAP_TOKEN
   const { airport } = useAirport()
   const mapContainer = useRef<HTMLDivElement | null>(null)
   const [getAirport, { data, error }] = useLazySearchAirportByCodeQuery()
@@ -19,7 +19,7 @@ export default function Map() {
 
   useEffect(() => {
     if (mapContainer.current) {
-      const mapbox = new mapgl.Map({
+      const map = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/streets-v12',
         center: [airport.longitude || 30, airport.latitude || 40],
@@ -28,8 +28,8 @@ export default function Map() {
         zoom: airport.id ? 15 : 1,
       })
 
-      mapbox.on('style.load', (e) => {
-        mapbox.addLayer({
+      map.on('style.load', (e) => {
+        map.addLayer({
           id: 'add-3d-buildings',
           source: 'composite',
           'source-layer': 'building',
@@ -60,15 +60,16 @@ export default function Map() {
           },
         })
       })
-      mapbox.on('mousemove', (e) => {
-        const features = mapbox.queryRenderedFeatures(e.point)
+
+      map.on('mousemove', (e) => {
+        const features = map.queryRenderedFeatures(e.point)
         if (features[0] && features[0].properties?.maki === 'airport') {
-          mapbox.getCanvas().style.cursor = 'pointer'
-        } else mapbox.getCanvas().style.cursor = 'default'
+          map.getCanvas().style.cursor = 'pointer'
+        } else map.getCanvas().style.cursor = 'default'
       })
 
-      async function selectHandler(e: mapgl.MapMouseEvent & mapgl.EventData) {
-        const features = mapbox.queryRenderedFeatures(e.point)
+      async function selectHandler(e: MapMouseEvent | MapTouchEvent) {
+        const features = map.queryRenderedFeatures(e.point)
         const airportLabel = features.find(
           (item) => item.sourceLayer === 'airport_label'
         )
@@ -80,8 +81,8 @@ export default function Map() {
           await getAirport(airportCode, true).unwrap()
       }
 
-      mapbox.on('click', async (e) => selectHandler(e))
-      mapbox.on('touch', async (e) => selectHandler(e))
+      map.on('click', async (e: MapMouseEvent) => selectHandler(e))
+      map.on('touchstart', async (e: MapTouchEvent) => selectHandler(e))
     }
   }, [airport, mapContainer])
 
