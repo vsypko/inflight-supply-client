@@ -1,5 +1,5 @@
-import { ReactNode } from "react"
-import { Company } from "./company.types"
+import { ReactNode } from 'react'
+import { Company } from './company.types'
 
 export interface User {
   id: number | undefined

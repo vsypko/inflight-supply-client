@@ -1,18 +1,23 @@
-import { useEffect, useState } from "react"
-import { LoadingSpinner } from "../components/LoadingSpinner"
-import { useGetUsersQuery } from "../store/users/users.api"
-import { useAuth } from "../hooks/useAuth"
+import { useEffect, useState } from 'react'
+import { LoadingSpinner } from '../components/LoadingSpinner'
+import { useGetUsersQuery } from '../store/users/users.api'
+import { useAuth } from '../hooks/useAuth'
 
 export default function Messages() {
   const { user } = useAuth()
-  const [errorMsg, setErrorMsg] = useState("")
-  const { data, error, isError, isSuccess, isLoading } = useGetUsersQuery({}, { skip: !user.company_id })
+  const [errorMsg, setErrorMsg] = useState('')
+  const { data, error, isError, isSuccess, isLoading } = useGetUsersQuery(
+    {},
+    { skip: !user.company_id }
+  )
 
   useEffect(() => {
-    setErrorMsg("")
+    setErrorMsg('')
     if (error) {
-      if (error != null && typeof error === "object" && "data" in error) setErrorMsg(error.data as string)
-      if (error != null && typeof error === "object" && "error" in error) setErrorMsg(error.error as string)
+      if (error != null && typeof error === 'object' && 'data' in error)
+        setErrorMsg(error.data as string)
+      if (error != null && typeof error === 'object' && 'error' in error)
+        setErrorMsg(error.error as string)
     }
   }, [error])
 
