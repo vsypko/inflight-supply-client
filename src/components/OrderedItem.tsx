@@ -7,7 +7,6 @@ export default function OrderedItem({
   selectedSection,
   selectedItem,
   setSelectedItem,
-  selectedOrderItem,
   setSelectedOrderItem,
 }: {
   selectedSection: string

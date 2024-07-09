@@ -5,7 +5,6 @@ import OrderedItem from './OrderedItem'
 import { useOrder } from '../hooks/useOrder'
 import {
   useDeleteOrderMutation,
-  useGetOrderQuery,
   useSetOrderMutation,
 } from '../store/orders/orders.api'
 import { useActions } from '../hooks/actions'

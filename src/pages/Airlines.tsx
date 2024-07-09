@@ -30,13 +30,15 @@ export default function Airlines() {
   if (airport.id) {
     return (
       <div>
-        <div>Airlines, scheduled for this airport:</div>
+        <div className="ml-4">Airlines, scheduled for this airport:</div>
         {airlines?.map((airline: Company) => (
-          <div key={airline.id}>{airline.name}</div>
+          <div key={airline.id} className="ml-4">
+            {airline.name}
+          </div>
         ))}
       </div>
     )
   }
 
-  return <div>No airport selected</div>
+  return <div className="w-full flex ml-3">No airport selected</div>
 }

@@ -29,13 +29,15 @@ export default function Suppliers() {
 
     return (
       <div>
-        <div>Suppliers, registered for this airport:</div>
+        <div className="ml-4">Suppliers, registered for this airport:</div>
         {suppliers?.map((supplier: Company) => (
-          <div key={supplier.id}>{supplier.name}</div>
+          <div key={supplier.id} className="ml-4">
+            {supplier.name}
+          </div>
         ))}
       </div>
     )
   }
 
-  return <div>No airport selected</div>
+  return <div className="w-full flex ml-3">No airport selected</div>
 }

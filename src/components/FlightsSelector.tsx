@@ -1,13 +1,11 @@
 import { useEffect, useState, PointerEvent } from 'react'
 import { useAirport } from '../hooks/useAirport'
-import { useAuth } from '../hooks/useAuth'
 import { useCompany } from '../hooks/useCompany'
 import { FlightSelected } from '../types/company.types'
 import { useOrder } from '../hooks/useOrder'
 import { useActions } from '../hooks/actions'
 import {
   useGetFlightsQuery,
-  useGetOrderQuery,
   useLazyGetOrderQuery,
 } from '../store/orders/orders.api'
 import DateInput from './DateInput'
@@ -15,7 +13,6 @@ import { selector } from '../services/select.flights'
 
 export default function FlightsSelector() {
   const { airport } = useAirport()
-  const { user } = useAuth()
   const { company } = useCompany()
   const { selectedFlights } = useOrder()
   const { setOrderItems, setSelectedFlights } = useActions()

@@ -1,4 +1,4 @@
-import { useState, MouseEvent } from 'react'
+import { useState } from 'react'
 
 export default function Chart<T>({
   headers,

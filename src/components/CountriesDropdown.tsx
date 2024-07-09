@@ -1,9 +1,8 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { useActions } from "../hooks/actions"
-import { useGetCountriesQuery } from "../store/auth/auth.api"
-import { Country, User } from "../types/user.types"
-import { Company } from "../types/company.types"
-import { ActionCreatorWithPayload } from "@reduxjs/toolkit"
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { useGetCountriesQuery } from '../store/auth/auth.api'
+import { Country, User } from '../types/user.types'
+import { Company } from '../types/company.types'
+import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
 
 interface DropdownProps {
   style: string
@@ -22,7 +21,7 @@ export default function CountriesDropdown({
   dialcode,
   isocode,
 }: DropdownProps): JSX.Element {
-  const { data } = useGetCountriesQuery("")
+  const { data } = useGetCountriesQuery('')
   let newData: Country[] | undefined
 
   const [countriesList, setCountriesList] = useState<Country[] | undefined>([])
@@ -86,16 +85,24 @@ export default function CountriesDropdown({
               className="flex items-center py-1 px-1 text-base rounded-full hover:bg-slate-600 hover:text-slate-300 cursor-pointer transition-colors"
               onClick={() => selectionHandler(item)}
             >
-              <img alt="" src={`data:image/png;base64, ${item.flag}`} className="flex w-[30px] justify-start" />
-              {dialcode && <span className="flex w-3/12 justify-end">{`+${item.phonecode}`}</span>}
+              <img
+                alt=""
+                src={`data:image/png;base64, ${item.flag}`}
+                className="flex w-[30px] justify-start"
+              />
+              {dialcode && (
+                <span className="flex w-3/12 justify-end">{`+${item.phonecode}`}</span>
+              )}
               <span
                 className={`${
-                  isocode ? "w-8/12" : "w-7/12"
+                  isocode ? 'w-8/12' : 'w-7/12'
                 } pl-1 md:pl-4 justify-start text-ellipsis overflow-x-hidden whitespace-nowrap`}
               >
                 {item.title_case}
               </span>
-              {isocode && <span className="flex w-2/12 justify-end">{item.iso}</span>}
+              {isocode && (
+                <span className="flex w-2/12 justify-end">{item.iso}</span>
+              )}
             </li>
           ))}
         </ul>
