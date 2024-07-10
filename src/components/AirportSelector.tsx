@@ -16,6 +16,12 @@ export default function AirportSelector() {
 
   const debounced = useDebounce(search, 700)
 
+  function onFocus(element: HTMLInputElement | null) {
+    if (element) {
+      element.focus()
+    }
+  }
+
   const { data, isLoading, isError, error } = useSearchAirportQuery(debounced, {
     skip: debounced.length < 3,
     refetchOnFocus: true,
@@ -42,10 +48,14 @@ export default function AirportSelector() {
   }, [data, error])
 
   return (
-    <div className="w-full relative">
-      <div className="w-full flex relative">
+    <div className="w-full">
+      <div
+        className={`w-full flex relative rounded-full ${
+          airport.name ? 'w-0' : 'w-full border border-slate-100'
+        }`}
+      >
         <button
-          className="flex items-center justify-center absolute left-0 top-0 z-10 text-xl w-10 h-10 rounded-full bg-slate-300 dark:bg-slate-700"
+          className="flex z-10 text-xl rounded-full justify-center items-center p-2"
           onClick={unselectHandler}
           disabled={!airport.name}
         >
@@ -57,25 +67,25 @@ export default function AirportSelector() {
         </button>
 
         <div
-          className={`flex relative ml-5 rounded-r-full bg-slate-300 dark:bg-slate-700 shadow-md shadow-slate-700 transition-all duration-300 ease-out h-10 ${
-            airport.name ? 'w-0' : 'w-full'
+          className={`items-center text-xl md:text-lg w-full ${
+            airport.name ? 'hidden' : 'flex'
           }`}
         >
           <input
+            ref={(element) => onFocus(element)}
             required
             title="Please enter at least the first three letters of the name, IATA code, country or airport municipality"
             onChange={(e) => setSearch(e.target.value)}
             value={search}
             placeholder="Search airport ..."
-            autoFocus
             type="text"
-            className="bg-transparent rounded-full outline-none pl-6 w-full h-10 text-xl"
+            className="bg-transparent rounded-full outline-none text-xl pl-4"
             id="airport"
             autoComplete="off"
           />
 
           {dropdownOpen && (
-            <div className="absolute z-20 top-10 left-1 right-5 rounded-b-3xl max-h-[360px] overflow-y-scroll snap-y shadow-md shadow-slate-700 bg-slate-100 dark:bg-slate-800">
+            <div className="absolute z-20 top-10 left-2 right-2 rounded-b-3xl max-h-[420px] md:max-h-[395px] overflow-y-scroll snap-y">
               <SearchDropdown
                 items={data?.airports}
                 setOpen={setDropdownOpen}

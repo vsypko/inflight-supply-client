@@ -89,7 +89,7 @@ export default function Map() {
   return (
     <div
       ref={mapContainer}
-      className="w-full h-[600px] border border-slate-600 mt-4 rounded-lg shadow-xl"
+      className="w-full md:h-[600px] h-[400px] border border-slate-600 mt-4 rounded-lg shadow-xl"
     />
   )
 }

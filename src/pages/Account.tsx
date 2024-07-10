@@ -84,7 +84,7 @@ export default function Account() {
       <div className="block md:flex ">
         <div className="w-full md:w-5/12 flex justify-center text-slate-500">
           <div className="flex flex-col text-xl md:text-2xl">
-            <h1 className="mb-4 font-bold text-3xl"> Your profile:</h1>
+            {/* <h1 className="mb-4 font-bold text-3xl"> Your profile:</h1> */}
             <div className="flex mb-3">
               <h1 className="w-32">First name:</h1>
               <span className="font-bold text-slate-600 dark:text-slate-200">

@@ -71,7 +71,7 @@ export default function AirlineContract() {
           <div className="w-full md:w-1/5">
             <FlightsSelector />
           </div>
-          <div className="w-full md:w-4/5">
+          <div className="w-full md:w-4/5 mt-4">
             <Orders />
           </div>
         </div>

@@ -111,7 +111,7 @@ export default function FlightsSelector() {
                 ))}
             </select>
           </div>
-          <ul className="text-base space-y-1 max-h-[364px] md:max-h-[644px] overflow-y-auto snap-y font-light">
+          <ul className="text-sm md:text-base space-y-1 max-h-[364px] md:max-h-[644px] overflow-y-auto snap-y font-light">
             {flights.map((flight: FlightSelected, index: number) => (
               <li
                 key={flight.id}
@@ -138,7 +138,7 @@ export default function FlightsSelector() {
                 }`}
               >
                 <i
-                  className={`grid items-center fas col-span-1 place-items-start pl-1  ${
+                  className={`grid items-center fas col-span-1 place-items-start pl-2  ${
                     selectedFlights.some((f) => f.id === flight.id) &&
                     !flight.ordered
                       ? 'fa-plane-up text-teal-300 dark:text-teal-600'

@@ -1,8 +1,8 @@
-import { ChangeEvent, FormEvent, SyntheticEvent, useEffect, useState, MouseEvent, RefObject } from "react"
-import ImgEditor from "../components/ImgEditor"
-import { Item } from "../types/company.types"
-import { handleDataFileInput } from "../services/datafile.loader"
-import { v4 as uuid } from "uuid"
+import { ChangeEvent, useEffect, useState, RefObject } from 'react'
+import ImgEditor from '../components/ImgEditor'
+import { Item } from '../types/company.types'
+import { handleDataFileInput } from '../services/datafile.loader'
+import { v4 as uuid } from 'uuid'
 import {
   useDeleteCompanyDataMutation,
   useGetCompanyDataQuery,
@@ -10,25 +10,28 @@ import {
   useInsertCompanyDataMutation,
   useImgUrlRemoveMutation,
   useUpdateCompanyDataMutation,
-} from "../store/company/company.api"
-import Chart from "../components/Chart"
-import SaveRemove from "../components/SaveRemove"
-import { imageSave } from "../services/imagefile.loader"
-import { imageClear } from "../services/image.utils"
-import { useCompany } from "../hooks/useCompany"
+} from '../store/company/company.api'
+import Chart from '../components/Chart'
+import SaveRemove from '../components/SaveRemove'
+import { imageSave } from '../services/imagefile.loader'
+import { imageClear } from '../services/image.utils'
+import { useCompany } from '../hooks/useCompany'
 
 export default function SupplierItems() {
   const { company } = useCompany()
-  const { data: supplies, error } = useGetCompanyDataQuery({ type: "supplies", id: company.id })
+  const { data: supplies, error } = useGetCompanyDataQuery({
+    type: 'supplies',
+    id: company.id,
+  })
 
   const emptyRow: Item = {
     id: 0,
     code: 0,
-    title: "",
+    title: '',
     price: 0.0,
-    category: "",
-    area: "",
-    description: "",
+    category: '',
+    area: '',
+    description: '',
     img_url: undefined,
     co_id: company.id,
   }
@@ -37,9 +40,11 @@ export default function SupplierItems() {
   const maxView = 200
 
   const handleError = (err: any): void => {
-    setErrorMsg("")
-    if (err != null && typeof err === "object" && "data" in err) setErrorMsg(err.data as string)
-    if (err != null && typeof err === "object" && "error" in err) setErrorMsg(err.error as string)
+    setErrorMsg('')
+    if (err != null && typeof err === 'object' && 'data' in err)
+      setErrorMsg(err.data as string)
+    if (err != null && typeof err === 'object' && 'error' in err)
+      setErrorMsg(err.error as string)
   }
 
   useEffect(() => {
@@ -50,9 +55,10 @@ export default function SupplierItems() {
   const [editorOpened, setEditorOpened] = useState(false)
   const [newItems, setNewItems] = useState<Item[]>([])
   const [imgLoaded, setImgLoaded] = useState(false)
-  const [errorMsg, setErrorMsg] = useState("")
-  const [canvasRef, setCanvasRef] = useState<RefObject<HTMLCanvasElement> | null>(null)
-  const [response, setResponse] = useState("")
+  const [errorMsg, setErrorMsg] = useState('')
+  const [canvasRef, setCanvasRef] =
+    useState<RefObject<HTMLCanvasElement> | null>(null)
+  const [response, setResponse] = useState('')
 
   const [insertCompanyData, { isLoading }] = useInsertCompanyDataMutation()
   const [updateCompanyData] = useUpdateCompanyDataMutation()
@@ -61,7 +67,7 @@ export default function SupplierItems() {
   const [imgRemoveQuery] = useImgUrlRemoveMutation()
 
   const [imgEditorProps, setImgEditorProps] = useState({
-    path: "company/items/img/",
+    path: 'company/items/img/',
     url: row.img_url,
     id: row.id,
     imgLoaded,
@@ -75,17 +81,23 @@ export default function SupplierItems() {
     if (canvasRef && !row.img_url) imageClear(canvasRef, maxView)
     setRow(row)
     setEditorOpened(true)
-    setErrorMsg("")
+    setErrorMsg('')
   }
 
-  const onChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const onChange = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     let value = event.target.value
-    if (event.target.name === "price") {
+    if (event.target.name === 'price') {
       if (value && isNaN(Number(value))) {
         event.preventDefault()
         return
       }
-      if (value.includes(".") && value.split(".")[1] && value.split(".")[1].length > 2) {
+      if (
+        value.includes('.') &&
+        value.split('.')[1] &&
+        value.split('.')[1].length > 2
+      ) {
         event.preventDefault()
         return
       }
@@ -94,13 +106,13 @@ export default function SupplierItems() {
   }
 
   function handleFileUpload(e: ChangeEvent<HTMLInputElement>) {
-    setErrorMsg("")
+    setErrorMsg('')
     handleDataFileInput(e, headers, setNewItems, company.id)
   }
 
   const handleInsertItems = async () => {
     try {
-      await insertCompanyData({ type: "supplies", values: newItems }).unwrap()
+      await insertCompanyData({ type: 'supplies', values: newItems }).unwrap()
       setNewItems([])
     } catch (err) {
       setNewItems([])
@@ -109,13 +121,23 @@ export default function SupplierItems() {
   }
 
   const handleAddItem = async () => {
-    let imgUrl = ""
+    let imgUrl = ''
     if (imgLoaded) imgUrl = uuid()
     try {
-      const res = await insertCompanyData({ type: "supplies", values: [row] }).unwrap()
+      const res = await insertCompanyData({
+        type: 'supplies',
+        values: [row],
+      }).unwrap()
       setResponse(res.data)
       if (!canvasRef || !imgLoaded) return
-      await imageSave(canvasRef.current, maxView, imgUpdateQuery, imgUrl, res.id, "supplies")
+      await imageSave(
+        canvasRef.current,
+        maxView,
+        imgUpdateQuery,
+        imgUrl,
+        res.id,
+        'supplies'
+      )
       setRow((row) => ({ ...row, id: res.id, img_url: imgUrl }))
     } catch (err) {
       handleError(err)
@@ -123,17 +145,24 @@ export default function SupplierItems() {
   }
 
   const handleUpdateItem = async () => {
-    let imgUrl = ""
+    let imgUrl = ''
     if (imgLoaded) imgUrl = uuid()
     try {
       const res = await updateCompanyData({
-        type: "supplies",
+        type: 'supplies',
         id: row.id,
         value: { ...row, img_url: imgUrl },
       }).unwrap()
       setResponse(res.data)
       if (!canvasRef || !imgLoaded) return
-      await imageSave(canvasRef.current, maxView, imgUpdateQuery, imgUrl, row.id, "supplies")
+      await imageSave(
+        canvasRef.current,
+        maxView,
+        imgUpdateQuery,
+        imgUrl,
+        row.id,
+        'supplies'
+      )
       setRow((row) => ({ ...row, img_url: imgUrl }))
     } catch (err) {
       handleError(err)
@@ -144,7 +173,7 @@ export default function SupplierItems() {
     if (row && row.id) {
       const answer = confirm(`Please confirm deletion of ${row.title}.`)
       if (!answer) return
-      const res = await deleteItem({ type: "supplies", id: row.id }).unwrap()
+      const res = await deleteItem({ type: 'supplies', id: row.id }).unwrap()
       if (canvasRef) imageClear(canvasRef, maxView)
       setResponse(res.data)
       setRow(emptyRow)
@@ -157,7 +186,10 @@ export default function SupplierItems() {
     if (!answer) return
     if (canvasRef) imageClear(canvasRef, maxView)
     if (row.img_url) {
-      const res = await imgRemoveQuery({ type: "supplies", id: row.id }).unwrap()
+      const res = await imgRemoveQuery({
+        type: 'supplies',
+        id: row.id,
+      }).unwrap()
       setResponse(res.data)
       setRow((row) => ({ ...row, img_url: undefined }))
     }
@@ -175,7 +207,9 @@ export default function SupplierItems() {
 
   return (
     <div className="flex flex-col max-w-max relative">
-      {errorMsg && <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>}
+      {errorMsg && (
+        <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>
+      )}
       {!newItems.length && !isLoading && (
         <div className="flex text-lg justify-between items-center">
           <div className="mb-2 md:mb-1">
@@ -210,8 +244,12 @@ export default function SupplierItems() {
       )}
 
       {/* Chart render in case of loading from file ----------------------------------------------------------------------------*/}
-      {newItems.length != 0 && !isLoading && <SaveRemove setNew={setNewItems} handleSave={handleInsertItems} />}
-      {newItems.length != 0 && !isLoading && <Chart headers={headers} rows={newItems} height="max-h-[700px]" />}
+      {newItems.length != 0 && !isLoading && (
+        <SaveRemove setNew={setNewItems} handleSave={handleInsertItems} />
+      )}
+      {newItems.length != 0 && !isLoading && (
+        <Chart headers={headers} rows={newItems} height="max-h-[700px]" />
+      )}
 
       {/* Chart render in case of loading from database ------------------------------------------------------------------------*/}
       {supplies && !newItems.length && !isLoading && (
@@ -224,18 +262,20 @@ export default function SupplierItems() {
         />
       )}
 
-      <div className="flex m-1 text-base absolute">
-        {response && (
-          <h5 onAnimationEnd={() => setResponse("")} className="text-teal-500 whitespace-pre-line result">
-            {response}
-          </h5>
-        )}
-      </div>
-
       {/* Item editor ------------------------------------------------------------------------------------------------------------------- */}
       {editorOpened && (
         <>
           <div className="flex flex-col md:pt-10 md:flex-row w-full border-slate-600 border-b text-lg py-2 justify-between relative">
+            <div className="flex p-1 text-base absolute top-2">
+              {response && (
+                <h5
+                  onAnimationEnd={() => setResponse('')}
+                  className="text-teal-500 whitespace-pre-line result"
+                >
+                  {response}
+                </h5>
+              )}
+            </div>
             {/* cancel button  (xmark) ------------------------------------------------------------------------------------------------- */}
             <button
               type="button"
@@ -258,8 +298,11 @@ export default function SupplierItems() {
             <div className="w-full flex flex-col md:pl-4 pb-4 mt-3">
               {headers.slice(0, 5).map((key, index) => (
                 <div key={key} className="flex w-full text-xl relative mb-2">
-                  <label htmlFor={key} className="w-1/3 md:w-1/4 capitalize font-semibold">
-                    {key + ":"}
+                  <label
+                    htmlFor={key}
+                    className="w-1/3 md:w-1/4 capitalize font-semibold"
+                  >
+                    {key + ':'}
                   </label>
                   <input
                     id={key}
@@ -267,7 +310,9 @@ export default function SupplierItems() {
                     name={key}
                     onChange={onChange}
                     value={
-                      key === "price" && typeof row[key] === "number" ? row[key].toFixed(2) : row[key as keyof Item]
+                      key === 'price' && typeof row[key] === 'number'
+                        ? row[key].toFixed(2)
+                        : row[key as keyof Item]
                     }
                     className={`w-2/3 md:w-3/4 bg-transparent opacity-70 focus:outline-none hover:opacity-100 focus:opacity-100 peer`}
                   />
@@ -280,14 +325,17 @@ export default function SupplierItems() {
                 </div>
               ))}
               <div className="flex w-full text-xl relative">
-                <label htmlFor="description" className="w-1/3 md:w-1/4 capitalize font-semibold">
+                <label
+                  htmlFor="description"
+                  className="w-1/3 md:w-1/4 capitalize font-semibold"
+                >
                   Description:
                 </label>
                 <textarea
                   id="description"
                   name="description"
                   onChange={onChange}
-                  value={row["description"]}
+                  value={row['description']}
                   className={`w-2/3 md:w-3/4 bg-transparent opacity-70 focus:outline-none hover:opacity-100 focus:opacity-100 overflow-auto peer`}
                 />
                 <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/3 md:left-[calc(100%*1/4)] border-slate-500 bottom-0 peer-focus:w-2/3 md:peer-focus:w-3/4 peer-focus:border-b" />

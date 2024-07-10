@@ -31,7 +31,7 @@ export default function DropdownMenu({
   }
 
   const itemStyle =
-    'flex items-center my-4 px-3 cursor-pointer active:scale-90 rounded-full hover:bg-slate-300  dark:hover:bg-slate-700 opacity-75 hover:opacity-100 transition-all'
+    'flex items-center text-xl md:text-lg my-6 px-4 cursor-pointer active:scale-90 rounded-full hover:bg-slate-300  dark:hover:bg-slate-700 opacity-75 hover:opacity-100 transition-all gap-4'
 
   return (
     <div
@@ -44,20 +44,20 @@ export default function DropdownMenu({
       <ul>
         <li onClick={selectionHandler}>
           <NavLink to={`/profile/${user.id}`} className={itemStyle}>
-            <i className="fas fa-user-pen mr-2 p-2" />
+            <i className="fas fa-user-pen" />
             <span>PROFILE</span>
           </NavLink>
         </li>
 
         <li onClick={selectionHandler}>
           <NavLink to={`/account/${user.id}`} className={itemStyle}>
-            <i className="fas fa-address-card p-2" />
+            <i className="fas fa-address-card" />
             <span>ACCOUNT</span>
           </NavLink>
         </li>
 
         <li onClick={logOutHandler} className={itemStyle}>
-          <i className="fas fa-right-from-bracket p-2" />
+          <i className="fas fa-right-from-bracket" />
           <span>LOGOUT</span>
         </li>
       </ul>

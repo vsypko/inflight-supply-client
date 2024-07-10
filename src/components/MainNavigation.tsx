@@ -24,22 +24,22 @@ const mainMenu = [
   {
     title: 'AIRPORTS',
     to: '/',
-    icon: 'fas fa-home group-[.isactive]:text-emerald-600',
+    icon: 'fas fa-home group-[.isactive]:text-emerald-600 mr-2',
   },
   {
     title: 'AIRLINES',
     to: '/airlines',
-    icon: 'fas fa-plane group-[.isactive]:text-sky-600',
+    icon: 'fas fa-plane group-[.isactive]:text-sky-600 mr-2',
   },
   {
     title: 'PROVIDERS',
     to: '/catering',
-    icon: 'fas fa-utensils group-[.isactive]:text-amber-600',
+    icon: 'fas fa-utensils group-[.isactive]:text-amber-600 mr-2',
   },
   {
     title: 'MESSAGES',
     to: '/messages',
-    icon: 'fas fa-envelope-open-text group-[.isactive]:text-blue-700',
+    icon: 'fas fa-envelope-open-text group-[.isactive]:text-blue-700 mr-2',
   },
 ]
 
@@ -64,9 +64,9 @@ export default function MainNavigation() {
     <header
       onMouseEnter={() => setOnHeader(true)}
       onMouseLeave={() => setOnHeader(false)}
-      className="w-full sticky top-0 z-50 h-10 rounded-full bg-slate-200 dark:bg-slate-900 shadow shadow-slate-900 dark:shadow-slate-600"
+      className="w-full sticky top-0 z-50 py-2 bg-slate-200 dark:bg-slate-900 shadow shadow-slate-900 dark:shadow-slate-600"
     >
-      <nav className="flex w-full h-full text-slate-700 dark:text-slate-100">
+      <nav className="flex w-full text-slate-700 dark:text-slate-100">
         <div className="w-full md:w-1/6 flex items-center text-lg">
           <NavLink
             onClick={() => setNavDropdownOpen(false)}
@@ -85,9 +85,9 @@ export default function MainNavigation() {
         </div>
 
         <div
-          className={`md:w-5/6 md:flex md:h-full md:justify-end ${
+          className={`md:w-5/6 md:flex md:justify-end ${
             navDropdownOpen
-              ? 'absolute top-10 rounded-xl right-2 w-1/2 bg-slate-200 dark:bg-slate-800 pl-4 shadow shadow-slate-600 dark:shadow-slate-600'
+              ? 'absolute top-11 rounded-xl right-2 w-2/3 bg-slate-200 dark:bg-slate-800 p-5 text-lg shadow shadow-slate-600'
               : 'hidden'
           }`}
         >
@@ -96,7 +96,7 @@ export default function MainNavigation() {
               <NavLink
                 key={item.title}
                 className={({ isActive }) =>
-                  `h-full flex hover:opacity-100 my-6 md:my-0 md:items-center md:mx-6 group ${
+                  `h-full flex hover:opacity-100 mb-8 ml-4 text-xl md:text-lg md:mb-0 md:my-0 md:items-center md:mx-6 group ${
                     isActive
                       ? 'md:border-b-2 border-slate-700 dark:border-slate-100 opacity-100 isactive'
                       : 'opacity-75'
@@ -120,7 +120,7 @@ export default function MainNavigation() {
             {user.role && user.role !== 'user' && (
               <NavLink
                 className={({ isActive }) =>
-                  `h-full flex hover:opacity-100 my-6 md:my-0 md:items-center md:mx-6 group ${
+                  `h-full flex hover:opacity-100 my-8 ml-4 md:my-0 md:items-center md:mx-6 group ${
                     isActive
                       ? 'md:border-b-2 border-slate-700 dark:border-slate-100 opacity-100 isactive'
                       : 'opacity-75'
@@ -129,7 +129,7 @@ export default function MainNavigation() {
                 to={`/admin/${user.role}`}
                 onClick={() => setNavDropdownOpen(false)}
               >
-                <i className="fas fa-screwdriver-wrench group-[.isactive]:text-gray-500"></i>
+                <i className="fas fa-screwdriver-wrench group-[.isactive]:text-gray-500 mr-2"></i>
                 <span className="mx-2">ADMIN</span>
               </NavLink>
             )}
@@ -138,11 +138,11 @@ export default function MainNavigation() {
               title="Switch between light and dark mode"
               type="button"
               onClick={toogleThemeHandler}
-              className="opacity-75 hover:opacity-100 flex items-center md:mx-6 my-6 md:my-0"
+              className="opacity-75 hover:opacity-100 flex items-center ml-4 md:mx-6 my-8 md:my-0"
             >
               <i
-                className={`fas ${
-                  darkMode ? 'fa-sun text-yellow-500' : 'fa-moon text-cyan-600'
+                className={`fas mr-2 ${
+                  darkMode ? 'fa-sun text-yellow-500' : 'fa-moon text-cyan-600 '
                 }`}
               ></i>
               <span className="mx-2">MODE</span>
@@ -151,7 +151,7 @@ export default function MainNavigation() {
 
           {/* user auth ------------------------------------------------------*/}
 
-          <div className="w-full md:w-1/6 h-full flex items-center md:justify-end">
+          <div className="w-full md:w-1/6 ml-4 flex items-center md:justify-end">
             {!user.id && (
               <NavLink
                 className={({ isActive }) =>
