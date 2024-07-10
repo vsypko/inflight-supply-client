@@ -35,9 +35,9 @@ export default function AirportSchedule() {
     <>
       {from?.length === 0 && to?.length === 0 && <PlaneModel />}
       {!isLoading && (
-        <div className="w-full md:w-2/3 flex flex-col mt-2 md:px-10">
+        <div className="w-full md:w-2/3 flex flex-col mt-4">
           <DateInput date={date} setDate={setDate} />
-          <div className="w-full pl-2 rounded-md">
+          <div className="w-full rounded-md">
             {from?.length != 0 && (
               <ScheduleChart
                 headers={['departure', 'destination', 'flight']}
