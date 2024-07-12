@@ -30,13 +30,13 @@ On the admin page, company staff can upload relevant data:
 - **Airline staff**: Upload their company fleet and flight schedule.
 - **Caterer staff**: Enter the airports where they operate and details of meal sets and other in-flight consumption products.
 
-![Admin Page Screenshot](link-to-image-admin-page.png)
+![Admin Page Screenshot](images/image_2.png)
 
 ### Service Intersection
 
 An airport where an airline's schedule intersects with a caterer's business location becomes a potential service provision point. Contracts can be concluded for the provision of relevant services at these airports.
 
-![Service Intersection Screenshot](link-to-image-service-intersection.png)
+![Service Intersection Screenshot](images/image_3.png)
 
 ### Ordering and Fulfillment
 
@@ -45,7 +45,7 @@ An airport where an airline's schedule intersects with a caterer's business loca
 
 While the prototype currently facilitates order placement and fulfillment, future enhancements will include integrated payment processing.
 
-![Ordering and Fulfillment Screenshot](link-to-image-ordering-fulfillment.png)
+![Ordering and Fulfillment Screenshot](images/image_4.png)
 
 ## Conclusion
 
