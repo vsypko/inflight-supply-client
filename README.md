@@ -12,9 +12,9 @@ All functionalities are accessible to registered users who can have roles such a
 
 ## Testing and Familiarization
 
-For the purpose of familiarization and testing, the site includes two registered airlines and two catering companies, each with their respective employees. These companies are fictional and have been created solely for testing purposes.
+For the purpose of familiarization and testing, the site includes two registered airlines and two catering companies, each with their respective employees and data. These companies are fictional and have been created solely for testing purposes.
 
-If you wish to explore or test the program, please contact the site author at **vsypko.dev@gmail.com**.
+If you wish to explore or test the site, please contact the site author at **vsypko.dev@gmail.com**.
 
 ### Admin Page
 
