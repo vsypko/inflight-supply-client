@@ -45,7 +45,7 @@ An airport where an airline's schedule intersects with a caterer's business loca
 
 While the prototype currently facilitates order placement and fulfillment, future enhancements will include integrated payment processing.
 
-![Ordering and Fulfillment Screenshot](images/image_4.png)
+![Ordering and Fulfillment Screenshot](images/image_5.png)
 
 ## Conclusion
 
