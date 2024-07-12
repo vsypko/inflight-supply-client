@@ -49,4 +49,4 @@ While the prototype currently facilitates order placement and fulfillment, futur
 
 ## Conclusion
 
-This project leverages a unique UI approach, style, and concepts. As a prototype, it showcases the potential for a fully functional collaboration system that can significantly benefit stakeholders in the airline and catering industries. With adequate support and investment, this concept can be transformed into a viable and effective business solution.
+This project leverages a unique UI approach, style, and concepts. As a prototype, it showcases the potential for a fully functional collaboration system that can significantly benefit stakeholders in the airline and catering industries. With adequate support and investment, this concept can be transformed into a viable and effective business solution. Not all tabs and features are fully developed yet, so this site is still a work in progress.
