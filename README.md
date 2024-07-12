@@ -10,6 +10,13 @@ This site aims to streamline and facilitate the collaboration between airlines a
 
 All functionalities are accessible to registered users who can have roles such as admin, supervisor, or staff within their respective companies. The companies involved can be airlines or handlers/caterers.
 
+## Additional Features
+
+- **Interactive Model**: Before selecting an airport, users can view and manipulate a glass model of a Boeing 757 using their mouse.
+- **Mobile Adaptation**: The site is adapted for mobile devices, although this feature is currently disabled.
+
+![Interactive Model Screenshot](images/image_1.png)
+
 ## Testing and Familiarization
 
 For the purpose of familiarization and testing, the site includes two registered airlines and two catering companies, each with their respective employees and data. These companies are fictional and have been created solely for testing purposes.
@@ -19,6 +26,7 @@ If you wish to explore or test the site, please contact the site author at **vsy
 ### Admin Page
 
 On the admin page, company staff can upload relevant data:
+
 - **Airline staff**: Upload their company fleet and flight schedule.
 - **Caterer staff**: Enter the airports where they operate and details of meal sets and other in-flight consumption products.
 
@@ -33,7 +41,7 @@ An airport where an airline's schedule intersects with a caterer's business loca
 ### Ordering and Fulfillment
 
 - **Airlines**: Can place orders for specific meals and other supplies through the dedicated tab.
-- **Suppliers**: Can receive and fulfill these orders. 
+- **Suppliers**: Can receive and fulfill these orders.
 
 While the prototype currently facilitates order placement and fulfillment, future enhancements will include integrated payment processing.
 
