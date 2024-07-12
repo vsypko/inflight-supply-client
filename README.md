@@ -10,6 +10,12 @@ This site aims to streamline and facilitate the collaboration between airlines a
 
 All functionalities are accessible to registered users who can have roles such as admin, supervisor, or staff within their respective companies. The companies involved can be airlines or handlers/caterers.
 
+## Testing and Familiarization
+
+For the purpose of familiarization and testing, the site includes two registered airlines and two catering companies, each with their respective employees. These companies are fictional and have been created solely for testing purposes.
+
+If you wish to explore or test the program, please contact the site author at **vsypko.dev@gmail.com**.
+
 ### Admin Page
 
 On the admin page, company staff can upload relevant data:
