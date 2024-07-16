@@ -1,9 +1,9 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react"
-import { LoadingSpinner } from "../components/LoadingSpinner"
-import { useActions } from "../hooks/actions"
-import { useNavigate } from "react-router-dom"
-import { useLoginMutation } from "../store/auth/auth.api"
-import { useAuth } from "../hooks/useAuth"
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
+import { LoadingSpinner } from '../components/LoadingSpinner'
+import { useActions } from '../hooks/actions'
+import { useNavigate } from 'react-router-dom'
+import { useLoginMutation } from '../store/auth/auth.api'
+import { useAuth } from '../hooks/useAuth'
 
 interface IAuthCredentials {
   isLogin: boolean
@@ -16,15 +16,22 @@ export default function Auth() {
   const { user } = useAuth()
 
   useEffect(() => {
-    if (user.id) navigate("/")
+    if (user.id) navigate('/')
   }, [user.id])
 
-  const initialValue: IAuthCredentials = { isLogin: true, email: "", password: "" }
+  const initialValue: IAuthCredentials = {
+    isLogin: true,
+    email: '',
+    password: '',
+  }
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false)
   const [value, setValue] = useState<IAuthCredentials>(initialValue)
-  const [errorMsg, setErrorMsg] = useState<string>("")
+  const [errorMsg, setErrorMsg] = useState<string>('')
   const [login, { isLoading, isError }] = useLoginMutation()
   const { setUser, setCompany } = useActions()
+
+  const cookieConsent = localStorage.getItem('cookie-consent')
+  const [cookieNoticeVisible, setCookieNoticeVisible] = useState(!cookieConsent)
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue((value) => ({ ...value, [event.target.name]: event.target.value }))
@@ -32,16 +39,20 @@ export default function Auth() {
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault()
+    localStorage.setItem('cookie-consent', 'true')
+    setCookieNoticeVisible(false)
     try {
       const data = await login(value).unwrap()
       if (data) {
         setUser(data.user)
         setCompany(data.company)
       }
-      navigate("/")
+      navigate('/')
     } catch (err) {
-      if (err != null && typeof err === "object" && "data" in err) setErrorMsg(err.data as string)
-      if (err != null && typeof err === "object" && "error" in err) setErrorMsg(err.error as string)
+      if (err != null && typeof err === 'object' && 'data' in err)
+        setErrorMsg(err.data as string)
+      if (err != null && typeof err === 'object' && 'error' in err)
+        setErrorMsg(err.error as string)
     }
   }
 
@@ -49,9 +60,13 @@ export default function Auth() {
     <div className="flex flex-col items-center w-full px-5 text-slate-700 dark:text-slate-300">
       <div className="flex flex-col items-center mt-6 sm:w-1/4 w-full">
         <h1 className="text-xl font-bold md:text-2xl mb-6">
-          {value.isLogin ? "Sign in to your account" : "Create an account"}
+          {value.isLogin ? 'Sign in to your account' : 'Create an account'}
         </h1>
-        {isError && <h5 className="text-red-500 mb-2 text-center whitespace-pre-line">{errorMsg}</h5>}
+        {isError && (
+          <h5 className="text-red-500 mb-2 text-center whitespace-pre-line">
+            {errorMsg}
+          </h5>
+        )}
         <form onSubmit={onSubmit} className="w-full">
           <div className="w-full">
             <label htmlFor="email" className="block mb-2 text-sm font-medium">
@@ -73,13 +88,16 @@ export default function Auth() {
             </div>
           </div>
           <div>
-            <label htmlFor="password" className="block mb-2 text-sm font-medium">
+            <label
+              htmlFor="password"
+              className="block mb-2 text-sm font-medium"
+            >
               Password
             </label>
             <div className="flex bg-slate-300 dark:bg-slate-700 rounded-full mb-6">
               <i className="fas fa-key p-3 rounded-l-full bg-slate-400 dark:bg-slate-800" />
               <input
-                type={passwordVisible ? "text" : "password"}
+                type={passwordVisible ? 'text' : 'password'}
                 name="password"
                 id="password"
                 minLength={6}
@@ -90,7 +108,10 @@ export default function Auth() {
                 onChange={onChange}
               />
               <i
-                className={"fas p-3 active:text-xs cursor-pointer " + (passwordVisible ? "fa-eye-slash" : "fa-eye")}
+                className={
+                  'fas p-3 active:text-xs cursor-pointer ' +
+                  (passwordVisible ? 'fa-eye-slash' : 'fa-eye')
+                }
                 onClick={() => setPasswordVisible((prev) => !prev)}
               />
             </div>
@@ -109,22 +130,34 @@ export default function Auth() {
             type="submit"
             className="w-full cursor-pointer py-2 px-5 flex justify-between text-xl items-center rounded-full active:scale-90 bg-teal-500 dark:bg-teal-800 opacity-75 hover:opacity-100"
           >
-            <i className={"fas " + (value.isLogin ? "fa-right-to-bracket" : "fa-user-plus")} />
-            {value.isLogin ? "Sign In" : "Sign Up"}
+            <i
+              className={
+                'fas ' +
+                (value.isLogin ? 'fa-right-to-bracket' : 'fa-user-plus')
+              }
+            />
+            {value.isLogin ? 'Sign In' : 'Sign Up'}
           </button>
         </form>
         <div className="flex justify-between items-center text-lg mt-6">
-          {value.isLogin ? "Don't have an account yet?" : "Have an account?"}
+          {value.isLogin ? "Don't have an account yet?" : 'Have an account?'}
           <button
             onClick={() => {
               setValue((value) => ({ ...value, isLogin: !value.isLogin }))
-              setErrorMsg("")
+              setErrorMsg('')
             }}
             className="px-2 hover:bg-slate-300 hover:rounded-full dark:hover:bg-slate-800 active:scale-90 text-teal-500"
           >
-            {value.isLogin ? "Sign Up" : "Sign In"}
+            {value.isLogin ? 'Sign Up' : 'Sign In'}
           </button>
         </div>
+        {cookieNoticeVisible && (
+          <div className="text-justify mt-4">
+            By signing up, you consent to our cookies only to keep you logged
+            in. We do not collect any personal information for advertising or
+            perform analytics.
+          </div>
+        )}
       </div>
       {isLoading && (
         <div className="mt-10">
