@@ -1,9 +1,8 @@
 # Airline-Caterer Collaboration System
 
-## Overview
+## Overview [vsypko.dev](https://www.vsypko.dev)
 
 Imagine you work for a commercial airline and have just developed a new flight schedule for the next month or year. The next step is to arrange handling services at the respective airports. Typically, this process involves spending significant time and resources to identify suitable handlers and caterers at these airports, conducting business trips to evaluate options and quality, and finally entering into contracts.
-[www.vsypko.dev](https://www.vsypko.dev)
 
 This project aims to streamline and facilitate the collaboration between airlines and handlers/caterers at airports where their operations intersect. While the design is ambitious and complex, it is based on a conceptual prototype that can be further developed into a functional system with the right support and investment.
 
