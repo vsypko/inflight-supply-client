@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-import DropdownMenu from './UserMenuDropdown'
+import UserMenuDropdown from './UserMenuDropdown'
 
 function toogleTheme(dark: boolean): void {
   if (!dark) {
@@ -14,8 +14,7 @@ function toogleTheme(dark: boolean): void {
 //Initial app theme ---------------------------------------------------------------------------
 if (
   localStorage.theme === 'dark' ||
-  (!('theme' in localStorage) &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches)
+  (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
 )
   toogleTheme(true)
 //---------------------------------------------------------------------------------------------
@@ -56,8 +55,7 @@ export default function MainNavigation() {
     setNavDropdownOpen(false)
   }
 
-  const activeLink =
-    'flex md:border-b-2 border-slate-700 dark:border-slate-100 '
+  const activeLink = 'flex md:border-b-2 border-slate-700 dark:border-slate-100 '
   const regularLink = 'flex opacity-75 hover:opacity-100'
 
   return (
@@ -109,9 +107,7 @@ export default function MainNavigation() {
                 <div className="mx-2 relative">
                   <span>{item.title}</span>
                   {item.title === 'MESSAGES' && (
-                    <span className="text-xs absolute -top-1 rounded-full bg-slate-300 dark:bg-slate-500">
-                      20
-                    </span>
+                    <span className="text-xs absolute -top-1 rounded-full bg-slate-300 dark:bg-slate-500">20</span>
                   )}
                 </div>
               </NavLink>
@@ -140,11 +136,7 @@ export default function MainNavigation() {
               onClick={toogleThemeHandler}
               className="opacity-75 hover:opacity-100 flex items-center ml-4 md:mx-6 my-8 md:my-0"
             >
-              <i
-                className={`fas mr-2 ${
-                  darkMode ? 'fa-sun text-yellow-500' : 'fa-moon text-cyan-600 '
-                }`}
-              ></i>
+              <i className={`fas mr-2 ${darkMode ? 'fa-sun text-yellow-500' : 'fa-moon text-cyan-600 '}`}></i>
               <span className="mx-2">MODE</span>
             </button>
           </div>
@@ -163,9 +155,7 @@ export default function MainNavigation() {
                 onClick={() => setNavDropdownOpen(false)}
               >
                 <i className="fas fa-user group-[.isactive]:text-orange-600"></i>
-                <span className="mx-2 group-[.isactive]:text-orange-600 group-[.isactive]:font-bold">
-                  AUTH
-                </span>
+                <span className="mx-2 group-[.isactive]:text-orange-600 group-[.isactive]:font-bold">AUTH</span>
               </NavLink>
             )}
 
@@ -181,18 +171,14 @@ export default function MainNavigation() {
               >
                 <button
                   onClick={() => setUserDropdownOpen((prev) => !prev)}
-                  className={`flex items-center hover:opacity-100 ${
-                    userDropdownOpen ? 'opacity-100' : 'opacity-75'
-                  }`}
+                  className={`flex items-center hover:opacity-100 ${userDropdownOpen ? 'opacity-100' : 'opacity-75'}`}
                 >
                   {user.img_url && (
                     <img
                       className="w-9 h-9 rounded-full mr-3"
                       use-credentials="true"
                       alt=""
-                      src={`${import.meta.env.VITE_API_URL}user/geturl/${
-                        user.img_url
-                      }`}
+                      src={`${import.meta.env.VITE_API_URL}user/geturl/${user.img_url}`}
                     />
                   )}
 
@@ -204,11 +190,7 @@ export default function MainNavigation() {
                   />
                 </button>
                 {userDropdownOpen && (
-                  <DropdownMenu
-                    open={userDropdownOpen}
-                    setOpen={setUserDropdownOpen}
-                    close={setNavDropdownOpen}
-                  />
+                  <UserMenuDropdown open={userDropdownOpen} setOpen={setUserDropdownOpen} close={setNavDropdownOpen} />
                 )}
               </div>
             )}

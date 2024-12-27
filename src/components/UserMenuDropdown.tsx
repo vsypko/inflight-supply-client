@@ -10,11 +10,7 @@ interface UserDropownProps {
   close: Dispatch<SetStateAction<boolean>>
 }
 
-export default function DropdownMenu({
-  open,
-  setOpen,
-  close,
-}: UserDropownProps): JSX.Element {
+export default function DropdownMenu({ open, setOpen, close }: UserDropownProps): JSX.Element {
   function selectionHandler() {
     setOpen(false)
     close(false)
@@ -36,7 +32,7 @@ export default function DropdownMenu({
   return (
     <div
       onMouseLeave={() => setOpen(false)}
-      className={`absolute top-10 bg-slate-200 dark:bg-slate-800 shadow shadow-slate-900 dark:shadow-slate-600 rounded-xl ${
+      className={`absolute top-8 bg-slate-200 dark:bg-slate-800 shadow shadow-slate-900 dark:shadow-slate-600 rounded-xl ${
         open ? 'flex' : 'hidden'
       }
       `}

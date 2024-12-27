@@ -26,13 +26,10 @@ export default function SupplierAirports() {
   const [airports, setAirports] = useState<Airport[]>([])
   const debounced = useDebounce(search, 700)
 
-  const { data, isFetching, isError, error } = useSearchAirportQuery(
-    debounced,
-    {
-      skip: debounced.length < 3,
-      refetchOnFocus: true,
-    }
-  )
+  const { data, isFetching, isError, error } = useSearchAirportQuery(debounced, {
+    skip: debounced.length < 3,
+    refetchOnFocus: true,
+  })
 
   const [insertPlace] = useInsertCompanyDataMutation()
   const [deletePlace] = useDeleteCompanyDataMutation()
@@ -43,10 +40,8 @@ export default function SupplierAirports() {
       setDropdownOpen(debounced.length >= 3 && data?.airports.length! > 0)
     }
     if (error) {
-      if (error != null && typeof error === 'object' && 'data' in error)
-        setErrorMsg(error.data as string)
-      if (error != null && typeof error === 'object' && 'error' in error)
-        setErrorMsg(error.error as string)
+      if (error != null && typeof error === 'object' && 'data' in error) setErrorMsg(error.data as string)
+      if (error != null && typeof error === 'object' && 'error' in error) setErrorMsg(error.error as string)
     }
   }, [data, error])
 
@@ -71,10 +66,8 @@ export default function SupplierAirports() {
 
   return (
     <div className="w-full">
-      {errorMsg && (
-        <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>
-      )}
-      <div className="rounded-2xl shadow-md dark:shadow-slate-600 dark:bg-slate-800 bg-slate-100 px-4 max-h-[400px] overflow-auto">
+      {errorMsg && <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>}
+      <div className="rounded-2xl shadow-md dark:shadow-slate-600 dark:bg-slate-800 bg-slate-100 px-4 max-h-[200px] md:max-h-[400px] overflow-auto">
         {places?.map((place, index) => (
           <div className="flex text-base" key={place.id}>
             <div className="flex w-11/12 my-2">
@@ -85,10 +78,7 @@ export default function SupplierAirports() {
               </div>
             </div>
             <div className="flex w-1/12 justify-end">
-              <button
-                className="opacity-70 hover:opacity-100 active:scale-90"
-                onClick={() => delAirport(place)}
-              >
+              <button className="opacity-70 hover:opacity-100 active:scale-90" onClick={() => delAirport(place)}>
                 <i className="fas fa-trash-can" />
               </button>
             </div>

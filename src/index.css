@@ -1,11 +1,11 @@
-@import url("./assets/fontawesome/css/all.min.css");
+@import url('./assets/fontawesome/css/all.min.css');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @font-face {
-  font-family: "Roboto";
-  src: local("Roboto"), url("./src/assets/font_roboto/Roboto-Regular.ttf") format("truetype");
+  font-family: 'Roboto';
+  src: local('Roboto'), url('./src/assets/font_roboto/Roboto-Regular.ttf') format('truetype');
 }
 
 input::-webkit-outer-spin-button,
@@ -13,7 +13,7 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-input[type="number"] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
 
@@ -24,7 +24,7 @@ input[type="number"] {
   animation: spin-up 20s linear infinite;
 }
 .result {
-  animation: disapp 5s linear;
+  animation: disapp 3s linear;
   visibility: collapse;
 }
 

@@ -41,10 +41,8 @@ export default function SupplierItems() {
 
   const handleError = (err: any): void => {
     setErrorMsg('')
-    if (err != null && typeof err === 'object' && 'data' in err)
-      setErrorMsg(err.data as string)
-    if (err != null && typeof err === 'object' && 'error' in err)
-      setErrorMsg(err.error as string)
+    if (err != null && typeof err === 'object' && 'data' in err) setErrorMsg(err.data as string)
+    if (err != null && typeof err === 'object' && 'error' in err) setErrorMsg(err.error as string)
   }
 
   useEffect(() => {
@@ -56,8 +54,7 @@ export default function SupplierItems() {
   const [newItems, setNewItems] = useState<Item[]>([])
   const [imgLoaded, setImgLoaded] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
-  const [canvasRef, setCanvasRef] =
-    useState<RefObject<HTMLCanvasElement> | null>(null)
+  const [canvasRef, setCanvasRef] = useState<RefObject<HTMLCanvasElement> | null>(null)
   const [response, setResponse] = useState('')
 
   const [insertCompanyData, { isLoading }] = useInsertCompanyDataMutation()
@@ -84,20 +81,14 @@ export default function SupplierItems() {
     setErrorMsg('')
   }
 
-  const onChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const onChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     let value = event.target.value
     if (event.target.name === 'price') {
       if (value && isNaN(Number(value))) {
         event.preventDefault()
         return
       }
-      if (
-        value.includes('.') &&
-        value.split('.')[1] &&
-        value.split('.')[1].length > 2
-      ) {
+      if (value.includes('.') && value.split('.')[1] && value.split('.')[1].length > 2) {
         event.preventDefault()
         return
       }
@@ -130,14 +121,7 @@ export default function SupplierItems() {
       }).unwrap()
       setResponse(res.data)
       if (!canvasRef || !imgLoaded) return
-      await imageSave(
-        canvasRef.current,
-        maxView,
-        imgUpdateQuery,
-        imgUrl,
-        res.id,
-        'supplies'
-      )
+      await imageSave(canvasRef.current, maxView, imgUpdateQuery, imgUrl, res.id, 'supplies')
       setRow((row) => ({ ...row, id: res.id, img_url: imgUrl }))
     } catch (err) {
       handleError(err)
@@ -155,14 +139,7 @@ export default function SupplierItems() {
       }).unwrap()
       setResponse(res.data)
       if (!canvasRef || !imgLoaded) return
-      await imageSave(
-        canvasRef.current,
-        maxView,
-        imgUpdateQuery,
-        imgUrl,
-        row.id,
-        'supplies'
-      )
+      await imageSave(canvasRef.current, maxView, imgUpdateQuery, imgUrl, row.id, 'supplies')
       setRow((row) => ({ ...row, img_url: imgUrl }))
     } catch (err) {
       handleError(err)
@@ -206,10 +183,8 @@ export default function SupplierItems() {
   }, [imgLoaded, row.id, row.img_url])
 
   return (
-    <div className="flex flex-col max-w-max relative">
-      {errorMsg && (
-        <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>
-      )}
+    <div className="flex flex-col w-full md:pl-6 relative">
+      {errorMsg && <h5 className="text-red-500 mb-2 whitespace-pre-line">{errorMsg}</h5>}
       {!newItems.length && !isLoading && (
         <div className="flex text-lg justify-between items-center">
           <div className="mb-2 md:mb-1">
@@ -244,11 +219,9 @@ export default function SupplierItems() {
       )}
 
       {/* Chart render in case of loading from file ----------------------------------------------------------------------------*/}
+      {newItems.length != 0 && !isLoading && <SaveRemove setNew={setNewItems} handleSave={handleInsertItems} />}
       {newItems.length != 0 && !isLoading && (
-        <SaveRemove setNew={setNewItems} handleSave={handleInsertItems} />
-      )}
-      {newItems.length != 0 && !isLoading && (
-        <Chart headers={headers} rows={newItems} height="max-h-[700px]" />
+        <Chart<Item> headers={headers} rows={newItems} height="max-h-[300px]" mdheight="md:max-h-[490px]" />
       )}
 
       {/* Chart render in case of loading from database ------------------------------------------------------------------------*/}
@@ -256,27 +229,33 @@ export default function SupplierItems() {
         <Chart<Item>
           headers={headers}
           rows={supplies}
-          height="max-h-[185px]"
-          mdheight="md:max-h-[570px]"
+          height="max-h-[313px]"
+          mdheight="md:max-h-[490px]"
           handleEdit={handleEditItem}
         />
       )}
+      {!editorOpened && (
+        <div className="flex p-1 text-base">
+          {response && (
+            <h5 onAnimationEnd={() => setResponse('')} className="text-teal-500 whitespace-pre-line result">
+              {response}
+            </h5>
+          )}
+        </div>
+      )}
 
-      {/* Item editor ------------------------------------------------------------------------------------------------------------------- */}
+      {/* Item editor ---------------------------------------------------------------------- */}
       {editorOpened && (
         <>
-          <div className="flex flex-col md:pt-10 md:flex-row w-full border-slate-600 border-b text-lg py-2 justify-between relative">
-            <div className="flex p-1 text-base absolute top-2">
+          <div className="flex flex-col md:pt-10 md:flex-row w-full justify-between relative">
+            <div className="flex p-1 text-base absolute top-1">
               {response && (
-                <h5
-                  onAnimationEnd={() => setResponse('')}
-                  className="text-teal-500 whitespace-pre-line result"
-                >
+                <h5 onAnimationEnd={() => setResponse('')} className="text-teal-500 whitespace-pre-line result">
                   {response}
                 </h5>
               )}
             </div>
-            {/* cancel button  (xmark) ------------------------------------------------------------------------------------------------- */}
+            {/* cancel button  (xmark) ------------------------------------------------------------ */}
             <button
               type="button"
               onClick={() => {
@@ -284,24 +263,21 @@ export default function SupplierItems() {
                 setRow(emptyRow)
                 setEditorOpened(false)
               }}
-              className="absolute z-10 py-1 px-3.5 top-2 right-0 rounded-full hover:bg-slate-400 dark:hover:bg-slate-700 opacity-70 hover:opacity-100 active:scale-90"
+              className="absolute z-10 px-3.5 top-1 right-0 rounded-full hover:bg-slate-400 dark:hover:bg-slate-700 opacity-70 hover:opacity-100 active:scale-90"
             >
-              <i className="fas fa-xmark text-2xl" />
+              <i className="fas fa-xmark text-xl" />
             </button>
 
-            {/* image editor------------------------------------------------------------------------------------------------------- */}
-            <div className="my-3">
+            {/* image editor------------------------------------------------------------------ */}
+            <div className="my-1">
               <ImgEditor imgEditorProps={imgEditorProps} />
             </div>
 
-            {/* Form for item editing -----------------------------------------------------------------------------------------------*/}
-            <div className="w-full flex flex-col md:pl-4 pb-4 mt-3">
+            {/* Form for item editing --------------------------------------------------------*/}
+            <div className="w-full flex flex-col md:pl-4 text-base">
               {headers.slice(0, 5).map((key, index) => (
-                <div key={key} className="flex w-full text-xl relative mb-2">
-                  <label
-                    htmlFor={key}
-                    className="w-1/3 md:w-1/4 capitalize font-semibold"
-                  >
+                <div key={key} className="flex w-full relative">
+                  <label htmlFor={key} className="w-1/3 md:w-1/4 capitalize font-semibold">
                     {key + ':'}
                   </label>
                   <input
@@ -310,9 +286,7 @@ export default function SupplierItems() {
                     name={key}
                     onChange={onChange}
                     value={
-                      key === 'price' && typeof row[key] === 'number'
-                        ? row[key].toFixed(2)
-                        : row[key as keyof Item]
+                      key === 'price' && typeof row[key] === 'number' ? row[key].toFixed(2) : row[key as keyof Item]
                     }
                     className={`w-2/3 md:w-3/4 bg-transparent opacity-70 focus:outline-none hover:opacity-100 focus:opacity-100 peer`}
                   />
@@ -324,11 +298,8 @@ export default function SupplierItems() {
                   <div className="absolute w-0 transition-all duration-300 ease-in-out left-1/3 md:left-1/4 border-slate-500 bottom-0 peer-focus:w-2/3 md:peer-focus:w-3/4 peer-focus:border-b" />
                 </div>
               ))}
-              <div className="flex w-full text-xl relative">
-                <label
-                  htmlFor="description"
-                  className="w-1/3 md:w-1/4 capitalize font-semibold"
-                >
+              <div className="flex w-full relative">
+                <label htmlFor="description" className="w-1/3 md:w-1/4 capitalize font-semibold">
                   Description:
                 </label>
                 <textarea
@@ -344,7 +315,7 @@ export default function SupplierItems() {
           </div>
 
           {/* Action button block --------------------------------------------------------------------------------------------*/}
-          <div className="flex w-full text-sm justify-around md:justify-between mt-2 text-slate-200">
+          <div className="flex w-full text-sm justify-around md:justify-between text-slate-200">
             {imgLoaded && (
               <div className="w-full">
                 <button

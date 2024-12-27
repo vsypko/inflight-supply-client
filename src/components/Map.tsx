@@ -38,24 +38,8 @@ export default function Map() {
           minzoom: 15,
           paint: {
             'fill-extrusion-color': '#BBD',
-            'fill-extrusion-height': [
-              'interpolate',
-              ['linear'],
-              ['zoom'],
-              15,
-              0,
-              15.05,
-              ['get', 'height'],
-            ],
-            'fill-extrusion-base': [
-              'interpolate',
-              ['linear'],
-              ['zoom'],
-              15,
-              0,
-              15.05,
-              ['get', 'min_height'],
-            ],
+            'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], 15, 0, 15.05, ['get', 'height']],
+            'fill-extrusion-base': ['interpolate', ['linear'], ['zoom'], 15, 0, 15.05, ['get', 'min_height']],
             'fill-extrusion-opacity': 0.8,
           },
         })
@@ -70,19 +54,20 @@ export default function Map() {
 
       async function selectHandler(e: MapMouseEvent | MapTouchEvent) {
         const features = map.queryRenderedFeatures(e.point)
-        const airportLabel = features.find(
-          (item) => item.sourceLayer === 'airport_label'
-        )
+        const airportLabel = features.find((item) => item.sourceLayer === 'airport_label')
         let airportCode: string = ''
-        if (airportLabel?.properties?.ref)
-          airportCode = airportLabel.properties.ref
+        if (airportLabel?.properties?.ref) airportCode = airportLabel.properties.ref
 
-        if (airportCode && airportCode !== airport.iata)
-          await getAirport(airportCode, true).unwrap()
+        if (airportCode && airportCode !== airport.iata) await getAirport(airportCode, true).unwrap()
       }
 
       map.on('click', async (e: MapMouseEvent) => selectHandler(e))
       map.on('touchstart', async (e: MapTouchEvent) => selectHandler(e))
+
+      return () => {
+        map.off('click', async (e: MapMouseEvent) => selectHandler(e))
+        map.off('touchstart', async (e: MapTouchEvent) => selectHandler(e))
+      }
     }
   }, [airport, mapContainer])
 
